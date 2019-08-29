@@ -1,15 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
 using TerrarianBizzareAdventure.Players;
-using TerrarianBizzareAdventure.Projectiles.Stands;
-using TerrarianBizzareAdventure.Projectiles.Stands.PunchRushProjectile;
+using TerrarianBizzareAdventure.Projectiles;
 
-namespace TerrarianBizzareAdventure.Stands
+namespace TerrarianBizzareAdventure.Stands.StarPlatinum
 {
-    public class StarPlatinum : Stand
+    public class StarPlatinumStand : Stand
     {
         private const string
-            TEXPATH = "Textures/Stands/StarPlatinum/",
+            TEXPATH = "Stands/StarPlatinum/",
             PUNCH = "SPPunch_",
             LEFTHAND = "_LeftHand",
             RIGHTHAND = "_RightHand";
@@ -21,7 +20,7 @@ namespace TerrarianBizzareAdventure.Stands
         private Vector2 _punchRushDirection;
 
 
-        public StarPlatinum() : base("starPlatinum", "Star Platinum")
+        public StarPlatinumStand() : base("starPlatinum", "Star Platinum")
         {
         }
 
@@ -93,7 +92,7 @@ namespace TerrarianBizzareAdventure.Stands
                         IsTaunting = false;
 
                 if (TBAInputs.SummonStand.JustPressed && CurrentState == "IDLE")
-                        CurrentState = "DESPAWN";
+                    CurrentState = "DESPAWN";
 
             }
 
@@ -108,11 +107,11 @@ namespace TerrarianBizzareAdventure.Stands
 
             if (IsTaunting)
             {
-                if(!InPose)
+                if (!InPose)
                     CurrentState = "POSE_TRANSITION";
             }
 
-            if(InPose && !IsTaunting)
+            if (InPose && !IsTaunting)
             {
                 CurrentState = "POSE_TRANSITION";
                 if (CurrentState == "POSE_TRANSITION" && Animations[CurrentState].Finished)
@@ -123,7 +122,7 @@ namespace TerrarianBizzareAdventure.Stands
                 }
             }
 
-            if(CurrentState == "SUMMON")
+            if (CurrentState == "SUMMON")
             {
                 Opacity = Animations[CurrentState].FrameRect.Y / Animations[CurrentState].FrameRect.Height * 0.25f;
             }
@@ -180,7 +179,7 @@ namespace TerrarianBizzareAdventure.Stands
                     SetOwnerDirection(120);
                 }
             }
-            
+
             if (IsPunching && Animations[CurrentState].Finished)
             {
                 Animations[CurrentState].ResetAnimation();
@@ -191,8 +190,12 @@ namespace TerrarianBizzareAdventure.Stands
             if (CurrentState == "DESPAWN")
             {
                 Opacity = (5 - CurrentAnimation.FrameRect.Y / (int)CurrentAnimation.FrameSize.Y) * 0.2f;
-                if(Animations[CurrentState].Finished)
+
+                if (Animations[CurrentState].Finished)
+                {
                     projectile.Kill();
+                    TBAPlayer.Get(Owner).ActiveStandProjectileId = TBAPlayer.ACTIVE_STAND_PROJECTILE_INACTIVE_ID;
+                }
             }
 
             IsFlipped = Owner.direction == 1;
