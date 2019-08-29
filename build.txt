@@ -1,0 +1,3 @@
+displayName = Terrarian's Bizzare Adventure
+author = HellGoesOn, Webmilio, Skipping
+version = 0.1
