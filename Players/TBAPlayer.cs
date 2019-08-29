@@ -4,17 +4,14 @@ using Terraria.GameInput;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using TerrarianBizzareAdventure.Projectiles.Stands;
-using TerrarianBizzareAdventure.Projectiles.Stands.Melee;
+using TerrarianBizzareAdventure.Stands;
 
 namespace TerrarianBizzareAdventure.Players
 {
     public class TBAPlayer : ModPlayer
     {
-        public override void Initialize()
-        {
-            ActiveStandID = -99;
-            MyStand = -99;
-        }
+        public static TBAPlayer Get(Player player) => player.GetModPlayer<TBAPlayer>();
+
 
         public override void PostUpdate()
         {
@@ -24,26 +21,28 @@ namespace TerrarianBizzareAdventure.Players
                 AttackDirection = 0;
         }
 
+
         public override TagCompound Save()
         {
             TagCompound tag = new TagCompound();
 
-            tag.Add("MyStand", MyStand);
+            if (StandUser)
+                tag.Add(nameof(Stand), Stand.UnlocalizedName);
 
             return tag;
         }
 
         public override void Load(TagCompound tag)
         {
-            MyStand = tag.GetInt("MyStand");
+            if (tag.ContainsKey(nameof(Stand)))
+                Stand = StandManager.Instance[tag.GetString(nameof(Stand))];
         }
+
 
         public override void ProcessTriggers(TriggersSet triggersSet)
         {
-            if (TBAInputs.SummonStand.JustPressed && MyStand !=  -99 && ActiveStandID == -99)
-            {
-                ActiveStandID = Projectile.NewProjectile(player.Center, Vector2.Zero, MyStand, 0, 0, player.whoAmI);
-            }
+            if (TBAInputs.SummonStand.JustPressed && StandUser)
+                Projectile.NewProjectile(player.Center, Vector2.Zero, mod.ProjectileType(Stand.GetType().Name), 0, 0, player.whoAmI);
         }
 
         public override void SetControls()
@@ -58,13 +57,12 @@ namespace TerrarianBizzareAdventure.Players
             }
         }
 
-        public int ActiveStandID { get; set; }
 
-        public int MyStand { get; set; }
+        public Stand Stand { get; set; }
 
-        public bool StandUser => MyStand != -99;
 
-        public static TBAPlayer Get(Player player) => player.GetModPlayer<TBAPlayer>();
+        public bool StandUser => Stand != null;
+
 
         public int AttackDirection { get; set; }
 

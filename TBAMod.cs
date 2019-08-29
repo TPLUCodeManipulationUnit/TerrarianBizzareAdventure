@@ -1,16 +1,17 @@
 using Terraria.ModLoader;
+using TerrarianBizzareAdventure.Stands;
 
 namespace TerrarianBizzareAdventure
 {
-	public class TerrarianBizzareAdventure : Mod
+	public class TBAMod : Mod
 	{
-		public TerrarianBizzareAdventure()
+		public TBAMod()
 		{
-		}
+            Instance = this;
+        }
 
         public override void Load()
         {
-            Instance = this;
             TBAInputs.Load(this);
         }
 
@@ -18,9 +19,11 @@ namespace TerrarianBizzareAdventure
         {
             Instance = null;
             TBAInputs.Unload();
+
+            StandManager.Instance.Clear();
         }
 
 
-        public static TerrarianBizzareAdventure Instance { get; private set; }
+        public static TBAMod Instance { get; private set; }
     }
 }

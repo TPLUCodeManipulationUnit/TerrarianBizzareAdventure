@@ -1,11 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
 using TerrarianBizzareAdventure.Players;
+using TerrarianBizzareAdventure.Projectiles.Stands;
 using TerrarianBizzareAdventure.Projectiles.Stands.PunchRushProjectile;
 
-namespace TerrarianBizzareAdventure.Projectiles.Stands.Melee
+namespace TerrarianBizzareAdventure.Stands
 {
-    public class StarPlatinum : StandBase
+    public class StarPlatinum : Stand
     {
         private const string
             TEXPATH = "Textures/Stands/StarPlatinum/",
@@ -13,17 +14,17 @@ namespace TerrarianBizzareAdventure.Projectiles.Stands.Melee
             LEFTHAND = "_LeftHand",
             RIGHTHAND = "_RightHand";
 
-        private bool
-            _isPunching, _inPose, _leftMouseButtonLastState;
 
-        private int
-            _punchCounter, _punchCounterReset, _rushTimer;
+        private bool _leftMouseButtonLastState;
+
 
         private Vector2 _punchRushDirection;
 
-        public StarPlatinum() : base("Star Platinum")
+
+        public StarPlatinum() : base("starPlatinum", "Star Platinum")
         {
         }
+
 
         public override void AddAnimations()
         {
@@ -49,33 +50,34 @@ namespace TerrarianBizzareAdventure.Projectiles.Stands.Melee
             Animations.Add("DESPAWN", new SpriteAnimation(mod.GetTexture(TEXPATH + "SPDespawn"), 6, 4));
         }
 
+
         public override void AI()
         {
             base.AI();
 
-            if (_punchCounterReset > 0)
-                _punchCounterReset--;
+            if (PunchCounterReset > 0)
+                PunchCounterReset--;
             else
-                _punchCounter = 0;
+                PunchCounter = 0;
 
-            if (_rushTimer > 1)
+            if (RushTimer > 1)
             {
                 if (CurrentAnimation.Finished)
                     CurrentAnimation.ResetAnimation();
 
-                if (_rushTimer % 2 == 0)
+                if (RushTimer % 2 == 0)
                 {
                     Projectile.NewProjectile(projectile.Center, _punchRushDirection, mod.ProjectileType<StarPlatinumRushBack>(), 120, 3.5f, Owner.whoAmI, projectile.whoAmI);
                     Projectile.NewProjectile(projectile.Center, _punchRushDirection, mod.ProjectileType<StarPlatinumRush>(), 120, 3.5f, Owner.whoAmI, projectile.whoAmI);
                 }
-                _rushTimer--;
+                RushTimer--;
             }
             else
             {
-                if (_rushTimer > 0 && CurrentAnimation.Finished)
+                if (RushTimer > 0 && CurrentAnimation.Finished)
                 {
-                    _rushTimer--;
-                    currentState = "IDLE";
+                    RushTimer--;
+                    CurrentState = "IDLE";
                 }
             }
 
@@ -85,122 +87,119 @@ namespace TerrarianBizzareAdventure.Projectiles.Stands.Melee
             if (Owner.whoAmI == Main.myPlayer)
             {
                 if (TBAInputs.StandPose.JustPressed)
-                    if (currentState == "IDLE")
-                        isTaunting = true;
+                    if (CurrentState == "IDLE")
+                        IsTaunting = true;
                     else
-                        isTaunting = false;
+                        IsTaunting = false;
 
-                if (TBAInputs.SummonStand.JustPressed && currentState == "IDLE")
-                        currentState = "DESPAWN";
+                if (TBAInputs.SummonStand.JustPressed && CurrentState == "IDLE")
+                        CurrentState = "DESPAWN";
 
             }
 
             projectile.Center = Owner.Center + new Vector2(34 * Owner.direction, -20 + Owner.gfxOffY);
 
-            if (!_inPose && currentState == "POSE_TRANSITION" && Animations[currentState].Finished)
+            if (!InPose && CurrentState == "POSE_TRANSITION" && Animations[CurrentState].Finished)
             {
-                _inPose = true;
-                Animations[currentState].ResetAnimation(true);
-                currentState = "POSE_IDLE";
+                InPose = true;
+                Animations[CurrentState].ResetAnimation(true);
+                CurrentState = "POSE_IDLE";
             }
 
-            if (isTaunting)
+            if (IsTaunting)
             {
-                if(!_inPose)
-                    currentState = "POSE_TRANSITION";
+                if(!InPose)
+                    CurrentState = "POSE_TRANSITION";
             }
 
-            if(_inPose && !isTaunting)
+            if(InPose && !IsTaunting)
             {
-                currentState = "POSE_TRANSITION";
-                if (currentState == "POSE_TRANSITION" && Animations[currentState].Finished)
+                CurrentState = "POSE_TRANSITION";
+                if (CurrentState == "POSE_TRANSITION" && Animations[CurrentState].Finished)
                 {
-                    Animations[currentState].ResetAnimation();
-                    _inPose = false;
-                    currentState = "IDLE";
+                    Animations[CurrentState].ResetAnimation();
+                    InPose = false;
+                    CurrentState = "IDLE";
                 }
             }
 
-            if(currentState == "SUMMON")
+            if(CurrentState == "SUMMON")
             {
-                Opacity = Animations[currentState].FrameRect.Y / Animations[currentState].FrameRect.Height * 0.25f;
+                Opacity = Animations[CurrentState].FrameRect.Y / Animations[CurrentState].FrameRect.Height * 0.25f;
             }
 
-            if (currentState == "SUMMON" && Animations[currentState].Finished)
-                currentState = "IDLE";
+            if (CurrentState == "SUMMON" && Animations[CurrentState].Finished)
+                CurrentState = "IDLE";
 
-            if (currentState.Contains("IDLE") && Animations[currentState].Finished)
-                Animations[currentState].ResetAnimation();
+            if (CurrentState.Contains("IDLE") && Animations[CurrentState].Finished)
+                Animations[CurrentState].ResetAnimation();
 
-            if (currentState == "IDLE" && Owner.controlUseItem && !_leftMouseButtonLastState && !_isPunching && !isTaunting && _rushTimer <= 0)
+            if (CurrentState == "IDLE" && Owner.controlUseItem && !_leftMouseButtonLastState && !IsPunching && !IsTaunting && RushTimer <= 0)
             {
-                if (_punchCounter < 3)
+                if (PunchCounter < 3)
                 {
                     if (Main.MouseWorld.Y > Owner.Center.Y + 60)
-                        currentState = Main.rand.NextBool() ? "DOWNPUNCH_LEFTHAND" : "DOWNPUNCH_RIGHTHAND";
+                        CurrentState = Main.rand.NextBool() ? "DOWNPUNCH_LEFTHAND" : "DOWNPUNCH_RIGHTHAND";
 
                     else if (Main.MouseWorld.Y < Owner.Center.Y - 60)
-                        currentState = Main.rand.NextBool() ? "UPPUNCH_LEFTHAND" : "UPPUNCH_RIGHTHAND";
+                        CurrentState = Main.rand.NextBool() ? "UPPUNCH_LEFTHAND" : "UPPUNCH_RIGHTHAND";
 
                     else
-                        currentState = Main.rand.NextBool() ? "MIDDLEPUNCH_LEFTHAND" : "MIDDLEPUNCH_RIGHTHAND";
+                        CurrentState = Main.rand.NextBool() ? "MIDDLEPUNCH_LEFTHAND" : "MIDDLEPUNCH_RIGHTHAND";
 
                     SpawnPunch();
 
                     SetOwnerDirection();
 
-                    _punchCounter++;
+                    PunchCounter++;
 
-                    _punchCounterReset = 24;
+                    PunchCounterReset = 24;
 
-                    _isPunching = true;
+                    IsPunching = true;
                 }
 
                 else
                 {
                     if (Main.MouseWorld.Y > Owner.Center.Y + 60)
-                        currentState = "RUSH_DOWN";
+                        CurrentState = "RUSH_DOWN";
 
                     else if (Main.MouseWorld.Y < Owner.Center.Y - 60)
-                        currentState = "RUSH_UP";
+                        CurrentState = "RUSH_UP";
 
                     else
-                        currentState = "RUSH_MIDDLE";
+                        CurrentState = "RUSH_MIDDLE";
 
-                    _punchCounter = 0;
+                    PunchCounter = 0;
 
-                    _punchCounterReset = 0;
+                    PunchCounterReset = 0;
 
                     _punchRushDirection = Helpers.DirectToMouse(projectile.Center, 14f);
 
-                    _rushTimer = 120;
+                    RushTimer = 120;
 
                     SetOwnerDirection(120);
                 }
             }
             
-            if (_isPunching && Animations[currentState].Finished)
+            if (IsPunching && Animations[CurrentState].Finished)
             {
-                Animations[currentState].ResetAnimation();
-                currentState = "IDLE";
-                _isPunching = false;
+                Animations[CurrentState].ResetAnimation();
+                CurrentState = "IDLE";
+                IsPunching = false;
             }
 
-            if (currentState == "DESPAWN")
+            if (CurrentState == "DESPAWN")
             {
                 Opacity = (5 - CurrentAnimation.FrameRect.Y / (int)CurrentAnimation.FrameSize.Y) * 0.2f;
-                if(Animations[currentState].Finished)
+                if(Animations[CurrentState].Finished)
                     projectile.Kill();
             }
 
-            isFlipped = Owner.direction == 1;
+            IsFlipped = Owner.direction == 1;
 
             _leftMouseButtonLastState = Owner.controlUseItem;
         }
 
-        public override void SetChildDefaults()
-        {
-        }
 
         private void SpawnPunch()
         {
@@ -213,7 +212,14 @@ namespace TerrarianBizzareAdventure.Projectiles.Stands.Melee
             TBAPlayer.Get(Owner).AttackDirection = Main.MouseWorld.X < projectile.Center.X ? -1 : 1;
         }
 
-        public SpriteAnimation CurrentAnimation => Animations[currentState];
 
+        public SpriteAnimation CurrentAnimation => Animations[CurrentState];
+
+        public bool IsPunching { get; private set; }
+        public bool InPose { get; private set; }
+
+        public int PunchCounter { get; private set; }
+        public int PunchCounterReset { get; private set; }
+        public int RushTimer { get; private set; }
     }
 }
