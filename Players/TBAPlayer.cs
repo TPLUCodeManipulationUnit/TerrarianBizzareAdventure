@@ -2,6 +2,7 @@
 using Terraria;
 using Terraria.GameInput;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 using TerrarianBizzareAdventure.Projectiles.Stands;
 using TerrarianBizzareAdventure.Projectiles.Stands.Melee;
 
@@ -21,6 +22,20 @@ namespace TerrarianBizzareAdventure.Players
                 AttackDirectionResetTimer--;
             else
                 AttackDirection = 0;
+        }
+
+        public override TagCompound Save()
+        {
+            TagCompound tag = new TagCompound();
+
+            tag.Add("MyStand", MyStand);
+
+            return tag;
+        }
+
+        public override void Load(TagCompound tag)
+        {
+            MyStand = tag.GetInt("MyStand");
         }
 
         public override void ProcessTriggers(TriggersSet triggersSet)
