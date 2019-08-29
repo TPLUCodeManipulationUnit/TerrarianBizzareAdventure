@@ -1,18 +1,21 @@
 ﻿using Microsoft.Xna.Framework;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace TerrarianBizzareAdventure.Items
 {
     public abstract class TBAItem : ModItem
     {
-        protected TBAItem(string name, string toolTip, Vector2 size, int value = 0, int rare = 3)
+        protected TBAItem(string name, string toolTip, Vector2 size, int value = 0, int rare = ItemRarityID.White)
         {
             ItemName = name;
             ItemTooltip = toolTip;
             Size = size;
+
             Value = value;
             Rarity = rare;
         }
+
 
         public override void SetStaticDefaults()
         {
@@ -28,6 +31,7 @@ namespace TerrarianBizzareAdventure.Items
             item.value = Value;
             item.rare = Rarity;
         }
+
 
         private int Rarity { get; }
 

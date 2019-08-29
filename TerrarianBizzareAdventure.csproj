@@ -8,9 +8,11 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Projectiles\Stands\Melee\**" />
-    <EmbeddedResource Remove="Projectiles\Stands\Melee\**" />
-    <None Remove="Projectiles\Stands\Melee\**" />
+    <None Remove="LICENSE" />
+    <None Remove="TerrarianBizzareAdventure.sln.DotSettings" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Textures\Stands\StarPlatinum\" />
   </ItemGroup>
   <Target Name="BuildMod" AfterTargets="Build">
     <Exec Command="&quot;$(tMLBuildServerPath)&quot; -build $(ProjectDir) -eac $(TargetPath) -define $(DefineConstants) -unsafe $(AllowUnsafeBlocks)" />

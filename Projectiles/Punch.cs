@@ -1,8 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using Terraria;
+﻿using Terraria;
 using Terraria.ModLoader;
 
-namespace TerrarianBizzareAdventure.Projectiles.Stands
+namespace TerrarianBizzareAdventure.Projectiles
 {
     public class Punch : ModProjectile
     {
@@ -12,9 +11,11 @@ namespace TerrarianBizzareAdventure.Projectiles.Stands
         {
             projectile.width = 32;
             projectile.height = 32;
+
             projectile.friendly = true;
             projectile.penetrate = -1;
             projectile.timeLeft = 4;
+
             projectile.tileCollide = false;
             projectile.aiStyle = -1;
         }

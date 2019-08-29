@@ -2,14 +2,15 @@
 using Terraria;
 using Terraria.GameInput;
 using Terraria.ModLoader;
-using Terraria.ModLoader.IO;
-using TerrarianBizzareAdventure.Projectiles.Stands;
 using TerrarianBizzareAdventure.Stands;
 
 namespace TerrarianBizzareAdventure.Players
 {
-    public class TBAPlayer : ModPlayer
+    public sealed partial class TBAPlayer : ModPlayer
     {
+        public const int ACTIVE_STAND_PROJECTILE_INACTIVE_ID = -999;
+
+
         public static TBAPlayer Get(Player player) => player.GetModPlayer<TBAPlayer>();
 
 
@@ -22,27 +23,18 @@ namespace TerrarianBizzareAdventure.Players
         }
 
 
-        public override TagCompound Save()
-        {
-            TagCompound tag = new TagCompound();
-
-            if (StandUser)
-                tag.Add(nameof(Stand), Stand.UnlocalizedName);
-
-            return tag;
-        }
-
-        public override void Load(TagCompound tag)
-        {
-            if (tag.ContainsKey(nameof(Stand)))
-                Stand = StandManager.Instance[tag.GetString(nameof(Stand))];
-        }
-
-
         public override void ProcessTriggers(TriggersSet triggersSet)
         {
-            if (TBAInputs.SummonStand.JustPressed && StandUser)
-                Projectile.NewProjectile(player.Center, Vector2.Zero, mod.ProjectileType(Stand.GetType().Name), 0, 0, player.whoAmI);
+            if (!StandUser) return;
+
+            if (TBAInputs.SummonStand.JustPressed)
+            {
+                if (ActiveStandProjectileId == -999) // Minimal value for a DAT in SHENZEN.IO :haha:
+                    ActiveStandProjectileId = Projectile.NewProjectile(player.Center, Vector2.Zero, mod.ProjectileType(Stand.GetType().Name), 0, 0, player.whoAmI);
+            }
+
+            if (ActiveStandProjectileId == ACTIVE_STAND_PROJECTILE_INACTIVE_ID)
+                return;
         }
 
         public override void SetControls()
@@ -59,6 +51,7 @@ namespace TerrarianBizzareAdventure.Players
 
 
         public Stand Stand { get; set; }
+        public int ActiveStandProjectileId { get; set; }
 
 
         public bool StandUser => Stand != null;

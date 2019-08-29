@@ -9,7 +9,7 @@ namespace TerrarianBizzareAdventure.Items.Tools
 {
     public class StandArrow : TBAItem
     {
-        public StandArrow() : base("Bizzare Arrow", "Arrow forged from Meteorite.\nYou feel dizzy from just holding it.\nSelf harm is not recommended", new Vector2(40, 40), Item.buyPrice(10, 0, 0, 0), ItemRarityID.Expert)
+        public StandArrow() : base("Bizzare Arrow", "Arrow forged from Meteorite.\nYou feel dizzy from just holding it.\nSelf harm is not recommended", new Vector2(40, 40), 0, ItemRarityID.Expert)
         {
         }
 
@@ -37,7 +37,7 @@ namespace TerrarianBizzareAdventure.Items.Tools
         {
             ModRecipe recipe = new ModRecipe(mod);
 
-            recipe.AddIngredient(ItemID.MeteoriteBar, 10);
+            recipe.AddIngredient(ItemID.MeteoriteBar, 100);
             recipe.AddIngredient(ItemID.WoodenArrow);
 
             recipe.AddTile(TileID.Anvils);
