@@ -1,8 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.GameInput;
+using Terraria.ID;
 using Terraria.ModLoader;
+using TerrarianBizzareAdventure.Network;
 using TerrarianBizzareAdventure.Stands;
+using TerrarianBizzareAdventure.TimeStop;
 
 namespace TerrarianBizzareAdventure.Players
 {
@@ -14,12 +17,38 @@ namespace TerrarianBizzareAdventure.Players
         public static TBAPlayer Get(Player player) => player.GetModPlayer<TBAPlayer>();
 
 
+        public override void PreUpdate()
+        {
+            if (IsStopped())
+            {
+                if (!TimeStopManagement.playerStates.ContainsKey(player))
+                    TimeStopManagement.RegisterStoppedPlayer(player);
+
+                player.velocity = Vector2.Zero;
+
+                if (PreTimeStopPosition == Vector2.Zero)
+                    PreTimeStopPosition = player.position;
+
+                player.position = PreTimeStopPosition;
+            }
+            else
+                PreTimeStopPosition = player.position;
+        }
+
         public override void PostUpdate()
         {
             if (AttackDirectionResetTimer > 0)
                 AttackDirectionResetTimer--;
             else
                 AttackDirection = 0;
+        }
+
+        public override void OnEnterWorld(Player player)
+        {
+            TimeStopManagement.OnPlayerEnterWorld(player);
+
+            if (Main.netMode == NetmodeID.MultiplayerClient && player.whoAmI == Main.myPlayer)
+                NetworkPacketManager.Instance.PlayerJoiningSynchronization.SendPacketToAllClients(player.whoAmI, player.whoAmI, Stand == null ? "" : Stand.UnlocalizedName, false);
         }
 
 
@@ -50,6 +79,10 @@ namespace TerrarianBizzareAdventure.Players
         }
 
 
+        public bool IsStopped() => !IsImmuneToTimeStop() && TimeStopManagement.TimeStopped && TimeStopManagement.TimeStopper != this;
+        public bool IsImmuneToTimeStop() => StandUser && Stand.IsImmuneToTimeStop(this);
+
+
         public Stand Stand { get; set; }
         public int ActiveStandProjectileId { get; set; }
 
@@ -60,5 +93,7 @@ namespace TerrarianBizzareAdventure.Players
         public int AttackDirection { get; set; }
 
         public int AttackDirectionResetTimer { get; set; }
+
+        public Vector2 PreTimeStopPosition { get; private set; }
     }
 }

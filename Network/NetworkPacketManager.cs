@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using TerrarianBizzareAdventure.Players;
+using TerrarianBizzareAdventure.TimeStop;
 
 namespace TerrarianBizzareAdventure.Network
 {
@@ -14,9 +16,16 @@ namespace TerrarianBizzareAdventure.Network
 
         internal void DefaultInitialize()
         {
+            PlayerJoiningSynchronization = Add(new PlayerJoiningSynchronizationPacket()) as PlayerJoiningSynchronizationPacket;
+            TimeStateChanged = Add(new TimeStateChangedPacket()) as TimeStateChangedPacket;
 
             Initialized = true;
         }
+
+
+        public PlayerJoiningSynchronizationPacket PlayerJoiningSynchronization { get; private set; }
+
+        public TimeStateChangedPacket TimeStateChanged { get; private set; }
 
 
         public NetworkPacket Add(NetworkPacket networkPacket)

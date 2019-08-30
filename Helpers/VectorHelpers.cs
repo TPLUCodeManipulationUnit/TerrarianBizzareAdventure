@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
 
-namespace TerrarianBizzareAdventure
+namespace TerrarianBizzareAdventure.Helpers
 {
-    public static class Helpers
+    public static class VectorHelpers
     {
         public static Vector2 DirectToMouse(Vector2 start, float speed = 1.0f) => (Main.MouseWorld - start).SafeNormalize(-Vector2.UnitY) * speed;
 

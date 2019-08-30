@@ -6,10 +6,11 @@ using Terraria;
 using Terraria.ModLoader;
 using TerrarianBizzareAdventure.Managers;
 using TerrarianBizzareAdventure.Players;
+using TerrarianBizzareAdventure.TimeStop;
 
 namespace TerrarianBizzareAdventure.Stands
 {
-    public abstract class Stand : ModProjectile, IHasUnlocalizedName
+    public abstract class Stand : ModProjectile, IHasUnlocalizedName, IProjectileHasImmunityToTimeStop
     {
         protected Stand(string unlocalizedName, string name)
         {
@@ -35,11 +36,18 @@ namespace TerrarianBizzareAdventure.Stands
         }
 
 
+        public virtual bool IsImmuneToTimeStop(TBAPlayer tbaPlayer) => TimeStopManagement.TimeStopper == tbaPlayer;
+        public virtual bool IsImmuneToTimeStop(Projectile projectile) => IsImmuneToTimeStop(TBAPlayer.Get(Main.player[projectile.owner]));
+
+
         public abstract void AddAnimations();
 
 
         public override bool PreAI()
         {
+            if (Main.dedServ)
+                return false;
+
             if (!HasSetAnimations)
             {
                 AddAnimations();

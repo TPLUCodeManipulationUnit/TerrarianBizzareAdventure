@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\references\tModLoader.targets" />
   <PropertyGroup>
@@ -8,7 +8,24 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Items\Tools\StandArrow.png" />
     <None Remove="LICENSE" />
+    <None Remove="Stands\StarPlatinum\SPDespawn.png" />
+    <None Remove="Stands\StarPlatinum\SPIdle.png" />
+    <None Remove="Stands\StarPlatinum\SPPose_Idle.png" />
+    <None Remove="Stands\StarPlatinum\SPPose_Transition.png" />
+    <None Remove="Stands\StarPlatinum\SPPunch_Down_LeftHand.png" />
+    <None Remove="Stands\StarPlatinum\SPPunch_Down_RightHand.png" />
+    <None Remove="Stands\StarPlatinum\SPPunch_Middle_LeftHand.png" />
+    <None Remove="Stands\StarPlatinum\SPPunch_Middle_RightHand.png" />
+    <None Remove="Stands\StarPlatinum\SPPunch_Up_LeftHand.png" />
+    <None Remove="Stands\StarPlatinum\SPPunch_Up_RightHand.png" />
+    <None Remove="Stands\StarPlatinum\SPRush_Down.png" />
+    <None Remove="Stands\StarPlatinum\SPRush_Middle.png" />
+    <None Remove="Stands\StarPlatinum\SPRush_Up.png" />
+    <None Remove="Stands\StarPlatinum\SPSummon.png" />
+    <None Remove="Stands\StarPlatinum\StarFist.png" />
+    <None Remove="Stands\StarPlatinum\StarFistBack.png" />
     <None Remove="TerrarianBizzareAdventure.sln.DotSettings" />
   </ItemGroup>
   <ItemGroup>

@@ -1,5 +1,9 @@
+using System.IO;
 using Terraria.ModLoader;
+using TerrarianBizzareAdventure.Helpers;
+using TerrarianBizzareAdventure.Network;
 using TerrarianBizzareAdventure.Stands;
+using TerrarianBizzareAdventure.TimeStop;
 
 namespace TerrarianBizzareAdventure
 {
@@ -12,15 +16,26 @@ namespace TerrarianBizzareAdventure
 
         public override void Load()
         {
+            SteamHelper.Initialize();
+
             TBAInputs.Load(this);
+            TimeStopManagement.Load(this);
         }
 
         public override void Unload()
         {
             Instance = null;
-            TBAInputs.Unload();
 
-            StandManager.Instance.Clear();
+            TBAInputs.Unload();
+            TimeStopManagement.Unload();
+
+            StandManager.Instance.Unload();
+        }
+
+
+        public override void HandlePacket(BinaryReader reader, int whoAmI)
+        {
+            NetworkPacketManager.Instance.HandlePacket(reader, whoAmI);
         }
 
 

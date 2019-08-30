@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
+using TerrarianBizzareAdventure.Helpers;
 using TerrarianBizzareAdventure.Players;
 using TerrarianBizzareAdventure.Projectiles;
+using TerrarianBizzareAdventure.TimeStop;
 
 namespace TerrarianBizzareAdventure.Stands.StarPlatinum
 {
@@ -94,6 +96,8 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                 if (TBAInputs.SummonStand.JustPressed && CurrentState == "IDLE")
                     CurrentState = "DESPAWN";
 
+                if (TBAInputs.ContextAction.JustPressed && CurrentState == "IDLE")
+                    TimeStopManagement.ToggleTimeStopIfStopper(TBAPlayer.Get(Owner));
             }
 
             projectile.Center = Owner.Center + new Vector2(34 * Owner.direction, -20 + Owner.gfxOffY);
@@ -172,7 +176,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
 
                     PunchCounterReset = 0;
 
-                    _punchRushDirection = Helpers.DirectToMouse(projectile.Center, 14f);
+                    _punchRushDirection = VectorHelpers.DirectToMouse(projectile.Center, 14f);
 
                     RushTimer = 120;
 
@@ -206,7 +210,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
 
         private void SpawnPunch()
         {
-            Projectile.NewProjectile(projectile.Center, Helpers.DirectToMouse(projectile.Center, 22f), mod.ProjectileType<Punch>(), 120, 3.5f, Owner.whoAmI, projectile.whoAmI);
+            Projectile.NewProjectile(projectile.Center, VectorHelpers.DirectToMouse(projectile.Center, 22f), mod.ProjectileType<Punch>(), 120, 3.5f, Owner.whoAmI, projectile.whoAmI);
         }
 
         private void SetOwnerDirection(int time = 5)
