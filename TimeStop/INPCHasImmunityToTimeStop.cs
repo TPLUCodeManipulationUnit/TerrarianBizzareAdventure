@@ -2,7 +2,7 @@
 
 namespace TerrarianBizzareAdventure.TimeStop
 {
-    public interface IIsNPCImmuneToTimeStop
+    public interface INPCHasImmunityToTimeStop
     {
         bool IsImmuneToTimeStop(NPC npc);
     }

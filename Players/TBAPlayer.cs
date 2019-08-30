@@ -24,15 +24,8 @@ namespace TerrarianBizzareAdventure.Players
                 if (!TimeStopManagement.playerStates.ContainsKey(player))
                     TimeStopManagement.RegisterStoppedPlayer(player);
 
-                player.velocity = Vector2.Zero;
-
-                if (PreTimeStopPosition == Vector2.Zero)
-                    PreTimeStopPosition = player.position;
-
-                player.position = PreTimeStopPosition;
+                TimeStopManagement.playerStates[player].PreAI(player);
             }
-            else
-                PreTimeStopPosition = player.position;
         }
 
         public override void PostUpdate()

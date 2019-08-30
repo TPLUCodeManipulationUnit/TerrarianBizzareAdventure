@@ -1,41 +1,62 @@
-﻿using Terraria;
+﻿using Microsoft.Xna.Framework;
+using Terraria;
 
 namespace TerrarianBizzareAdventure.TimeStop
 {
-    public class NPCInstantState : EntityState
+    public class NPCInstantState : EntityState<NPC>
     {
-        public static NPCInstantState FromNPC(int npcId, NPC npc) =>
-            new NPCInstantState()
-            {
-                EntityId = npcId,
-                NPC = npc,
+        public NPCInstantState(NPC npc) : base(npc)
+        {
+            Damage = npc.damage;
+            Life = npc.life;
 
-                Position = npc.position,
-                Velocity = npc.velocity,
-
-                Damage = npc.damage,
-
-                AI = npc.ai,
-
-                FrameCounter = npc.frameCounter,
-            };
+            AI = npc.ai;
+            NoGravity = npc.noGravity;
+            FrameCounter = npc.frameCounter;
+        }
 
 
         public override void Restore()
         {
-            NPC.velocity = Velocity;
-            NPC.damage = Damage;
+            base.Restore();
 
-            NPC.ai = AI;
+            Entity.damage = Damage;
+            Entity.life = Life;
+            
+            if (AccumulatedDamage > 0)
+            {
+                float oldKBR = Entity.knockBackResist;
 
-            NPC.frameCounter = FrameCounter;
+                Entity.knockBackResist = 1;
+                Entity.StrikeNPC(AccumulatedDamage, AccumulatedKnockback, AccumulatedHitDirection);
+
+                Entity.knockBackResist = oldKBR;
+            }
+
+            Entity.ai = AI;
+            Entity.noGravity = NoGravity;
+            Entity.frameCounter = FrameCounter;
+        }
+
+        public override void PreAI(NPC entity)
+        {
+            base.PreAI(entity);
+
+            entity.damage = 0;
+            entity.life = Life;
+            
+
+            entity.frameCounter = FrameCounter;
+            entity.noGravity = true;
+            entity.ai = AI;
         }
 
 
-        public NPC NPC { get; set; }
-
-        public double FrameCounter { get; set; }
+        public int Damage { get; set; }
+        public int Life { get; set; }
 
         public float[] AI { get; set; }
+        public bool NoGravity { get; set; }
+        public double FrameCounter { get; set; }
     }
 }

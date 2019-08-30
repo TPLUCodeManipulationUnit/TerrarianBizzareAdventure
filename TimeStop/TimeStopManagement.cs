@@ -13,19 +13,51 @@ namespace TerrarianBizzareAdventure.TimeStop
 {
     public sealed class TimeStopManagement
     {
-        private static List<int> _npcs;
+        private static List<int> _npcs = new List<int>();
+        private static List<int> _items = new List<int>();
 
-        internal static Dictionary<NPC, NPCInstantState> npcStates = new Dictionary<NPC, NPCInstantState>();
-        internal static Dictionary<Projectile, ProjectileInstantState> projectileStates = new Dictionary<Projectile, ProjectileInstantState>();
-        internal static Dictionary<Player, PlayerInstantState> playerStates = new Dictionary<Player, PlayerInstantState>();
+        internal static Dictionary<NPC, NPCInstantState> npcStates;
+        internal static Dictionary<Projectile, ProjectileInstantState> projectileStates;
+        internal static Dictionary<Player, PlayerInstantState> playerStates;
+        internal static Dictionary<Item, ItemInstantState> itemStates;
 
+        #region Immunity Registration
 
         public static void AddNPCImmunity<T>() where T : ModNPC => _npcs.Add(typeof(T).GetModFromType().NPCType<T>());
         public static void AddNPCImmunity(int type) => _npcs.Add(type);
 
+        public static bool IsNPCImmune(NPC npc)
+        {
+            ModNPC modNPC = npc.modNPC;
 
-        public static bool IsNPCImmune<T>() where T : ModNPC => typeof(T).IsSubclassOf(typeof(IIsNPCImmuneToTimeStop));
-        public static bool IsNPCImmune(int type) => _npcs.Contains(type);
+            if (modNPC == null || modNPC.mod.Name == "CalamityMod")
+                return false;
+
+            if (_npcs.Contains(npc.type))
+                return true;
+
+            if (modNPC is INPCHasImmunityToTimeStop nhitts && nhitts.IsImmuneToTimeStop(npc))
+                return true;
+
+            return false;
+        }
+
+
+        public static void AddItemImmunity<T>() where T : ModItem => AddItemImmunity(typeof(T).GetModFromType().ItemType<T>());
+        public static void AddItemImmunity(int itemType) => _items.Add(itemType);
+
+        public static bool IsImmune(Item item)
+        {
+            if (_items.Contains(item.type))
+                return true;
+
+            if (item.modItem is IItemHasImmunityToTimeStop ihitts && ihitts.IsImmuneToTimeStop(item))
+                return true;
+
+            return false;
+        }
+
+        #endregion
 
 
         public static void ToggleTimeStopIfStopper(ModPlayer modPlayer)
@@ -63,10 +95,10 @@ namespace TerrarianBizzareAdventure.TimeStop
             {
                 NPC npc = Main.npc[i];
 
-                if (!npc.active)
+                if (!npc.active || IsNPCImmune(npc))
                     continue;
 
-                RegisterStoppedNPC(i, npc);
+                RegisterStoppedNPC(npc);
             }
 
 
@@ -74,10 +106,10 @@ namespace TerrarianBizzareAdventure.TimeStop
             {
                 Projectile projectile = Main.projectile[i];
 
-                if (!projectile.active)
+                if (!projectile.active || projectile.modProjectile is IProjectileHasImmunityToTimeStop phitts && phitts.IsImmuneToTimeStop(projectile))
                     continue;
 
-                RegisterStoppedProjectile(i, projectile);
+                RegisterStoppedProjectile(projectile);
             }
 
 
@@ -85,7 +117,6 @@ namespace TerrarianBizzareAdventure.TimeStop
             {
                 Player player = Main.player[i];
                 
-
                 if (!player.active || player.name == "")
                     continue;
 
@@ -94,7 +125,18 @@ namespace TerrarianBizzareAdventure.TimeStop
                 if (tbaPlayer == modPlayer || tbaPlayer.IsImmuneToTimeStop())
                     continue;
 
-                RegisterStoppedPlayer(i, player);
+                RegisterStoppedPlayer(player);
+            }
+
+
+            for (int i = 0; i < Main.item.Length; i++)
+            {
+                Item item = Main.item[i];
+
+                if (!item.active || IsImmune(item))
+                    continue;
+
+                RegisterStoppedItem(item);
             }
 
 
@@ -136,6 +178,12 @@ namespace TerrarianBizzareAdventure.TimeStop
             playerStates.Clear(); ;
 
 
+            foreach (KeyValuePair<Item, ItemInstantState> state in itemStates)
+                state.Value.Restore();
+
+            itemStates.Clear();
+
+
             Main.blockInput = false;
 
 
@@ -161,22 +209,10 @@ namespace TerrarianBizzareAdventure.TimeStop
         }
 
 
-        public static void RegisterStoppedNPC(int npcId) => RegisterStoppedNPC(npcId, Main.npc[npcId]);
-        public static void RegisterStoppedNPC(NPC npc) => RegisterStoppedNPC(Array.IndexOf(Main.npc, npc), npc);
-
-        public static void RegisterStoppedNPC(int npcId, NPC npc) => npcStates.Add(npc, NPCInstantState.FromNPC(npcId, npc));
-
-
-        public static void RegisterStoppedProjectile(int projectileId) => RegisterStoppedProjectile(projectileId, Main.projectile[projectileId]);
-        public static void RegisterStoppedProjectile(Projectile projectile) => RegisterStoppedProjectile(Array.IndexOf(Main.projectile, projectile), projectile);
-
-        public static void RegisterStoppedProjectile(int projectileId, Projectile projectile) => projectileStates.Add(projectile, ProjectileInstantState.FromProjectile(projectileId, projectile));
-
-
-        public static void RegisterStoppedPlayer(int playerId) => RegisterStoppedPlayer(playerId, Main.player[playerId]);
-        public static void RegisterStoppedPlayer(Player player) => RegisterStoppedPlayer(Array.IndexOf(Main.player, player), player);
-
-        public static void RegisterStoppedPlayer(int playerId, Player player) => playerStates.Add(player, PlayerInstantState.FromPlayer(playerId, player));
+        public static void RegisterStoppedNPC(NPC npc) => npcStates.Add(npc, new NPCInstantState(npc));
+        public static void RegisterStoppedProjectile(Projectile projectile) => projectileStates.Add(projectile, new ProjectileInstantState(projectile));
+        public static void RegisterStoppedPlayer(Player player) => playerStates.Add(player, new PlayerInstantState(player));
+        public static void RegisterStoppedItem(Item item) => itemStates.Add(item, new ItemInstantState(item));
 
 
         internal static void OnGameTick(ModWorld modWorld)
@@ -206,11 +242,25 @@ namespace TerrarianBizzareAdventure.TimeStop
         internal static void Load(TBAMod tbaMod)
         {
             _npcs = new List<int>();
+            _items = new List<int>();
+
+            npcStates = new Dictionary<NPC, NPCInstantState>();
+            projectileStates = new Dictionary<Projectile, ProjectileInstantState>();
+            playerStates = new Dictionary<Player, PlayerInstantState>();
+            itemStates = new Dictionary<Item, ItemInstantState>();
+
+            AddItemImmunity(ItemID.GravityGlobe);
         }
 
         internal static void Unload()
         {
             _npcs = null;
+            _items = null;
+
+            npcStates = null;
+            projectileStates = null;
+            playerStates = null;
+            itemStates = null;
         }
 
 

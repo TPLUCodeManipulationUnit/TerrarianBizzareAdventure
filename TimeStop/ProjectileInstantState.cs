@@ -2,41 +2,50 @@
 
 namespace TerrarianBizzareAdventure.TimeStop
 {
-    public class ProjectileInstantState : EntityState
+    public class ProjectileInstantState : EntityState<Projectile>
     {
-        public static ProjectileInstantState FromProjectile(int projectileId, Projectile projectile) =>
-            new ProjectileInstantState()
-            {
-                EntityId = projectileId,
-                Projectile = projectile,
+        public ProjectileInstantState(Projectile projectile) : base(projectile)
+        {
+            Damage = projectile.damage;
 
-                Position = projectile.position,
-                Velocity = projectile.velocity,
+            TimeLeft = projectile.timeLeft;
 
-                Damage = projectile.damage,
+            AI = projectile.ai;
+            AIStyle = projectile.aiStyle;
 
-                AI = projectile.ai,
-                AIStyle = projectile.aiStyle,
-
-                Frame = projectile.frame,
-                FrameCounter = projectile.frameCounter
-            };
+            Frame = projectile.frame;
+            FrameCounter = projectile.frameCounter;
+        }
 
 
         public override void Restore()
         {
-            Projectile.velocity = Velocity;
-            Projectile.damage = Damage;
+            base.Restore();
 
-            Projectile.ai = AI;
-            Projectile.aiStyle = AIStyle;
+            Entity.damage = Damage;
 
-            Projectile.frame = Frame;
-            Projectile.frameCounter = FrameCounter;
+            Entity.timeLeft = TimeLeft;
+
+            Entity.ai = AI;
+            Entity.aiStyle = AIStyle;
+        }
+
+        public override void PreAI(Projectile entity)
+        {
+            base.PreAI(entity);
+
+            entity.damage = 0;
+
+            entity.frameCounter = FrameCounter;
+            entity.frame = Frame;
+
+            entity.timeLeft = TimeLeft;
         }
 
 
-        public Projectile Projectile { get; set; }
+        public int Damage { get; set; }
+
+        public int TimeLeft { get; set; }
 
         public float[] AI { get; set; }
         public int AIStyle { get; set; }

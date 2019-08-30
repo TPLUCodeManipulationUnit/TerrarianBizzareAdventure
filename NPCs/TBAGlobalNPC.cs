@@ -9,7 +9,7 @@ namespace TerrarianBizzareAdventure.NPCs
     {
         public override bool PreAI(NPC npc)
         {
-            if (TimeStopManagement.IsNPCImmune(npc.type))
+            if (TimeStopManagement.IsNPCImmune(npc))
                 return true;
 
             IsStopped = TimeStopManagement.TimeStopped;
@@ -19,34 +19,37 @@ namespace TerrarianBizzareAdventure.NPCs
                 if (!TimeStopManagement.npcStates.ContainsKey(npc))
                     TimeStopManagement.RegisterStoppedNPC(npc);
 
-                if (PreTimeStopPosition != Vector2.Zero)
-                    npc.position = PreTimeStopPosition;
-
-                NPCInstantState state = TimeStopManagement.npcStates[npc];
-
-                npc.velocity = Vector2.Zero;
-                npc.frameCounter = state.FrameCounter;
-                npc.damage = 0;
-
-                npc.ai = state.AI;
-
+                TimeStopManagement.npcStates[npc].PreAI(npc);
                 return false;
             }
-            else
-                PreTimeStopPosition = npc.position;
 
             return true;
         }
 
 
-        public override void SpawnNPC(int npc, int tileX, int tileY)
+        public override void ModifyHitByItem(NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit) =>
+            ModifyHitByPlayer(npc, player, player.direction, ref damage, ref knockback, ref crit);
+
+        public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection) =>
+            ModifyHitByPlayer(npc, projectile.owner == 255 ? null : Main.player[projectile.owner], hitDirection, ref damage, ref knockback, ref crit);
+
+        public void ModifyHitByPlayer(NPC npc, Player player, int hitDirection, ref int damage, ref float knockback, ref bool crit)
         {
+            if (IsStopped && TimeStopManagement.TimeStopped)
+            {
+                NPCInstantState state = TimeStopManagement.npcStates[npc];
 
+                state.AccumulatedDamage += damage;
+                state.AccumulatedKnockback += knockback;
+                state.AccumulatedHitDirection = hitDirection;
+
+                damage = 0;
+                knockback = 0;
+            }
         }
-
+        
 
         public bool IsStopped { get; private set; }
-        public Vector2 PreTimeStopPosition { get; set; }
 
         public override bool InstancePerEntity => true;
     }

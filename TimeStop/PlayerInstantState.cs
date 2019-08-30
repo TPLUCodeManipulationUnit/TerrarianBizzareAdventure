@@ -1,34 +1,36 @@
 ﻿using Terraria;
+using Terraria.DataStructures;
 
 namespace TerrarianBizzareAdventure.TimeStop
 {
-    public class PlayerInstantState : EntityState
+    public class PlayerInstantState : EntityState<Player>
     {
-        public static PlayerInstantState FromPlayer(int playerId, Player player) =>
-            new PlayerInstantState()
-            {
-                EntityId = playerId,
-                Player = player,
-
-                Position = player.position,
-                Velocity = player.velocity,
-
-                Damage = 0,
-
-                Life = player.statLife,
-                Mana = player.statMana,
-            };
+        public PlayerInstantState(Player player) : base(player)
+        {
+            Life = player.statLife;
+            Mana = player.statMana;
+        }
 
 
         public override void Restore()
         {
-            Player.velocity = Velocity;
+            base.Restore();
 
-            Player.statMana = Mana;
+            Entity.statLife = Life;
+            Entity.statMana = Mana;
+
+            if (AccumulatedDamage > 0)
+                Entity.Hurt(PlayerDeathReason.ByCustomReason("From an unknown force"), AccumulatedDamage, AccumulatedHitDirection, true);
         }
 
+        public override void PreAI(Player entity)
+        {
+            base.PreAI(entity);
 
-        public Player Player { get; set; }
+            entity.statLife = Life;
+            entity.statMana = Mana;
+        }
+
 
         public int Life { get; set; }
         public int Mana { get; set; }
