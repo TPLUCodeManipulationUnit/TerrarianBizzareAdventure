@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Terraria;
 using TerrarianBizzareAdventure.Managers;
+using TerrarianBizzareAdventure.Players;
 
 namespace TerrarianBizzareAdventure.Stands
 {
@@ -17,6 +18,17 @@ namespace TerrarianBizzareAdventure.Stands
                 Add(Activator.CreateInstance(type) as Stand);
 
             base.DefaultInitialize();
+        }
+
+
+        public Stand GetRandom(TBAPlayer tbaPlayer)
+        {
+            Stand stand = null;
+
+            while (stand == null || !stand.CanAcquire(tbaPlayer))
+                stand = GetRandom();
+
+            return stand;
         }
     }
 }
