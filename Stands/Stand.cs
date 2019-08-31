@@ -12,12 +12,18 @@ namespace TerrarianBizzareAdventure.Stands
 {
     public abstract class Stand : ModProjectile, IHasUnlocalizedName, IProjectileHasImmunityToTimeStop
     {
+        public const string
+            ANIMATION_SUMMON = "SUMMON",
+            ANIMATION_DESPAWN = "DESPAWN",
+            ANIMATION_IDLE = "IDLE";
+
+
         protected Stand(string unlocalizedName, string name)
         {
             UnlocalizedName = "stand." + unlocalizedName;
             StandName = name;
 
-            CurrentState = "SUMMON"; // first animation *must* be have a key of "SUMMMON"
+            CurrentState = ANIMATION_SUMMON; // first animation *must* be have a key of "SUMMMON"
 
             Animations = new Dictionary<string, SpriteAnimation>();
         }
@@ -102,12 +108,18 @@ namespace TerrarianBizzareAdventure.Stands
             spriteBatch.Draw(Animations[CurrentState].SpriteSheet, projectile.Center - Main.screenPosition, Animations[CurrentState].FrameRect, Color.White * Opacity, projectile.rotation, Animations[CurrentState].DrawOrigin, 1f, spriteEffects, 1f);
         }
 
-        public override void Kill(int timeLeft)
+
+        public void KillStand()
         {
+            projectile.Kill();
             TBAPlayer.Get(Owner).ActiveStandProjectileId = TBAPlayer.ACTIVE_STAND_PROJECTILE_INACTIVE_ID;
 
             Animations.Clear();
         }
+
+
+        public virtual bool CanAcquire(TBAPlayer tbaPlayer) => true;
+        public virtual bool CanUse(TBAPlayer tbaPlayer) => CanAcquire(tbaPlayer);
 
 
         public string UnlocalizedName { get; }
@@ -116,7 +128,7 @@ namespace TerrarianBizzareAdventure.Stands
 
 
         public Dictionary<string, SpriteAnimation> Animations { get; }
-        
+
 
         public bool IsFlipped { get; set; }
         public bool IsTaunting { get; set; }
@@ -124,6 +136,7 @@ namespace TerrarianBizzareAdventure.Stands
         public bool HasSetAnimations { get; private set; }
 
         public string CurrentState { get; set; }
+        public SpriteAnimation CurrentAnimation => Animations[CurrentState];
 
 
         // Automaticly supplies all future stands with a transparent texture so it won't ever draw

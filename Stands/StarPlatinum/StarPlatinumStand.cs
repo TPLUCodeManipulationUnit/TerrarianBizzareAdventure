@@ -15,7 +15,6 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
             LEFTHAND = "_LeftHand",
             RIGHTHAND = "_RightHand";
 
-
         private bool _leftMouseButtonLastState;
 
 
@@ -29,8 +28,8 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
 
         public override void AddAnimations()
         {
-            Animations.Add("SUMMON", new SpriteAnimation(mod.GetTexture(TEXPATH + "SPSummon"), 10, 4));
-            Animations.Add("IDLE", new SpriteAnimation(mod.GetTexture(TEXPATH + "SPIdle"), 14, 4));
+            Animations.Add(ANIMATION_SUMMON, new SpriteAnimation(mod.GetTexture(TEXPATH + "SPSummon"), 10, 4));
+            Animations.Add(ANIMATION_IDLE, new SpriteAnimation(mod.GetTexture(TEXPATH + "SPIdle"), 14, 4));
 
             Animations.Add("MIDDLEPUNCH_LEFTHAND", new SpriteAnimation(mod.GetTexture(TEXPATH + PUNCH + "Middle" + LEFTHAND), 3, 5));
             Animations.Add("MIDDLEPUNCH_RIGHTHAND", new SpriteAnimation(mod.GetTexture(TEXPATH + PUNCH + "Middle" + RIGHTHAND), 3, 5));
@@ -81,7 +80,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                 if (RushTimer > 0 && CurrentAnimation.Finished)
                 {
                     RushTimer--;
-                    CurrentState = "IDLE";
+                    CurrentState = ANIMATION_IDLE;
                 }
             }
 
@@ -91,13 +90,13 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
             if (Owner.whoAmI == Main.myPlayer)
             {
                 if (TBAInputs.StandPose.JustPressed)
-                    if (CurrentState == "IDLE")
+                    if (CurrentState == ANIMATION_IDLE)
                         IsTaunting = true;
                     else
                         IsTaunting = false;
 
-                if (TBAInputs.SummonStand.JustPressed && CurrentState == "IDLE")
-                    CurrentState = "DESPAWN";
+                if (TBAInputs.SummonStand.JustPressed && CurrentState == ANIMATION_IDLE)
+                    CurrentState = ANIMATION_DESPAWN;
 
                 if (TBAInputs.ContextAction.JustPressed && CurrentState == "POSE_IDLE")
                     TimeStopManagement.ToggleTimeStopIfStopper(TBAPlayer.Get(Owner));
@@ -125,22 +124,22 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                 {
                     CurrentAnimation.ResetAnimation();
                     InPose = false;
-                    CurrentState = "IDLE";
+                    CurrentState = ANIMATION_IDLE;
                 }
             }
 
-            if (CurrentState == "SUMMON")
+            if (CurrentState == ANIMATION_SUMMON)
             {
                 Opacity = CurrentAnimation.FrameRect.Y / CurrentAnimation.FrameRect.Height * 0.25f;
             }
 
-            if (CurrentState == "SUMMON" && CurrentAnimation.Finished)
-                CurrentState = "IDLE";
+            if (CurrentState == ANIMATION_SUMMON && CurrentAnimation.Finished)
+                CurrentState = ANIMATION_IDLE;
 
-            if (CurrentState.Contains("IDLE") && CurrentAnimation.Finished)
+            if (CurrentState.Contains(ANIMATION_IDLE) && CurrentAnimation.Finished)
                 CurrentAnimation.ResetAnimation();
 
-            if (CurrentState == "IDLE" && Owner.controlUseItem && !_leftMouseButtonLastState && !IsPunching && !IsTaunting && RushTimer <= 0)
+            if (CurrentState == ANIMATION_IDLE && Owner.controlUseItem && !_leftMouseButtonLastState && !IsPunching && !IsTaunting && RushTimer <= 0)
             {
                 if (PunchCounter < 3)
                 {
@@ -190,19 +189,16 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
             if (IsPunching && CurrentAnimation.Finished)
             {
                 CurrentAnimation.ResetAnimation();
-                CurrentState = "IDLE";
+                CurrentState = ANIMATION_IDLE;
                 IsPunching = false;
             }
 
-            if (CurrentState == "DESPAWN")
+            if (CurrentState == ANIMATION_DESPAWN)
             {
                 Opacity = (5 - CurrentAnimation.FrameRect.Y / (int)CurrentAnimation.FrameSize.Y) * 0.2f;
 
                 if (CurrentAnimation.Finished)
-                {
-                    projectile.Kill();
-                    TBAPlayer.Get(Owner).ActiveStandProjectileId = TBAPlayer.ACTIVE_STAND_PROJECTILE_INACTIVE_ID;
-                }
+                    KillStand();
             }
 
             IsFlipped = Owner.direction == 1;
@@ -222,8 +218,6 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
             TBAPlayer.Get(Owner).AttackDirection = Main.MouseWorld.X < projectile.Center.X ? -1 : 1;
         }
 
-
-        public SpriteAnimation CurrentAnimation => Animations[CurrentState];
 
         public bool IsPunching { get; private set; }
         public bool InPose { get; private set; }
