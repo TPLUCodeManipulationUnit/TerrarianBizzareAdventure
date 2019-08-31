@@ -48,6 +48,9 @@ namespace TerrarianBizzareAdventure.Stands
             if (Main.dedServ)
                 return false;
 
+            if (Owner.dead || !Owner.active)
+                projectile.Kill();
+
             if (!HasSetAnimations)
             {
                 AddAnimations();
@@ -101,6 +104,8 @@ namespace TerrarianBizzareAdventure.Stands
 
         public override void Kill(int timeLeft)
         {
+            TBAPlayer.Get(Owner).ActiveStandProjectileId = TBAPlayer.ACTIVE_STAND_PROJECTILE_INACTIVE_ID;
+
             Animations.Clear();
         }
 

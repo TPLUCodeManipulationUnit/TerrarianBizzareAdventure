@@ -34,8 +34,11 @@ namespace TerrarianBizzareAdventure.Players
                 AttackDirectionResetTimer--;
             else
                 AttackDirection = 0;
+        }
 
-            if(AttackDirection != 0)
+        public override void ResetEffects()
+        {
+            if (AttackDirection != 0)
             {
                 player.velocity.X *= 0.2f;
                 player.velocity.Y *= 0.01f;
@@ -50,7 +53,6 @@ namespace TerrarianBizzareAdventure.Players
             if (Main.netMode == NetmodeID.MultiplayerClient && player.whoAmI == Main.myPlayer)
                 NetworkPacketManager.Instance.PlayerJoiningSynchronization.SendPacketToAllClients(player.whoAmI, player.whoAmI, Stand == null ? "" : Stand.UnlocalizedName, false);
         }
-
 
         public override void ProcessTriggers(TriggersSet triggersSet)
         {
