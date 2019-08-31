@@ -24,13 +24,16 @@ namespace TerrarianBizzareAdventure.Items.Tools
 
         public override bool UseItem(Player player)
         {
-            TBAPlayer.Get(player).Stand = StandManager.Instance.GetRandom();
+            TBAPlayer tbaPlayer = TBAPlayer.Get(player);
+
+            tbaPlayer.Stand = StandManager.Instance.GetRandom(tbaPlayer);
             Main.NewText($"You got yourself a Stand{(Main.rand.Next(0, 100) > 98 ? "oda" : "")}!");
 
             return true;
         }
 
-        public override bool CanUseItem(Player player) => !TBAPlayer.Get(player).StandUser;
+        //public override bool CanUseItem(Player player) => !TBAPlayer.Get(player).StandUser;
+        public override bool CanUseItem(Player player) => true;
 
 
         public override void AddRecipes()

@@ -10,6 +10,7 @@
   <ItemGroup>
     <None Remove="Items\Tools\StandArrow.png" />
     <None Remove="LICENSE" />
+    <None Remove="Stands\Special\Developer\Webmilio\WebmilioStand.png" />
     <None Remove="Stands\StarPlatinum\SPDespawn.png" />
     <None Remove="Stands\StarPlatinum\SPIdle.png" />
     <None Remove="Stands\StarPlatinum\SPPose_Idle.png" />
@@ -29,6 +30,7 @@
     <None Remove="TerrarianBizzareAdventure.sln.DotSettings" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Stands\StickyFinger\" />
     <Folder Include="Textures\Stands\StarPlatinum\" />
   </ItemGroup>
   <Target Name="BuildMod" AfterTargets="Build">
