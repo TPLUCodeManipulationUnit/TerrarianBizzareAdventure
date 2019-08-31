@@ -34,6 +34,13 @@ namespace TerrarianBizzareAdventure.Players
                 AttackDirectionResetTimer--;
             else
                 AttackDirection = 0;
+
+            if(AttackDirection != 0)
+            {
+                player.velocity.X *= 0.2f;
+                player.velocity.Y *= 0.01f;
+                player.direction = AttackDirection;
+            }
         }
 
         public override void OnEnterWorld(Player player)
@@ -63,9 +70,6 @@ namespace TerrarianBizzareAdventure.Players
         {
             if (AttackDirection != 0)
             {
-                player.velocity.X *= 0.2f;
-                player.velocity.Y *= 0.01f;
-                player.direction = AttackDirection;
                 player.controlLeft = AttackDirection != 1;
                 player.controlRight = AttackDirection != -1;
             }

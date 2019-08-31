@@ -47,6 +47,8 @@ namespace TerrarianBizzareAdventure.Projectiles
             float x = Main.rand.NextFloat(-10, 10);
             float y = Main.rand.NextFloat(-20, 20);
 
+            projectile.netUpdate = true;
+
             projectile.ai[1] += 0.28f;
             projectile.Center = ParentProjectile.Center + projectile.velocity * projectile.ai[1] + new Vector2(x, y).RotatedBy(projectile.velocity.ToRotation());
         }

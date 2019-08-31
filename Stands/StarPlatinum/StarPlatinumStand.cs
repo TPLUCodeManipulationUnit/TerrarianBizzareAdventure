@@ -82,7 +82,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                 }
             }
 
-            projectile.timeLeft = 2;
+            projectile.timeLeft = 200;
 
             // Runs on clients only
             if (Owner.whoAmI == Main.myPlayer)
