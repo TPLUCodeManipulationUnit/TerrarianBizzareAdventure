@@ -5,38 +5,58 @@ namespace TerrarianBizzareAdventure
 {
     public sealed class SpriteAnimation
     {
-        private int
-            _frameCounter, _currentFrame;
+        private int _ticks;
 
-        public SpriteAnimation(Texture2D texture, int frameCount, int frameSpeed)
+        /// <summary>
+        /// </summary>
+        /// <param name="texture"></param>
+        /// <param name="frameCount">How many frames does the animation contain.</param>
+        /// <param name="frameSpeed">The amount of ticks to spend on each frame.</param>
+        /// <param name="autoLoop">true to make the animation loop once it reaches the end. Recommended for idle animations.</param>
+        public SpriteAnimation(Texture2D texture, int frameCount, int frameSpeed, bool autoLoop = false)
         {
             SpriteSheet = texture;
             FrameCount = frameCount;
             FrameSpeed = frameSpeed;
+
+            AutoLoop = autoLoop;
         }
+
 
         public void Update()
         {
-            if (!Finished)
+            if (Finished)
+            {
+                if (AutoLoop)
+                {
+                    Finished = false;
+
+                    if (ReversePlayback)
+                        CurrentFrame = FrameCount - 1;
+                    else
+                        CurrentFrame = 0;
+                }
+            }
+            else
             {
                 if (ReversePlayback)
                 {
-                    if (++_frameCounter >= FrameSpeed)
+                    if (++_ticks >= FrameSpeed)
                     {
-                        if (--_currentFrame <= 1)
+                        if (--CurrentFrame <= 0)
                             Finished = true;
 
-                        _frameCounter = 0;
+                        _ticks = 0;
                     }
                 }
                 else
                 {
-                    if (++_frameCounter >= FrameSpeed)
+                    if (++_ticks >= FrameSpeed)
                     {
-                        if (++_currentFrame >= FrameCount - 1)
+                        if (++CurrentFrame >= FrameCount)
                             Finished = true;
 
-                        _frameCounter = 0;
+                        _ticks = 0;
                     }
                 }
             }
@@ -44,30 +64,35 @@ namespace TerrarianBizzareAdventure
 
         public void ResetAnimation(bool reversePlayback = false)
         {
+            _ticks = 0;
+
             Finished = false;
-            _frameCounter = 0;
-            _currentFrame = reversePlayback ? FrameCount - 1 : 0;
+            CurrentFrame = reversePlayback ? FrameCount - 1 : 0;
             ReversePlayback = reversePlayback;
         }
 
         public bool ReversePlayback { get; set; }
 
-        public Rectangle FrameRect => new Rectangle(0, (int)FrameSize.Y * _currentFrame, (int)FrameSize.X, (int)FrameSize.Y);
+        public Rectangle FrameRect => new Rectangle(0, (int)FrameSize.Y * CurrentFrame, (int)FrameSize.X, (int)FrameSize.Y);
 
         public Vector2 DrawOrigin => new Vector2(FrameSize.X * 0.5f, FrameSize.Y * 0.5f); 
         // Animation's texture
         public Texture2D SpriteSheet { get; }
+        
+        public int CurrentFrame { get; private set; }
 
-        // Determines Width/Height of a single frame
+        ///<summary>Determines the dimensions of a single frame.</summary>
         public Vector2 FrameSize => new Vector2(SpriteSheet.Width, SpriteSheet.Height / FrameCount);
 
-        // Determines how fast animation will play
+        ///<summary>Determines how many ticks to spend on one frame.</summary>
         public int FrameSpeed { get; }
-
         // Determines the amount of frames animation has
         public int FrameCount { get; }
 
 
         public bool Finished { get; private set; }
+
+        /// <summary>true if the animation loops after reaching the end; otherwise false.</summary>
+        public bool AutoLoop { get; }
     }
 }
