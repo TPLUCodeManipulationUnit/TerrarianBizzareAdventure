@@ -27,15 +27,7 @@ namespace TerrarianBizzareAdventure
         {
             if (Finished)
             {
-                if (AutoLoop)
-                {
-                    Finished = false;
-
-                    if (ReversePlayback)
-                        CurrentFrame = FrameCount - 1;
-                    else
-                        CurrentFrame = 0;
-                }
+                
             }
             else
             {
@@ -44,7 +36,12 @@ namespace TerrarianBizzareAdventure
                     if (++_ticks >= FrameSpeed)
                     {
                         if (--CurrentFrame <= 0)
-                            Finished = true;
+                        {
+                            Finished = !AutoLoop;
+
+                            if (AutoLoop)
+                                ResetAnimation(ReversePlayback);
+                        }
 
                         _ticks = 0;
                     }
@@ -54,7 +51,12 @@ namespace TerrarianBizzareAdventure
                     if (++_ticks >= FrameSpeed)
                     {
                         if (++CurrentFrame >= FrameCount)
-                            Finished = true;
+                        {
+                            Finished = !AutoLoop;
+
+                            if (AutoLoop)
+                                ResetAnimation();
+                        }
 
                         _ticks = 0;
                     }

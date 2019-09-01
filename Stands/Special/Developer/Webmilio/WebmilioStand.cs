@@ -9,7 +9,11 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
 {
     public class WebmilioStand : Stand
     {
+        public const string ANIMATION_ERROR = "ERROR";
+        private const int ERROR_LOOP_COUNT = 3;
+
         private readonly string _texturePath;
+        private int _errorLoopCount = 0;
 
 
         public WebmilioStand() : base("special.developer.webmilio.RATM", "Rage Against The Machine")
@@ -20,10 +24,11 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
 
         public override void AddAnimations()
         {
-            Animations.Add(ANIMATION_SUMMON, new SpriteAnimation(mod.GetTexture(_texturePath + "Summon"), 10, 5));
-            Animations.Add(ANIMATION_DESPAWN, new SpriteAnimation(mod.GetTexture(_texturePath + "Despawn"), 12, 2));
+            Animations.Add(ANIMATION_SUMMON, new SpriteAnimation(mod.GetTexture(_texturePath + ANIMATION_SUMMON), 10, 5));
+            Animations.Add(ANIMATION_DESPAWN, new SpriteAnimation(mod.GetTexture(_texturePath + ANIMATION_DESPAWN), 12, 2));
 
-            Animations.Add(ANIMATION_IDLE, new SpriteAnimation(mod.GetTexture(_texturePath + "Idle"), 2, 60, autoLoop: true));
+            Animations.Add(ANIMATION_IDLE, new SpriteAnimation(mod.GetTexture(_texturePath + ANIMATION_IDLE), 2, 60, autoLoop: true));
+            Animations.Add(ANIMATION_ERROR, new SpriteAnimation(mod.GetTexture(_texturePath + ANIMATION_ERROR), 14, 4));
         }
 
 
@@ -40,10 +45,14 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
                 if (InstantEnvironment == null && Owner == Main.LocalPlayer)
                     InstantEnvironment = new InstantEnvironment();
 
-                Opacity = CurrentAnimation.FrameRect.Y / CurrentAnimation.FrameRect.Height * 0.25f;
+                if (!InitialSummonComplete)
+                    Opacity = CurrentAnimation.FrameRect.Y / CurrentAnimation.FrameRect.Height * 0.25f;
 
                 if (CurrentAnimation.Finished)
+                {
+                    InitialSummonComplete = true;
                     CurrentState = ANIMATION_IDLE;
+                }
             }
 
             projectile.timeLeft = 200;
@@ -54,12 +63,25 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
                     CurrentState = ANIMATION_DESPAWN;
 
                 if (TBAInputs.ContextAction.JustPressed && CurrentState == ANIMATION_IDLE)
-                    InstantEnvironment.ExecuteClass(Path.Combine(Main.SavePath, "Mods", "Cache", "RATMClass.cs"));
+                    if (!InstantEnvironment.ExecuteClass(Path.Combine(Main.SavePath, "Mods", "Cache", "RATMClass.cs")))
+                        CurrentState = ANIMATION_ERROR;
             }
 
+            if (CurrentState == ANIMATION_ERROR && _errorLoopCount < ERROR_LOOP_COUNT)
+            {
+                if (CurrentAnimation.Finished)
+                {
+                    _errorLoopCount++;
+                    CurrentAnimation.ResetAnimation();
+                }
 
-            if (CurrentState.Contains(ANIMATION_IDLE) && CurrentAnimation.Finished)
-                CurrentAnimation.ResetAnimation();
+                if (_errorLoopCount == ERROR_LOOP_COUNT)
+                {
+                    _errorLoopCount = 0;
+                    CurrentState = ANIMATION_SUMMON;
+                    CurrentAnimation.ResetAnimation();
+                }
+            }
 
             if (CurrentState == ANIMATION_DESPAWN)
             {
@@ -67,7 +89,6 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
 
                 if (CurrentAnimation.Finished)
                 {
-                    InstantEnvironment = null;
                     KillStand();
                 }
             }
@@ -79,5 +100,7 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
 
 
         public InstantEnvironment InstantEnvironment { get; private set; }
+
+        public bool InitialSummonComplete { get; private set; }
     }
 }

@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using Microsoft.CSharp;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
 using Terraria.Utilities;
@@ -62,11 +63,25 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
         }
 
 
-        public void ExecuteClass(string pathToClass)
+        public bool ExecuteClass(string pathToClass)
         {
             CompilerResults result = Provider.CompileAssemblyFromFile(_compilerParameters, pathToClass);
 
-            (Activator.CreateInstance(result.CompiledAssembly.DefinedTypes.First()) as InstantlyRunnable).Run(TBAPlayer.Get(Main.LocalPlayer));
+            if (result.Errors.Count > 0)
+                return false;
+
+            TBAPlayer tbaPlayer = TBAPlayer.Get(Main.LocalPlayer);
+
+            try
+            {
+                (Activator.CreateInstance(result.CompiledAssembly.DefinedTypes.First(t => t.IsSubclassOf(typeof(InstantlyRunnable)))) as InstantlyRunnable).Run(tbaPlayer);
+                return true;
+            }
+            catch
+            {
+                return false;
+                //tbaPlayer.player.KillMe(PlayerDeathReason.ByCustomReason(tbaPlayer.player.name + "'s Stand encountered an error."), 0, 0);
+            }
         }
 
         // Code below taken from tModLoader.
