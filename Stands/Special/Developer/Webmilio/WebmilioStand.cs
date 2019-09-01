@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.IO;
+using Microsoft.Xna.Framework;
 using Terraria;
 using TerrarianBizzareAdventure.Extensions;
 using TerrarianBizzareAdventure.Helpers;
@@ -36,6 +37,9 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
 
             if (CurrentState == ANIMATION_SUMMON)
             {
+                if (InstantEnvironment == null && Owner == Main.LocalPlayer)
+                    InstantEnvironment = new InstantEnvironment();
+
                 Opacity = CurrentAnimation.FrameRect.Y / CurrentAnimation.FrameRect.Height * 0.25f;
 
                 if (CurrentAnimation.Finished)
@@ -50,7 +54,7 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
                     CurrentState = ANIMATION_DESPAWN;
 
                 if (TBAInputs.ContextAction.JustPressed && CurrentState == ANIMATION_IDLE)
-                    ;
+                    InstantEnvironment.ExecuteClass(Path.Combine(Main.SavePath, "Mods", "Cache", "RATMClass.cs"));
             }
 
 
@@ -62,12 +66,18 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
                 Opacity = (12 - CurrentAnimation.FrameRect.Y / (int)CurrentAnimation.FrameSize.Y) * 0.2f;
 
                 if (CurrentAnimation.Finished)
+                {
+                    InstantEnvironment = null;
                     KillStand();
+                }
             }
         }
 
 
         public override bool CanAcquire(TBAPlayer tbaPlayer) =>
             tbaPlayer.player != Main.LocalPlayer || SteamHelper.Webmilio.SteamId64 == SteamHelper.SteamId64;
+
+
+        public InstantEnvironment InstantEnvironment { get; private set; }
     }
 }
