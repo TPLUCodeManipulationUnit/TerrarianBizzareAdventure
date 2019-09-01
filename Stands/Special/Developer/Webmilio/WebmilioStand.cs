@@ -28,7 +28,7 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
             Animations.Add(ANIMATION_DESPAWN, new SpriteAnimation(mod.GetTexture(_texturePath + ANIMATION_DESPAWN), 12, 2));
 
             Animations.Add(ANIMATION_IDLE, new SpriteAnimation(mod.GetTexture(_texturePath + ANIMATION_IDLE), 2, 60, autoLoop: true));
-            Animations.Add(ANIMATION_ERROR, new SpriteAnimation(mod.GetTexture(_texturePath + ANIMATION_ERROR), 14, 4));
+            Animations.Add(ANIMATION_ERROR, new SpriteAnimation(mod.GetTexture(_texturePath + ANIMATION_ERROR), 22, 4));
         }
 
 
@@ -65,6 +65,18 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
                 if (TBAInputs.ContextAction.JustPressed && CurrentState == ANIMATION_IDLE)
                     if (!InstantEnvironment.ExecuteClass(Path.Combine(Main.SavePath, "Mods", "Cache", "RATMClass.cs")))
                         CurrentState = ANIMATION_ERROR;
+
+                if (TBAInputs.StandPose.JustPressed && CurrentState == ANIMATION_IDLE)
+                {
+                    InstantEnvironment?.LastRan?.Stop();
+                    InstantEnvironment = new InstantEnvironment();
+                }
+
+                if (TBAInputs.ExtraAction01.JustPressed && CurrentState == ANIMATION_IDLE)
+                    InstantEnvironment?.LastRan?.Stop();
+
+                if (TBAInputs.ExtraAction02.JustPressed && CurrentState == ANIMATION_IDLE)
+                    InstantEnvironment?.LastRan?.Run(TBAPlayer.Get(Owner));
             }
 
             if (CurrentState == ANIMATION_ERROR && _errorLoopCount < ERROR_LOOP_COUNT)
@@ -75,7 +87,7 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
                     CurrentAnimation.ResetAnimation();
                 }
 
-                if (_errorLoopCount == ERROR_LOOP_COUNT)
+                if (_errorLoopCount == 1)
                 {
                     _errorLoopCount = 0;
                     CurrentState = ANIMATION_SUMMON;

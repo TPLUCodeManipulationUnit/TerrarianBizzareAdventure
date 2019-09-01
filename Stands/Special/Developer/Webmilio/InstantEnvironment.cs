@@ -17,8 +17,6 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
     public sealed class InstantEnvironment
     {
         private static PropertyInfo _getModTModFile;
-
-        private readonly string[] modReferences;
         private readonly CompilerParameters _compilerParameters;
 
 
@@ -74,7 +72,9 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
 
             try
             {
-                (Activator.CreateInstance(result.CompiledAssembly.DefinedTypes.First(t => t.IsSubclassOf(typeof(InstantlyRunnable)))) as InstantlyRunnable).Run(tbaPlayer);
+                LastRan?.Stop();
+
+                LastRan = (Activator.CreateInstance(result.CompiledAssembly.DefinedTypes.First(t => t.IsSubclassOf(typeof(InstantlyRunnable)))) as InstantlyRunnable);
                 return true;
             }
             catch
@@ -104,5 +104,7 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
 
 
         public CodeDomProvider Provider { get; }
+
+        public InstantlyRunnable LastRan { get; private set; }
     }
 }

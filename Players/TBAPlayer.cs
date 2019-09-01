@@ -34,6 +34,8 @@ namespace TerrarianBizzareAdventure.Players
                 AttackDirectionResetTimer--;
             else
                 AttackDirection = 0;
+
+            OnPostUpdate?.Invoke(this);
         }
 
         public override void ResetEffects()
