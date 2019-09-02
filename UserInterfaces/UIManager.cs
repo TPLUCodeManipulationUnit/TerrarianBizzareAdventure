@@ -19,7 +19,8 @@ namespace TerrarianBizzareAdventure.UserInterfaces
 
         public static void Update(GameTime gameTime)
         {
-            RATMUserInterface?.Update(gameTime);
+            if (RATMState.Visible)
+                RATMUserInterface?.Update(gameTime);
         }
 
         public static RATMState RATMState { get; private set; }

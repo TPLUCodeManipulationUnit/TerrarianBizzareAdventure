@@ -70,6 +70,14 @@ namespace TerrarianBizzareAdventure.Players
                 return;
         }
 
+        public override void PlayerDisconnect(Player player)
+        {
+            if (player != Main.LocalPlayer)
+                return;
+
+            NetworkPacketManager.Instance.CompileAssembly.playerInstantEnvironments.Remove(player.whoAmI);
+        }
+
         public override void SetControls()
         {
             if (AttackDirection != 0)

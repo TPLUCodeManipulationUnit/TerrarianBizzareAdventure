@@ -1,9 +1,12 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader.UI.Elements;
 using Terraria.UI;
+using TerrarianBizzareAdventure.Players;
+using TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio;
 using TerrarianBizzareAdventure.UserInterfaces.Elements;
 
 namespace TerrarianBizzareAdventure.UserInterfaces.Special.RATM
@@ -18,6 +21,10 @@ namespace TerrarianBizzareAdventure.UserInterfaces.Special.RATM
         private const float
             PANEL_WIDTH = 600,
             PANEL_HEIGHT = 400;
+
+        private const int SAVE_SLOT_COUNT = 50;
+
+        private Dictionary<PanelButton, InstantlyRunnable> _buttonsToRunnables = new Dictionary<PanelButton, InstantlyRunnable>();
 
         public override void OnInitialize()
         {
@@ -75,10 +82,12 @@ namespace TerrarianBizzareAdventure.UserInterfaces.Special.RATM
             ButtonGrid.Left.Set(5, 0);
             ButtonGrid.Top.Set(5, 0);
 
-            for (int i = 0; i < 50; i++)
+            for (int i = 0; i < SAVE_SLOT_COUNT; i++)
             {
-                PanelButton button = new PanelButton("SNED NUDES " + i, 240);
+                PanelButton button = new PanelButton("PLEASE COMPILE", 240);
                 button.Left.Set(10, 0);
+
+                button.OnClick += InstantlyRunnableButtonClick;
 
                 ButtonGrid.Add(button);
             }
@@ -105,19 +114,85 @@ namespace TerrarianBizzareAdventure.UserInterfaces.Special.RATM
                 MainPanel.Append(check);
 
             foreach (UIText text in CheckBoxTexts)
-                MainPanel.Append(text); 
+                MainPanel.Append(text);
 
             base.Append(MainPanel);
+        }
+
+        private void InstantlyRunnableButtonClick(UIMouseEvent evt, UIElement listeningelement)
+        {
+            PanelButton panelButton = evt.Target as PanelButton;
+
+            if (panelButton == null)
+                panelButton = evt.Target.Parent as PanelButton;
+
+            if (!_buttonsToRunnables.ContainsKey(panelButton))
+            {
+                Main.NewText("No save data in selected slot!");
+                return;
+            }
+
+            SelectedRunnable = _buttonsToRunnables[panelButton];
+            LastInstantEnvironment.Select(SelectedRunnable);
+            Main.NewText($"Selected save slot {ButtonGrid._items.IndexOf(panelButton) + 1} : {SelectedRunnable.GetType().Name}");
+        }
+
+
+        internal void GenerateButtons(InstantEnvironment instantEnvironment, List<InstantlyRunnable> instantlyRunnables)
+        {
+            /*_buttonsToRunnables.Clear();
+
+            PanelButton GenerateButton(InstantlyRunnable instantlyRunnable)
+            {
+                PanelButton button = new PanelButton(instantlyRunnable.GetType().Name, 240);
+                button.Left.Set(10, 0);
+
+                button.OnClick += SelectInstantlyRunnable;
+
+                return button;
+            }
+
+            foreach (InstantlyRunnable instantlyRunnable in instantlyRunnables)
+            {
+                PanelButton button = GenerateButton(instantlyRunnable);
+
+                _buttonsToRunnables.Add(button, instantlyRunnable);
+                ButtonGrid.Add(button);
+            }*/
+
+            _buttonsToRunnables.Clear();
+            int saveSlotAffectedCount = instantlyRunnables.Count > SAVE_SLOT_COUNT ? SAVE_SLOT_COUNT : instantlyRunnables.Count;
+
+            LastInstantEnvironment = instantEnvironment;
+
+            for (int i = 0; i < saveSlotAffectedCount; i++)
+            {
+                InstantlyRunnable instantlyRunnable = instantlyRunnables[i];
+                PanelButton panelButton = (ButtonGrid._items[i] as PanelButton);
+
+                panelButton.NameText.SetText(instantlyRunnable.GetType().Name);
+                _buttonsToRunnables.Add(panelButton, instantlyRunnable);
+            }
+
+            for (int i = saveSlotAffectedCount; i < SAVE_SLOT_COUNT; i++)
+                (ButtonGrid._items[i] as PanelButton).NameText.SetText($"SAVE SLOT {i + 1}");
         }
 
         // TODO: change those two to something else
         public void ExecuteAction(UIMouseEvent evt, UIElement listeningElement)
         {
-            Main.NewText("This was called 'Send' so I did joke which was 'SEND NUDES JAJAJAJA' but now i can't make it and it hurts my feelings :(");
+            if (SelectedRunnable == null)
+            {
+                Main.NewText("You must select a save slot!");
+                return;
+            }
+
+            LastInstantEnvironment.Run(TBAPlayer.Get(Main.LocalPlayer));
         }
 
         public void CloseUI(UIMouseEvent evt, UIElement listeningElement)
         {
+            SelectedRunnable = null;
             Visible = false;
         }
 
@@ -151,5 +226,9 @@ namespace TerrarianBizzareAdventure.UserInterfaces.Special.RATM
         public UICheckbox[] CheckBoxes { get; private set; }
 
         public UIText[] CheckBoxTexts { get; private set; }
+
+
+        public InstantEnvironment LastInstantEnvironment { get; private set; }
+        public InstantlyRunnable SelectedRunnable { get; private set; }
     }
 }

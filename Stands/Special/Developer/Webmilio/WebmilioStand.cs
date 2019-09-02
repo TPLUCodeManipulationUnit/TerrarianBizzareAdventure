@@ -29,7 +29,7 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
             Animations.Add(ANIMATION_DESPAWN, new SpriteAnimation(mod.GetTexture(_texturePath + ANIMATION_DESPAWN), 7, 2));
 
             Animations.Add(ANIMATION_IDLE, new SpriteAnimation(mod.GetTexture(_texturePath + ANIMATION_IDLE), 2, 60, autoLoop: true));
-            Animations.Add(ANIMATION_ERROR, new SpriteAnimation(mod.GetTexture(_texturePath + ANIMATION_ERROR), 22, 4));
+            Animations.Add(ANIMATION_ERROR, new SpriteAnimation(mod.GetTexture(_texturePath + ANIMATION_ERROR), 22, 8));
         }
 
 
@@ -70,15 +70,15 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
 
                 if (TBAInputs.StandPose.JustPressed && CurrentState == ANIMATION_IDLE)
                 {
-                    if (!InstantEnvironment.ExecuteClass(Path.Combine(Main.SavePath, "Mods", "Cache", "TBA", "RATMClass.cs")))
+                    if (!InstantEnvironment.CompileAssembly(Path.Combine(Main.SavePath, "Mods", "Cache", "TBA")))
                         CurrentState = ANIMATION_ERROR;
                 }
 
                 if (TBAInputs.ExtraAction01.JustPressed && CurrentState == ANIMATION_IDLE)
-                    InstantEnvironment?.LastRan?.Stop();
+                    InstantEnvironment?.Run(TBAPlayer.Get(Owner));
 
                 if (TBAInputs.ExtraAction02.JustPressed && CurrentState == ANIMATION_IDLE)
-                    InstantEnvironment?.LastRan?.Run(TBAPlayer.Get(Owner));
+                    InstantEnvironment?.Selected?.Stop();
             }
 
             if (CurrentState == ANIMATION_ERROR && _errorLoopCount < ERROR_LOOP_COUNT)
@@ -99,7 +99,7 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
 
             if (CurrentState == ANIMATION_DESPAWN)
             {
-                Opacity = (12 - CurrentAnimation.FrameRect.Y / (int)CurrentAnimation.FrameSize.Y) * 0.2f;
+                Opacity = (Animations[ANIMATION_DESPAWN].FrameCount - CurrentAnimation.FrameRect.Y / (int)CurrentAnimation.FrameSize.Y) * 0.2f;
 
                 if (CurrentAnimation.Finished)
                 {
@@ -109,8 +109,8 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
         }
 
 
-        public override bool CanAcquire(TBAPlayer tbaPlayer) =>
-            tbaPlayer.player != Main.LocalPlayer || SteamHelper.Webmilio.SteamId64 == SteamHelper.SteamId64;
+        public override bool CanAcquire(TBAPlayer tbaPlayer) => true;
+            //tbaPlayer.player != Main.LocalPlayer /* || SteamHelper.Webmilio.SteamId64 == SteamHelper.SteamId64 */;
 
 
         public InstantEnvironment InstantEnvironment { get; private set; }

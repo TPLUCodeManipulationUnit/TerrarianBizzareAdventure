@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using TerrarianBizzareAdventure.Players;
+using TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio;
 using TerrarianBizzareAdventure.TimeStop;
 
 namespace TerrarianBizzareAdventure.Network
@@ -19,6 +20,9 @@ namespace TerrarianBizzareAdventure.Network
             PlayerJoiningSynchronization = Add(new PlayerJoiningSynchronizationPacket()) as PlayerJoiningSynchronizationPacket;
             TimeStateChanged = Add(new TimeStateChangedPacket()) as TimeStateChangedPacket;
 
+            CompileAssembly = Add(new CompileAssemblyPacket()) as CompileAssemblyPacket;
+            InstantlyRunnableRan = Add(new InstantlyRunnableRanPacket()) as InstantlyRunnableRanPacket;
+
             Initialized = true;
         }
 
@@ -26,6 +30,9 @@ namespace TerrarianBizzareAdventure.Network
         public PlayerJoiningSynchronizationPacket PlayerJoiningSynchronization { get; private set; }
 
         public TimeStateChangedPacket TimeStateChanged { get; private set; }
+
+        public CompileAssemblyPacket CompileAssembly { get; private set; }
+        public InstantlyRunnableRanPacket InstantlyRunnableRan { get; private set; }
 
 
         public NetworkPacket Add(NetworkPacket networkPacket)
