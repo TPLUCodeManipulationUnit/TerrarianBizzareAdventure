@@ -4,6 +4,7 @@ using Terraria;
 using TerrarianBizzareAdventure.Extensions;
 using TerrarianBizzareAdventure.Helpers;
 using TerrarianBizzareAdventure.Players;
+using TerrarianBizzareAdventure.UserInterfaces;
 
 namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
 {
@@ -25,7 +26,7 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
         public override void AddAnimations()
         {
             Animations.Add(ANIMATION_SUMMON, new SpriteAnimation(mod.GetTexture(_texturePath + ANIMATION_SUMMON), 10, 5));
-            Animations.Add(ANIMATION_DESPAWN, new SpriteAnimation(mod.GetTexture(_texturePath + ANIMATION_DESPAWN), 12, 2));
+            Animations.Add(ANIMATION_DESPAWN, new SpriteAnimation(mod.GetTexture(_texturePath + ANIMATION_DESPAWN), 7, 2));
 
             Animations.Add(ANIMATION_IDLE, new SpriteAnimation(mod.GetTexture(_texturePath + ANIMATION_IDLE), 2, 60, autoLoop: true));
             Animations.Add(ANIMATION_ERROR, new SpriteAnimation(mod.GetTexture(_texturePath + ANIMATION_ERROR), 22, 4));
@@ -63,13 +64,14 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
                     CurrentState = ANIMATION_DESPAWN;
 
                 if (TBAInputs.ContextAction.JustPressed && CurrentState == ANIMATION_IDLE)
-                    if (!InstantEnvironment.ExecuteClass(Path.Combine(Main.SavePath, "Mods", "Cache", "RATMClass.cs")))
-                        CurrentState = ANIMATION_ERROR;
+                {
+                    UIManager.RATMState.Visible = true;
+                }
 
                 if (TBAInputs.StandPose.JustPressed && CurrentState == ANIMATION_IDLE)
                 {
-                    InstantEnvironment?.LastRan?.Stop();
-                    InstantEnvironment = new InstantEnvironment();
+                    if (!InstantEnvironment.ExecuteClass(Path.Combine(Main.SavePath, "Mods", "Cache", "TBA", "RATMClass.cs")))
+                        CurrentState = ANIMATION_ERROR;
                 }
 
                 if (TBAInputs.ExtraAction01.JustPressed && CurrentState == ANIMATION_IDLE)

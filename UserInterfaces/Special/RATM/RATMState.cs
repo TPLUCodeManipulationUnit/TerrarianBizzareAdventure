@@ -48,8 +48,6 @@ namespace TerrarianBizzareAdventure.UserInterfaces.Special.RATM
             CheckBoxTexts[2].Top.Set(130, 0);
             CheckBoxTexts[2].Left.Set(PANEL_WIDTH - 256, 0);
 
-            Visible = true;
-
             MainPanel = new UIPanel();
             MainPanel.Width.Set(PANEL_WIDTH, 0);
             MainPanel.Height.Set(PANEL_HEIGHT, 0);
