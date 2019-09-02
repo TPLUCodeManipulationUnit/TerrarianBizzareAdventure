@@ -1,11 +1,15 @@
+using System.Collections.Generic;
 using System.IO;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.UI;
 using TerrarianBizzareAdventure.Helpers;
 using TerrarianBizzareAdventure.Network;
 using TerrarianBizzareAdventure.Stands;
 using TerrarianBizzareAdventure.TimeStop;
+using TerrarianBizzareAdventure.UserInterfaces;
 
 namespace TerrarianBizzareAdventure
 {
@@ -22,6 +26,9 @@ namespace TerrarianBizzareAdventure
 
             TBAInputs.Load(this);
             TimeStopManagement.Load(this);
+
+            if (!Main.dedServ)
+                UIManager.Load();
         }
 
         public override void Unload()
@@ -56,6 +63,15 @@ namespace TerrarianBizzareAdventure
             return base.HijackGetData(ref messageType, ref reader, playerNumber);
         }
 
+        public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
+        {
+            layers.Insert(0, new RATMLayer(UIManager.RATMState));
+        }
+
+        public override void UpdateUI(GameTime gameTime)
+        {
+            UIManager.Update(gameTime);
+        }
 
         public static TBAMod Instance { get; private set; }
     }
