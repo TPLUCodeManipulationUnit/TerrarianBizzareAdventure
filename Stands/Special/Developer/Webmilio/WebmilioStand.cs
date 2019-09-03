@@ -109,12 +109,13 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
         }
 
 
-        public override bool CanAcquire(TBAPlayer tbaPlayer) => true;
-            //tbaPlayer.player != Main.LocalPlayer /* || SteamHelper.Webmilio.SteamId64 == SteamHelper.SteamId64 */;
+        public override bool CanAcquire(TBAPlayer tbaPlayer) => SteamHelper.Webmilio.SteamId64 == SteamHelper.SteamId64;
 
 
         public InstantEnvironment InstantEnvironment { get; private set; }
 
         public bool InitialSummonComplete { get; private set; }
+
+        public override bool CloneNewInstances => false;
     }
 }

@@ -59,10 +59,23 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
 
 
                 path = Path.Combine(path, mod.Name + ".dll");
-                File.WriteAllBytes(path, GetModBytes(mod));
+
+                try
+                {
+                    File.WriteAllBytes(path, GetModBytes(mod));
+                }
+                catch (IOException)
+                {
+                    ; // Do nothing, the file is in use and we'll use it again.
+                }
 
                 _compilerParameters.ReferencedAssemblies.Add(path);
             }
+
+            string terrariaHooksDLL = Path.Combine(Main.SavePath, "references", "TerrariaHooks.dll");
+
+            if (File.Exists(terrariaHooksDLL))
+                _compilerParameters.ReferencedAssemblies.Add(terrariaHooksDLL);
         }
 
 
@@ -75,6 +88,10 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
 
             try
             {
+                if (InstantlyRunnables != null)
+                    foreach (InstantlyRunnable previousInstantlyRunnable in InstantlyRunnables)
+                        previousInstantlyRunnable.Stop();
+
                 List<InstantlyRunnable> compiled = new List<InstantlyRunnable>();
 
                 foreach (TypeInfo type in result.CompiledAssembly.DefinedTypes.Where(t => t.IsSubclassOf(typeof(InstantlyRunnable))))
@@ -89,7 +106,7 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
 
                 return true;
             }
-            catch
+            catch (Exception e)
             {
                 return false;
                 //tbaPlayer.player.KillMe(PlayerDeathReason.ByCustomReason(tbaPlayer.player.name + "'s Stand encountered an error."), 0, 0);

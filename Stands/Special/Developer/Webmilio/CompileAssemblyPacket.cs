@@ -18,13 +18,10 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
             string serializedSources = reader.ReadString();
             string[] sources = serializedSources.Split('\0');
 
-            if (!playerInstantEnvironments.ContainsKey(whichPlayer))
-                playerInstantEnvironments.Add(whichPlayer, new InstantEnvironment());
-
             if (Main.netMode == NetmodeID.Server)
                 NetworkPacketManager.Instance.CompileAssembly.SendPacketToAllClients(fromWho, whichPlayer, serializedSources);
 
-            playerInstantEnvironments[whichPlayer].CompileSource(false, sources);
+            GetEnvironment(whichPlayer).CompileSource(false, sources);
             return true;
         }
 
@@ -34,6 +31,15 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
             packet.Write((string)args[1]);
 
             packet.Send(toWho, fromWho);
+        }
+
+
+        public InstantEnvironment GetEnvironment(int playerId)
+        {
+            if (!playerInstantEnvironments.ContainsKey(playerId))
+                playerInstantEnvironments.Add(playerId, new InstantEnvironment());
+
+            return playerInstantEnvironments[playerId];
         }
     }
 }
