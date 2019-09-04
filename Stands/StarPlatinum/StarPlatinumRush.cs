@@ -6,7 +6,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
 {
     public class StarPlatinumRush : RushPunch, IProjectileHasImmunityToTimeStop
     {
-        public bool IsImmuneToTimeStop(Projectile projectile) => projectile.owner == TimeStopManagement.TimeStopper.player.whoAmI;
+        public bool IsNativelyImmuneToTimeStop(Projectile projectile) => projectile.owner == TimeStopManagement.TimeStopper.player.whoAmI;
 
 
         public override string Texture => "TerrarianBizzareAdventure/Stands/StarPlatinum/StarFist";

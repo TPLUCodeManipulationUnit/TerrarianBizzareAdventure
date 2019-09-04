@@ -9,20 +9,6 @@ namespace TerrarianBizzareAdventure.World
 {
     public sealed class TBAWorld : ModWorld
     {
-        public override void PostDrawTiles()
-        {
-            if (Main.netMode == NetmodeID.MultiplayerClient)
-                TimeStopManagement.OnGameTick(this);
-        }
-
-
-        public override void PreUpdate() // Doesn't work in MP
-        {
-            if (Main.netMode == NetmodeID.SinglePlayer || Main.dedServ)
-                TimeStopManagement.OnGameTick(this);
-        }
-
-
         public override void NetSend(BinaryWriter writer)
         {
             writer.Write(TimeStopManagement.TimeStopped);

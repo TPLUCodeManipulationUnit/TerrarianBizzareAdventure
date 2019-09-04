@@ -14,6 +14,7 @@ namespace TerrarianBizzareAdventure.Players
         public const int ACTIVE_STAND_PROJECTILE_INACTIVE_ID = -999;
 
 
+        public static TBAPlayer Get() => Get(Main.LocalPlayer);
         public static TBAPlayer Get(Player player) => player.GetModPlayer<TBAPlayer>();
 
 
@@ -89,7 +90,7 @@ namespace TerrarianBizzareAdventure.Players
 
 
         public bool IsStopped() => !IsImmuneToTimeStop() && TimeStopManagement.TimeStopped && TimeStopManagement.TimeStopper != this;
-        public bool IsImmuneToTimeStop() => StandUser && Stand.IsImmuneToTimeStop(this);
+        public bool IsImmuneToTimeStop() => StandUser && Stand.IsNativelyImmuneToTimeStop(this);
 
 
         public Stand Stand { get; set; }

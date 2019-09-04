@@ -1,11 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
 
-namespace TerrarianBizzareAdventure.TimeStop
+namespace TerrarianBizzareAdventure.States
 {
-    public abstract class EntityState<T> where T : Entity
+    public abstract class EntityState<T> : State where T : Entity
     {
-        protected EntityState(T entity)
+        protected EntityState(T entity) : base(entity)
         {
             Entity = entity;
             WhoAmI = entity.whoAmI;

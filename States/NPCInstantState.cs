@@ -1,7 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Terraria;
+﻿using Terraria;
 
-namespace TerrarianBizzareAdventure.TimeStop
+namespace TerrarianBizzareAdventure.States
 {
     public class NPCInstantState : EntityState<NPC>
     {

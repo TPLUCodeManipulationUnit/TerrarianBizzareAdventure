@@ -99,7 +99,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                     CurrentState = ANIMATION_DESPAWN;
 
                 if (TBAInputs.ContextAction.JustPressed && CurrentState == "POSE_IDLE")
-                    TimeStopManagement.ToggleTimeStopIfStopper(TBAPlayer.Get(Owner));
+                    TimeStopManagement.ToggleTimeStopIfStopper(TBAPlayer.Get(Owner), 10 * Constants.TICKS_PER_SECOND);
             }
 
             projectile.Center = Owner.Center + new Vector2(34 * Owner.direction, -20 + Owner.gfxOffY);

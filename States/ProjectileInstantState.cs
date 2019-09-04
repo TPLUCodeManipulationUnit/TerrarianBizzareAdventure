@@ -1,6 +1,6 @@
 ﻿using Terraria;
 
-namespace TerrarianBizzareAdventure.TimeStop
+namespace TerrarianBizzareAdventure.States
 {
     public class ProjectileInstantState : EntityState<Projectile>
     {

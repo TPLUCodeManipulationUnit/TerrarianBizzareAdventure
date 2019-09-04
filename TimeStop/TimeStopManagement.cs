@@ -8,6 +8,8 @@ using TerrarianBizzareAdventure.Extensions;
 using TerrarianBizzareAdventure.Helpers;
 using TerrarianBizzareAdventure.Network;
 using TerrarianBizzareAdventure.Players;
+using TerrarianBizzareAdventure.Stands;
+using TerrarianBizzareAdventure.States;
 
 namespace TerrarianBizzareAdventure.TimeStop
 {
@@ -20,6 +22,7 @@ namespace TerrarianBizzareAdventure.TimeStop
         internal static Dictionary<Projectile, ProjectileInstantState> projectileStates;
         internal static Dictionary<Player, PlayerInstantState> playerStates;
         internal static Dictionary<Item, ItemInstantState> itemStates;
+
 
         #region Immunity Registration
 
@@ -60,7 +63,7 @@ namespace TerrarianBizzareAdventure.TimeStop
         #endregion
 
 
-        public static void ToggleTimeStopIfStopper(ModPlayer modPlayer)
+        public static void ToggleTimeStopIfStopper(ModPlayer modPlayer, int duration)
         {
             if (TimeStopper != null && TimeStopper != modPlayer)
                 return;
@@ -68,7 +71,7 @@ namespace TerrarianBizzareAdventure.TimeStop
             if (TimeStopped)
                 TryResumeTime(modPlayer);
             else
-                TryStopTime(modPlayer, int.MaxValue); // TODO Change this
+                TryStopTime(modPlayer, duration); // TODO Change this
         }
 
 
@@ -106,7 +109,12 @@ namespace TerrarianBizzareAdventure.TimeStop
             {
                 Projectile projectile = Main.projectile[i];
 
-                if (!projectile.active || projectile.modProjectile is IProjectileHasImmunityToTimeStop phitts && phitts.IsImmuneToTimeStop(projectile))
+                if (!projectile.active || projectile.modProjectile is IProjectileHasImmunityToTimeStop phitts && phitts.IsNativelyImmuneToTimeStop(projectile))
+                    continue;
+
+                ModProjectile modProjectile = projectile.modProjectile as Stand;
+
+                if (modProjectile != null && modProjectile.projectile.owner == modPlayer.player.whoAmI)
                     continue;
 
                 RegisterStoppedProjectile(projectile);
@@ -116,7 +124,7 @@ namespace TerrarianBizzareAdventure.TimeStop
             for (int i = 0; i < Main.player.Length; i++)
             {
                 Player player = Main.player[i];
-                
+
                 if (!player.active || player.name == "")
                     continue;
 
@@ -215,7 +223,7 @@ namespace TerrarianBizzareAdventure.TimeStop
         public static void RegisterStoppedItem(Item item) => itemStates.Add(item, new ItemInstantState(item));
 
 
-        internal static void OnGameTick(ModWorld modWorld)
+        internal static void MainOnOnTick()
         {
             int previousTimeStoppedFor = TimeStoppedFor;
 
@@ -229,7 +237,7 @@ namespace TerrarianBizzareAdventure.TimeStop
             if (TimeStopped)
             {
                 TBAPlayer tbaPlayer = TBAPlayer.Get(Main.LocalPlayer);
-                Main.blockInput = !(tbaPlayer.StandUser && (tbaPlayer.Stand.IsImmuneToTimeStop(tbaPlayer) || TimeStopper == tbaPlayer));
+                Main.blockInput = !(tbaPlayer.StandUser && (tbaPlayer.Stand.IsNativelyImmuneToTimeStop(tbaPlayer) || TimeStopper == tbaPlayer));
 
                 Main.dayRate = 0;
                 Main.time = TimeStopManagement.MainTime;
@@ -241,6 +249,8 @@ namespace TerrarianBizzareAdventure.TimeStop
 
         internal static void Load(TBAMod tbaMod)
         {
+            Main.OnTick += MainOnOnTick;
+
             _npcs = new List<int>();
             _items = new List<int>();
 
@@ -254,6 +264,8 @@ namespace TerrarianBizzareAdventure.TimeStop
 
         internal static void Unload()
         {
+            Main.OnTick -= MainOnOnTick;
+
             _npcs = null;
             _items = null;
 
@@ -262,6 +274,34 @@ namespace TerrarianBizzareAdventure.TimeStop
             playerStates = null;
             itemStates = null;
         }
+
+
+        /*private static void MainOnDoUpdate(On.Terraria.Main.orig_DoUpdate orig, Main self, GameTime gameTime)
+        {
+            bool executeOriginal = true;
+
+            if (Main.gameMenu)
+                executeOriginal = true;
+            else if (!Main.gameMenu && Main.LocalPlayer != null && Main.LocalPlayer.active && TBAPlayer.Get(Main.LocalPlayer).IsStopped() && TimeStopped && !Main.dedServ)
+            {
+                executeOriginal = false;
+            }
+
+
+            if (executeOriginal)
+                orig(self, gameTime);
+        }*/
+
+        private static void PlayerOnUpdate(On.Terraria.Player.orig_Update orig, Player self, int i)
+        {
+            if (ModifyUpdate())
+                ; // LMAO WE DO NOT DO ANYTHING XD :haha:
+            else
+                orig(self, i);
+        }
+
+
+        private static bool ModifyUpdate() => !Main.gameMenu && Main.LocalPlayer.active && TimeStopped && TBAPlayer.Get().IsStopped();
 
 
         public static int TimeStoppedFor { get; set; }

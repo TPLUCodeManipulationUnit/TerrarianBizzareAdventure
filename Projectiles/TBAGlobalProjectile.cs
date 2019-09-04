@@ -10,7 +10,7 @@ namespace TerrarianBizzareAdventure.Projectiles
         public override bool PreAI(Projectile projectile)
         {
             int tickLimit = TimeStopManagement.TimeStopped && projectile.owner == TimeStopManagement.TimeStopper.player.whoAmI ? 10 : 1;
-            IsStopped = TimeStopManagement.TimeStopped && !(projectile.modProjectile is IProjectileHasImmunityToTimeStop iisitts && iisitts.IsImmuneToTimeStop(projectile)) && RanForTicks > tickLimit;
+            IsStopped = TimeStopManagement.TimeStopped && !(projectile.modProjectile is IProjectileHasImmunityToTimeStop iisitts && iisitts.IsNativelyImmuneToTimeStop(projectile)) && RanForTicks > tickLimit;
 
             if (IsStopped)
             {

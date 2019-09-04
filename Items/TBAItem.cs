@@ -6,10 +6,10 @@ namespace TerrarianBizzareAdventure.Items
 {
     public abstract class TBAItem : ModItem
     {
-        protected TBAItem(string name, string toolTip, Vector2 size, int value = 0, int rare = ItemRarityID.White)
+        protected TBAItem(string name, string tooltip, Vector2 size, int value = 0, int rare = ItemRarityID.White)
         {
             ItemName = name;
-            ItemTooltip = toolTip;
+            ItemTooltip = tooltip;
             Size = size;
 
             Value = value;

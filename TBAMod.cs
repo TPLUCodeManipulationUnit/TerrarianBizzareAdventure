@@ -6,6 +6,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
 using TerrarianBizzareAdventure.Helpers;
+using TerrarianBizzareAdventure.Items.Developer;
 using TerrarianBizzareAdventure.Network;
 using TerrarianBizzareAdventure.Stands;
 using TerrarianBizzareAdventure.TimeStop;
@@ -22,6 +23,8 @@ namespace TerrarianBizzareAdventure
 
         public override void Load()
         {
+            On.Terraria.Main.Update += MainOnUpdate;
+
             SteamHelper.Initialize();
 
             TBAInputs.Load(this);
@@ -33,6 +36,8 @@ namespace TerrarianBizzareAdventure
 
         public override void Unload()
         {
+            On.Terraria.Main.Update -= MainOnUpdate;
+
             Instance = null;
 
             TBAInputs.Unload();
@@ -62,6 +67,28 @@ namespace TerrarianBizzareAdventure
 
             return base.HijackGetData(ref messageType, ref reader, playerNumber);
         }
+
+
+        private void MainOnUpdate(On.Terraria.Main.orig_Update orig, Main self, GameTime gameTime)
+        {
+            if (KingCrimsonAbilityTrigger.lagFor > 0)
+            {
+                KingCrimsonAbilityTrigger.lagFor--;
+
+                if (KingCrimsonAbilityTrigger.lagFor <= 0)
+                    KingCrimsonAbilityTrigger.lagger = null;
+            }
+
+            if (KingCrimsonAbilityTrigger.lagFor > 0)
+            {
+                if (KingCrimsonAbilityTrigger.lagger == Main.LocalPlayer)
+                    orig(self, gameTime);
+            }
+            else
+                orig(self, gameTime);
+        }
+
+
 
         public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
         {

@@ -1,7 +1,7 @@
 ﻿using Terraria;
 using Terraria.DataStructures;
 
-namespace TerrarianBizzareAdventure.TimeStop
+namespace TerrarianBizzareAdventure.States
 {
     public class PlayerInstantState : EntityState<Player>
     {
