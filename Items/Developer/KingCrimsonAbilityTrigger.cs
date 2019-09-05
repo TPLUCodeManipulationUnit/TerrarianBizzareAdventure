@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
-using Main = On.Terraria.Main;
 
 namespace TerrarianBizzareAdventure.Items.Developer
 {

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using TerrarianBizzareAdventure.Extensions;
-using TerrarianBizzareAdventure.Helpers;
-using TerrarianBizzareAdventure.Network;
 using TerrarianBizzareAdventure.Players;
 using TerrarianBizzareAdventure.Stands;
 using TerrarianBizzareAdventure.States;
@@ -80,10 +76,10 @@ namespace TerrarianBizzareAdventure.TimeStop
             if (TimeStopped)
                 return false;
 
+            StopTime(modPlayer, duration);
+
             if (local)
                 TimeStateChanged(modPlayer, duration, true);
-
-            StopTime(modPlayer, duration);
 
             return true;
         }
@@ -203,7 +199,14 @@ namespace TerrarianBizzareAdventure.TimeStop
         private static void TimeStateChanged(ModPlayer modPlayer, int duration, bool stopped)
         {
             if (Main.netMode == NetmodeID.MultiplayerClient)
-                NetworkPacketManager.Instance.TimeStateChanged.SendPacketToAllClients(modPlayer.player.whoAmI, modPlayer.player.whoAmI, stopped, duration);
+            {
+                TimeStateChangedPacket packet = TBAMod.Instance.TimeStateChangedPacket;
+
+                packet.Duration = !stopped ? 0 : duration;
+                packet.Stopped = stopped;
+
+                TBAMod.Instance.TimeStateChangedPacket.SendPacket();
+            }
         }
 
 
@@ -249,7 +252,7 @@ namespace TerrarianBizzareAdventure.TimeStop
 
         internal static void Load(TBAMod tbaMod)
         {
-            Main.OnTick += MainOnOnTick;
+            //Main.OnTick += MainOnOnTick;
 
             _npcs = new List<int>();
             _items = new List<int>();
@@ -264,7 +267,7 @@ namespace TerrarianBizzareAdventure.TimeStop
 
         internal static void Unload()
         {
-            Main.OnTick -= MainOnOnTick;
+            //Main.OnTick -= MainOnOnTick;
 
             _npcs = null;
             _items = null;

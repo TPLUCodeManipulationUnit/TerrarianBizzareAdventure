@@ -1,42 +1,43 @@
 ﻿using System.IO;
 using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
-using TerrarianBizzareAdventure.Network;
 using TerrarianBizzareAdventure.Stands;
+using WebmilioCommons.Networking.Attributes;
+using WebmilioCommons.Networking.Packets;
 
 namespace TerrarianBizzareAdventure.Players
 {
-    public sealed class PlayerJoiningSynchronizationPacket : NetworkPacket
+    public sealed class PlayerJoiningSynchronizationPacket : ModPlayerNetworkPacket<TBAPlayer>
     {
         public override bool Receive(BinaryReader reader, int fromWho)
         {
-            int whichPlayer = reader.ReadInt32();
-            string standName = reader.ReadString();
-            bool isResponse = reader.ReadBoolean();
-
-            if (Main.dedServ)
-                NetworkPacketManager.Instance.PlayerJoiningSynchronization.SendPacketToAllClients(fromWho, whichPlayer, standName, isResponse);
-
-            TBAPlayer tbaPlayer = TBAPlayer.Get(Main.player[whichPlayer]);
-
-            if (!string.IsNullOrWhiteSpace(standName))
-                tbaPlayer.Stand = StandManager.Instance[standName];
-
-            if (!isResponse && Main.netMode == NetmodeID.MultiplayerClient)
-                SendPacket(whichPlayer, Main.myPlayer, Main.myPlayer, standName, true);
+            if (!IsResponse && Main.netMode == NetmodeID.MultiplayerClient)
+                SendPacket(Main.myPlayer, Player.whoAmI);
 
             return true;
         }
 
 
-        protected override void SendPacket(ModPacket packet, int toWho, int fromWho, params object[] args)
+        [NetworkField]
+        public string StandName
         {
-            packet.Write((int) args[0]);
-            packet.Write((string) args[1]);
-            packet.Write((bool) args[2]);
+            get
+            {
+                if (!ModPlayer.StandUser)
+                    return "";
 
-            packet.Send(toWho, fromWho);
+                return ModPlayer.Stand.UnlocalizedName;
+            }
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                    return;
+
+                ModPlayer.Stand = StandManager.Instance[value];
+            }
         }
+
+        [NetworkField]
+        public bool IsResponse { get; set; }
     }
 }

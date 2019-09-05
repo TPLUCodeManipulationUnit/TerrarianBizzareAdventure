@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Terraria;
-using TerrarianBizzareAdventure.Managers;
 using TerrarianBizzareAdventure.Players;
+using WebmilioCommons.Managers;
 
 namespace TerrarianBizzareAdventure.Stands
 {
     public sealed class StandManager : SingletonManager<StandManager, Stand>
     {
-        internal override void DefaultInitialize()
+        public override void DefaultInitialize()
         {
             Assembly myAssembly = Assembly.GetAssembly(typeof(Stand));
 

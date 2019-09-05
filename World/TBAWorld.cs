@@ -9,6 +9,23 @@ namespace TerrarianBizzareAdventure.World
 {
     public sealed class TBAWorld : ModWorld
     {
+        public override void PostDrawTiles()
+        {
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+                TimeStopManagement.MainOnOnTick();
+
+            base.PostDrawTiles();
+        }
+
+        public override void PreUpdate()
+        {
+            if (Main.netMode == NetmodeID.SinglePlayer || Main.dedServ)
+                TimeStopManagement.MainOnOnTick();
+
+            base.PreUpdate();
+        }
+
+
         public override void NetSend(BinaryWriter writer)
         {
             writer.Write(TimeStopManagement.TimeStopped);

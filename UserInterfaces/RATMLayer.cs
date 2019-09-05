@@ -1,6 +1,5 @@
 ﻿using Terraria;
 using Terraria.UI;
-using TerrarianBizzareAdventure.Managers;
 using TerrarianBizzareAdventure.UserInterfaces.Special.RATM;
 
 namespace TerrarianBizzareAdventure.UserInterfaces

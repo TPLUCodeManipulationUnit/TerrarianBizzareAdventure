@@ -1,19 +1,15 @@
 ﻿using System;
 using System.CodeDom.Compiler;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Emit;
 using Microsoft.CSharp;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
 using Terraria.Utilities;
-using TerrarianBizzareAdventure.Network;
 using TerrarianBizzareAdventure.Players;
 using TerrarianBizzareAdventure.UserInterfaces;
 
@@ -100,7 +96,10 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
                 InstantlyRunnables = compiled;
 
                 if (local && Main.netMode == NetmodeID.MultiplayerClient)
-                    NetworkPacketManager.Instance.CompileAssembly.SendPacketToAllClients(Main.myPlayer, Main.myPlayer, string.Join("\0", sources));
+                {
+                    //string.Join("\0", sources)
+                    TBAMod.Instance.CompileAssemblyPacket.SendPacket();
+                }
 
                 UIManager.RATMState.GenerateButtons(this, InstantlyRunnables);
 
@@ -144,7 +143,10 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
             }
 
             if (local && Main.netMode == NetmodeID.MultiplayerClient)
-                NetworkPacketManager.Instance.InstantlyRunnableRan.SendPacketToAllClients(Main.myPlayer, Main.myPlayer, instantlyRunnable.GetType().ToString());
+            {
+                TBAMod.Instance.InstantlyRunnableRanPacket.StringifiedClass = instantlyRunnable.GetType().ToString();
+                TBAMod.Instance.InstantlyRunnableRanPacket.SendPacket();
+            }
 
             return true;
         }

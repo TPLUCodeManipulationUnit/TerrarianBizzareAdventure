@@ -1,36 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
-using TerrarianBizzareAdventure.Network;
+using TerrarianBizzareAdventure.Players;
+using WebmilioCommons.Networking.Attributes;
+using WebmilioCommons.Networking.Packets;
 
 namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
 {
-    public sealed class CompileAssemblyPacket : NetworkPacket
+    public sealed class CompileAssemblyPacket : ModPlayerNetworkPacket<TBAPlayer>
     {
         internal Dictionary<int, InstantEnvironment> playerInstantEnvironments = new Dictionary<int, InstantEnvironment>();
 
 
-        public override bool Receive(BinaryReader reader, int fromWho)
+        public override bool PostReceive(BinaryReader reader, int fromWho)
         {
-            int whichPlayer = reader.ReadInt32();
-            string serializedSources = reader.ReadString();
-            string[] sources = serializedSources.Split('\0');
-
-            if (Main.netMode == NetmodeID.Server)
-                NetworkPacketManager.Instance.CompileAssembly.SendPacketToAllClients(fromWho, whichPlayer, serializedSources);
-
-            GetEnvironment(whichPlayer).CompileSource(false, sources);
+            GetEnvironment(Player.whoAmI).CompileSource(false, Sources);
             return true;
-        }
-
-        protected override void SendPacket(ModPacket packet, int toWho, int fromWho, params object[] args)
-        {
-            packet.Write((int)args[0]);
-            packet.Write((string)args[1]);
-
-            packet.Send(toWho, fromWho);
         }
 
 
@@ -41,5 +25,11 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
 
             return playerInstantEnvironments[playerId];
         }
+
+
+        [NetworkField]
+        public string SerializedSources { get; set; }
+
+        public string[] Sources => SerializedSources.Split('\0');
     }
 }

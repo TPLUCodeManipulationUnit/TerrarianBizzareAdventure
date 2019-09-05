@@ -33,6 +33,11 @@
     <Folder Include="Stands\StickyFinger\" />
     <Folder Include="Textures\Stands\StarPlatinum\" />
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="WebmilioCommons">
+      <HintPath>..\WebmilioCommons\bin\Debug\net45\WebmilioCommons.dll</HintPath>
+    </Reference>
+  </ItemGroup>
   <Target Name="BuildMod" AfterTargets="Build">
     <Exec Command="&quot;$(tMLBuildServerPath)&quot; -build $(ProjectDir) -eac $(TargetPath) -define $(DefineConstants) -unsafe $(AllowUnsafeBlocks)" />
   </Target>

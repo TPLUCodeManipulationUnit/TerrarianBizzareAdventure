@@ -1,7 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using System.Collections.Generic;
 using Terraria.UI;
-using TerrarianBizzareAdventure.Managers;
 using TerrarianBizzareAdventure.UserInterfaces.Special.RATM;
 
 namespace TerrarianBizzareAdventure.UserInterfaces

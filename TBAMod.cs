@@ -2,15 +2,16 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
 using TerrarianBizzareAdventure.Helpers;
 using TerrarianBizzareAdventure.Items.Developer;
-using TerrarianBizzareAdventure.Network;
+using TerrarianBizzareAdventure.Players;
 using TerrarianBizzareAdventure.Stands;
+using TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio;
 using TerrarianBizzareAdventure.TimeStop;
 using TerrarianBizzareAdventure.UserInterfaces;
+using WebmilioCommons.Networking;
 
 namespace TerrarianBizzareAdventure
 {
@@ -23,12 +24,16 @@ namespace TerrarianBizzareAdventure
 
         public override void Load()
         {
-            On.Terraria.Main.Update += MainOnUpdate;
-
             SteamHelper.Initialize();
 
             TBAInputs.Load(this);
             TimeStopManagement.Load(this);
+
+            PlayerJoiningSynchronizationPacket = NetworkPacketLoader.Get<PlayerJoiningSynchronizationPacket>();
+            TimeStateChangedPacket = NetworkPacketLoader.Get<TimeStateChangedPacket>();
+
+            CompileAssemblyPacket = NetworkPacketLoader.Get<CompileAssemblyPacket>();
+            InstantlyRunnableRanPacket = NetworkPacketLoader.Get<InstantlyRunnableRanPacket>();
 
             if (!Main.dedServ)
                 UIManager.Load();
@@ -36,8 +41,6 @@ namespace TerrarianBizzareAdventure
 
         public override void Unload()
         {
-            On.Terraria.Main.Update -= MainOnUpdate;
-
             Instance = null;
 
             TBAInputs.Unload();
@@ -49,7 +52,7 @@ namespace TerrarianBizzareAdventure
 
         public override void HandlePacket(BinaryReader reader, int whoAmI)
         {
-            NetworkPacketManager.Instance.HandlePacket(reader, whoAmI);
+            NetworkPacketLoader.HandlePacket(reader, whoAmI);
         }
 
         public override bool HijackGetData(ref byte messageType, ref BinaryReader reader, int playerNumber)
@@ -87,6 +90,17 @@ namespace TerrarianBizzareAdventure
             else
                 orig(self, gameTime);
         }
+
+
+        #region Packets
+
+        public PlayerJoiningSynchronizationPacket PlayerJoiningSynchronizationPacket { get; private set; }
+        public TimeStateChangedPacket TimeStateChangedPacket { get; private set; }
+
+        public CompileAssemblyPacket CompileAssemblyPacket { get; private set; }
+        public InstantlyRunnableRanPacket InstantlyRunnableRanPacket { get; private set; }
+
+        #endregion
 
 
 

@@ -2,22 +2,17 @@
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using TerrarianBizzareAdventure.Network;
 using TerrarianBizzareAdventure.Players;
+using WebmilioCommons.Networking.Attributes;
+using WebmilioCommons.Networking.Packets;
 
 namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
 {
-    public sealed class InstantlyRunnableRanPacket : NetworkPacket
+    public sealed class InstantlyRunnableRanPacket : ModPlayerNetworkPacket<TBAPlayer>
     {
-        public override bool Receive(BinaryReader reader, int fromWho)
+        public override bool PostReceive(BinaryReader reader, int fromWho)
         {
-            int whichPlayer = (int) reader.ReadInt32();
-            string classToString = reader.ReadString();
-
-            if (Main.netMode == NetmodeID.Server)
-                NetworkPacketManager.Instance.InstantlyRunnableRan.SendPacketToAllClients(fromWho, whichPlayer, classToString);
-
-            InstantEnvironment instantEnvironment = NetworkPacketManager.Instance.CompileAssembly.playerInstantEnvironments[whichPlayer];
+            InstantEnvironment instantEnvironment = TBAMod.Instance.CompileAssemblyPacket.playerInstantEnvironments[Player.whoAmI];
 
             for (int i = 0; i < Main.player.Length; i++)
             {
@@ -26,18 +21,13 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
                 if (!player.active || player.name == "")
                     continue;
 
-                instantEnvironment.Run(instantEnvironment.InstantlyRunnables.Find(ir => ir.GetType().ToString() == classToString), TBAPlayer.Get(player), false);
+                instantEnvironment.Run(instantEnvironment.InstantlyRunnables.Find(ir => ir.GetType().ToString() == StringifiedClass), TBAPlayer.Get(player), false);
             }
 
             return true;
         }
 
-        protected override void SendPacket(ModPacket packet, int toWho, int fromWho, params object[] args)
-        {
-            packet.Write((int) args[0]);
-            packet.Write((string) args[1]);
-
-            packet.Send(toWho, fromWho);
-        }
+        [NetworkField]
+        public string StringifiedClass { get; set; }
     }
 }

@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
-using Terraria.UI;
 
 namespace TerrarianBizzareAdventure.UserInterfaces.Elements
 {

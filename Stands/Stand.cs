@@ -4,9 +4,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ModLoader;
-using TerrarianBizzareAdventure.Managers;
 using TerrarianBizzareAdventure.Players;
 using TerrarianBizzareAdventure.TimeStop;
+using WebmilioCommons.Managers;
 
 namespace TerrarianBizzareAdventure.Stands
 {
