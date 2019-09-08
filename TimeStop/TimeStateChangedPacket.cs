@@ -7,10 +7,6 @@ namespace TerrarianBizzareAdventure.TimeStop
 {
     public sealed class TimeStateChangedPacket : ModPlayerNetworkPacket<TBAPlayer>
     {
-        private bool _stopped;
-        private int _duration;
-
-
         public override bool PostReceive(BinaryReader reader, int fromWho)
         {
             if (Stopped)
@@ -22,14 +18,8 @@ namespace TerrarianBizzareAdventure.TimeStop
         }
 
 
-        [NetworkField]
         public bool Stopped { get; set; }
 
-        [NetworkField]
-        public int Duration
-        {
-            get => _duration;
-            set => _duration = value;
-        }
+        public int Duration { get; set; }
     }
 }

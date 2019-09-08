@@ -18,7 +18,6 @@ namespace TerrarianBizzareAdventure.Players
         }
 
 
-        [NetworkField]
         public string StandName
         {
             get
@@ -37,7 +36,6 @@ namespace TerrarianBizzareAdventure.Players
             }
         }
 
-        [NetworkField]
         public bool IsResponse { get; set; }
     }
 }

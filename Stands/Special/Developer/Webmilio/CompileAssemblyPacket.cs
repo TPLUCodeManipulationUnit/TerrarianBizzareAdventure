@@ -27,9 +27,9 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
         }
 
 
-        [NetworkField]
         public string SerializedSources { get; set; }
 
+        [NotNetworkField]
         public string[] Sources => SerializedSources.Split('\0');
     }
 }

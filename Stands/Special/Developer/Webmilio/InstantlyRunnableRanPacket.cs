@@ -27,7 +27,6 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
             return true;
         }
 
-        [NetworkField]
         public string StringifiedClass { get; set; }
     }
 }
