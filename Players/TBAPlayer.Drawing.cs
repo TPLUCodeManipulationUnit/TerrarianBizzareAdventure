@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
+using TerrarianBizzareAdventure.Enums;
 using TerrarianBizzareAdventure.Stands;
 
 namespace TerrarianBizzareAdventure.Players
@@ -31,21 +32,41 @@ namespace TerrarianBizzareAdventure.Players
 
             if (stand != null)
             {
-                if (AuraAnimation == null && stand.CurrentState == Stand.ANIMATION_SUMMON)
+                if (stand.CurrentState == Stand.ANIMATION_SUMMON)
+                    AuraAnimationID = (int)AuraAnimationType.Spawn;
+
+                if (AuraAnimation != null)
+                    AuraAnimationID = (int)AuraAnimationType.Idle;
+
+                if (stand.CurrentState == Stand.ANIMATION_DESPAWN)
+                    AuraAnimationID = (int)AuraAnimationType.Despawn;
+
+                if(OldAnimationID != AuraAnimationID)
+                    new AuraSyncPacket().Send();
+            }
+            else
+            {
+                AuraAnimationID = (int)AuraAnimationType.None;
+                AuraAnimation = null;
+            }
+
+            if (!Main.dedServ)
+            {
+                if (AuraAnimationID == (int)AuraAnimationType.Spawn && AuraAnimation == null)
                     AuraAnimation = new SpriteAnimation(TBAMod.Instance.GetTexture("Textures/AuraSpawn"), 9, 4);
 
-                if (AuraAnimation != null && AuraAnimation.Finished && !AuraAnimation.AutoLoop)
+                if (AuraAnimationID == (int)AuraAnimationType.Idle && AuraAnimation != null && AuraAnimation.Finished && !AuraAnimation.AutoLoop)
                 {
                     AuraAnimation = new SpriteAnimation(TBAMod.Instance.GetTexture("Textures/AuraAnimation"), 11, 4, true);
                 }
-                if (stand.CurrentState == Stand.ANIMATION_DESPAWN && AuraAnimation != null && AuraAnimation.AutoLoop)
+                if (AuraAnimationID == (int)AuraAnimationType.Despawn && AuraAnimation != null && AuraAnimation.AutoLoop)
                 {
-                    AuraAnimation = new SpriteAnimation(TBAMod.Instance.GetTexture("Textures/AuraSpawn"), 9, 4);
+                    AuraAnimation = new SpriteAnimation(TBAMod.Instance.GetTexture("Textures/AuraSpawn"), 9, 2);
                     AuraAnimation.ResetAnimation(true);
                 }
             }
-            else
-                AuraAnimation = null;
+
+            OldAnimationID = AuraAnimationID;
         }
 
         public readonly PlayerLayer standAuraLayer = new PlayerLayer("TBAMod", "StandAura", PlayerLayer.Body, delegate (PlayerDrawInfo drawInfo)
@@ -75,6 +96,10 @@ namespace TerrarianBizzareAdventure.Players
 
             Main.playerDrawData.Add(auraData);
         });
+
+        public int OldAnimationID { get; private set; }
+
+        public int AuraAnimationID { get; set; }
 
         public SpriteAnimation AuraAnimation { get; private set; }
     }

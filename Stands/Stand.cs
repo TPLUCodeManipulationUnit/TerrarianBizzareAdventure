@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ModLoader;
 using TerrarianBizzareAdventure.Players;
+using TerrarianBizzareAdventure.Projectiles;
 using TerrarianBizzareAdventure.TimeStop;
 using WebmilioCommons.Managers;
 
@@ -75,7 +76,7 @@ namespace TerrarianBizzareAdventure.Stands
                 HasSetAnimations = true;
             }
 
-            if (Animations.Count >= 1)
+            if (Animations.Count >= 1 && !projectile.GetGlobalProjectile<TBAGlobalProjectile>().IsStopped)
                 Animations[CurrentState].Update();
 
             return true;
