@@ -23,9 +23,6 @@ namespace TerrarianBizzareAdventure.Players
 
         public void ResetDrawingEffects()
         {
-            if (Main.dedServ)
-                return;
-
             Stand stand = null;
             if(ActiveStandProjectileId != ACTIVE_STAND_PROJECTILE_INACTIVE_ID)
                 stand = Main.projectile[ActiveStandProjectileId].modProjectile as Stand;
@@ -37,11 +34,11 @@ namespace TerrarianBizzareAdventure.Players
                 if (AuraAnimation == null && stand.CurrentState == Stand.ANIMATION_SUMMON)
                     AuraAnimation = new SpriteAnimation(TBAMod.Instance.GetTexture("Textures/AuraSpawn"), 9, 4);
 
-                if (AuraAnimation.Finished && !AuraAnimation.AutoLoop)
+                if (AuraAnimation != null && AuraAnimation.Finished && !AuraAnimation.AutoLoop)
                 {
                     AuraAnimation = new SpriteAnimation(TBAMod.Instance.GetTexture("Textures/AuraAnimation"), 11, 4, true);
                 }
-                if (stand.CurrentState == Stand.ANIMATION_DESPAWN && AuraAnimation.AutoLoop)
+                if (stand.CurrentState == Stand.ANIMATION_DESPAWN && AuraAnimation != null && AuraAnimation.AutoLoop)
                 {
                     AuraAnimation = new SpriteAnimation(TBAMod.Instance.GetTexture("Textures/AuraSpawn"), 9, 4);
                     AuraAnimation.ResetAnimation(true);

@@ -98,7 +98,7 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
                 if (local && Main.netMode == NetmodeID.MultiplayerClient)
                 {
                     //string.Join("\0", sources)
-                    TBAMod.Instance.CompileAssemblyPacket.Send();
+                    new CompileAssemblyPacket().Send();
                 }
 
                 UIManager.RATMState.GenerateButtons(this, InstantlyRunnables);
@@ -144,8 +144,9 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
 
             if (local && Main.netMode == NetmodeID.MultiplayerClient)
             {
-                TBAMod.Instance.InstantlyRunnableRanPacket.StringifiedClass = instantlyRunnable.GetType().ToString();
-                TBAMod.Instance.InstantlyRunnableRanPacket.Send();
+                InstantlyRunnableRanPacket packet = new InstantlyRunnableRanPacket();
+                packet.StringifiedClass = instantlyRunnable.GetType().ToString();
+                packet.Send();
             }
 
             return true;

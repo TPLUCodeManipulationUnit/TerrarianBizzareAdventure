@@ -29,14 +29,6 @@ namespace TerrarianBizzareAdventure
             TBAInputs.Load(this);
             TimeStopManagement.Load(this);
 
-            /*
-            PlayerJoiningSynchronizationPacket = NetworkPacketLoader.Instance.Get<PlayerJoiningSynchronizationPacket>();
-            TimeStateChangedPacket = NetworkPacketLoader.Instance.Get<TimeStateChangedPacket>();
-
-            CompileAssemblyPacket = NetworkPacketLoader.Instance.Get<CompileAssemblyPacket>();
-            InstantlyRunnableRanPacket = NetworkPacketLoader.Instance.Get<InstantlyRunnableRanPacket>();
-            */
-
             if (!Main.dedServ)
                 UIManager.Load();
         }
@@ -94,7 +86,7 @@ namespace TerrarianBizzareAdventure
         }
 
 
-        #region Packets
+        /*#region Packets
 
         public PlayerJoiningSynchronizationPacket PlayerJoiningSynchronizationPacket { get; private set; }
         public TimeStateChangedPacket TimeStateChangedPacket { get; private set; }
@@ -102,7 +94,7 @@ namespace TerrarianBizzareAdventure
         public CompileAssemblyPacket CompileAssemblyPacket { get; private set; }
         public InstantlyRunnableRanPacket InstantlyRunnableRanPacket { get; private set; }
 
-        #endregion
+        #endregion*/
 
 
 

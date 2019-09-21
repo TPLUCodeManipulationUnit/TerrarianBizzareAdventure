@@ -4,6 +4,7 @@ using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader;
 using TerrarianBizzareAdventure.Stands;
+using TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio;
 using TerrarianBizzareAdventure.TimeStop;
 
 namespace TerrarianBizzareAdventure.Players
@@ -54,7 +55,7 @@ namespace TerrarianBizzareAdventure.Players
             TimeStopManagement.OnPlayerEnterWorld(player);
 
             if (Main.netMode == NetmodeID.MultiplayerClient && player.whoAmI == Main.myPlayer)
-                TBAMod.Instance.PlayerJoiningSynchronizationPacket.Send();
+                new PlayerJoiningSynchronizationPacket().Send();
         }
 
         public override void ProcessTriggers(TriggersSet triggersSet)
@@ -76,7 +77,7 @@ namespace TerrarianBizzareAdventure.Players
             if (player != Main.LocalPlayer)
                 return;
 
-            TBAMod.Instance.CompileAssemblyPacket.playerInstantEnvironments.Remove(player.whoAmI);
+            new CompileAssemblyPacket().playerInstantEnvironments.Remove(player.whoAmI);
         }
 
         public override void SetControls()

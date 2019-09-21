@@ -53,6 +53,9 @@ namespace TerrarianBizzareAdventure.Stands
 
         public override bool PreAI()
         {
+            projectile.netUpdate = true;
+            projectile.netUpdate2 = true;
+
             if (Main.dedServ)
                 return false;
 

@@ -12,7 +12,7 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
     {
         public override bool PostReceive(BinaryReader reader, int fromWho)
         {
-            InstantEnvironment instantEnvironment = TBAMod.Instance.CompileAssemblyPacket.playerInstantEnvironments[Player.whoAmI];
+            InstantEnvironment instantEnvironment = new CompileAssemblyPacket().playerInstantEnvironments[Player.whoAmI];
 
             for (int i = 0; i < Main.player.Length; i++)
             {

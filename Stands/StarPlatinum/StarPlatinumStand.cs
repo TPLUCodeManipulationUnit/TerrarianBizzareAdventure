@@ -23,12 +23,13 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
 
         public StarPlatinumStand() : base("starPlatinum", "Star Platinum")
         {
-            AuraColor = Color.MediumPurple;
+            AuraColor = new Color(1f, 0f, 1f);//new Color(210, 101, 198);//new Color(203, 85, 195);
         }
 
 
         public override void AddAnimations()
         {
+
             Animations.Add(ANIMATION_SUMMON, new SpriteAnimation(mod.GetTexture(TEXPATH + "SPSummon"), 10, 4));
             Animations.Add(ANIMATION_IDLE, new SpriteAnimation(mod.GetTexture(TEXPATH + "SPIdle"), 14, 4));
 
