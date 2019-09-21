@@ -140,6 +140,8 @@ namespace TerrarianBizzareAdventure.Stands
         public string CurrentState { get; set; }
         public SpriteAnimation CurrentAnimation => Animations[CurrentState];
 
+        public Color AuraColor { get; set; }
+
 
         // Automaticly supplies all future stands with a transparent texture so it won't ever draw
         // Even if it gets past PreDraw somehow

@@ -23,6 +23,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
 
         public StarPlatinumStand() : base("starPlatinum", "Star Platinum")
         {
+            AuraColor = Color.MediumPurple;
         }
 
 
@@ -47,7 +48,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
             Animations.Add("RUSH_DOWN", new SpriteAnimation(mod.GetTexture(TEXPATH + "SPRush_Down"), 4, 4));
             Animations.Add("RUSH_MIDDLE", new SpriteAnimation(mod.GetTexture(TEXPATH + "SPRush_Middle"), 4, 4));
 
-            Animations.Add("DESPAWN", new SpriteAnimation(mod.GetTexture(TEXPATH + "SPDespawn"), 6, 4));
+            Animations.Add(ANIMATION_DESPAWN, new SpriteAnimation(mod.GetTexture(TEXPATH + "SPDespawn"), 6, 4));
         }
 
 

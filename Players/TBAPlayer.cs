@@ -46,6 +46,7 @@ namespace TerrarianBizzareAdventure.Players
                 player.velocity.Y *= 0.01f;
                 player.direction = AttackDirection;
             }
+            ResetDrawingEffects();
         }
 
         public override void OnEnterWorld(Player player)
@@ -53,7 +54,7 @@ namespace TerrarianBizzareAdventure.Players
             TimeStopManagement.OnPlayerEnterWorld(player);
 
             if (Main.netMode == NetmodeID.MultiplayerClient && player.whoAmI == Main.myPlayer)
-                TBAMod.Instance.PlayerJoiningSynchronizationPacket.SendPacket();
+                TBAMod.Instance.PlayerJoiningSynchronizationPacket.Send();
         }
 
         public override void ProcessTriggers(TriggersSet triggersSet)

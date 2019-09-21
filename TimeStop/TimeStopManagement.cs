@@ -205,7 +205,7 @@ namespace TerrarianBizzareAdventure.TimeStop
                 packet.Duration = !stopped ? 0 : duration;
                 packet.Stopped = stopped;
 
-                TBAMod.Instance.TimeStateChangedPacket.SendPacket();
+                TBAMod.Instance.TimeStateChangedPacket.Send();
             }
         }
 

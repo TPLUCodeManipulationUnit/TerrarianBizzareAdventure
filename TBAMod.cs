@@ -29,11 +29,13 @@ namespace TerrarianBizzareAdventure
             TBAInputs.Load(this);
             TimeStopManagement.Load(this);
 
-            PlayerJoiningSynchronizationPacket = NetworkPacketLoader.Get<PlayerJoiningSynchronizationPacket>();
-            TimeStateChangedPacket = NetworkPacketLoader.Get<TimeStateChangedPacket>();
+            /*
+            PlayerJoiningSynchronizationPacket = NetworkPacketLoader.Instance.Get<PlayerJoiningSynchronizationPacket>();
+            TimeStateChangedPacket = NetworkPacketLoader.Instance.Get<TimeStateChangedPacket>();
 
-            CompileAssemblyPacket = NetworkPacketLoader.Get<CompileAssemblyPacket>();
-            InstantlyRunnableRanPacket = NetworkPacketLoader.Get<InstantlyRunnableRanPacket>();
+            CompileAssemblyPacket = NetworkPacketLoader.Instance.Get<CompileAssemblyPacket>();
+            InstantlyRunnableRanPacket = NetworkPacketLoader.Instance.Get<InstantlyRunnableRanPacket>();
+            */
 
             if (!Main.dedServ)
                 UIManager.Load();
@@ -52,7 +54,7 @@ namespace TerrarianBizzareAdventure
 
         public override void HandlePacket(BinaryReader reader, int whoAmI)
         {
-            NetworkPacketLoader.HandlePacket(reader, whoAmI);
+            NetworkPacketLoader.Instance.HandlePacket(reader, whoAmI);
         }
 
         public override bool HijackGetData(ref byte messageType, ref BinaryReader reader, int playerNumber)
