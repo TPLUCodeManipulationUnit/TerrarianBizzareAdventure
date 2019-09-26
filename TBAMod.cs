@@ -1,7 +1,10 @@
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Graphics.Effects;
+using Terraria.Graphics.Shaders;
 using Terraria.ModLoader;
 using Terraria.UI;
 using TerrarianBizzareAdventure.Helpers;
@@ -30,7 +33,16 @@ namespace TerrarianBizzareAdventure
             TimeStopManagement.Load(this);
 
             if (!Main.dedServ)
+            {
+                Ref<Effect> screenRef = new Ref<Effect>(GetEffect("Effects/ShockwaveEffect")); // The path to the compiled shader file.
+                Filters.Scene["Shockwave"] = new Filter(new ScreenShaderData(screenRef, "Shockwave"), EffectPriority.VeryHigh);
+                Filters.Scene["Shockwave"].Load();
+
+                SkyManager.Instance["TBA:TimeStopInvert"] = new PerfectlyNormalSky();
+                Filters.Scene["TBA:TimeStopInvert"] = new Filter(new ScreenShaderData("FilterInvert"), EffectPriority.High);
+
                 UIManager.Load();
+            }
         }
 
         public override void Unload()

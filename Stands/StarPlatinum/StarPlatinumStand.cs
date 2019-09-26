@@ -3,6 +3,7 @@ using Terraria;
 using TerrarianBizzareAdventure.Helpers;
 using TerrarianBizzareAdventure.Players;
 using TerrarianBizzareAdventure.Projectiles;
+using TerrarianBizzareAdventure.Projectiles.Misc;
 using TerrarianBizzareAdventure.TimeStop;
 
 namespace TerrarianBizzareAdventure.Stands.StarPlatinum
@@ -100,8 +101,13 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                 if (TBAInputs.SummonStand.JustPressed && CurrentState == ANIMATION_IDLE)
                     CurrentState = ANIMATION_DESPAWN;
 
-                if (TBAInputs.ContextAction.JustPressed && CurrentState == "POSE_IDLE")
-                    TimeStopManagement.ToggleTimeStopIfStopper(TBAPlayer.Get(Owner), 10 * Constants.TICKS_PER_SECOND);
+                if (TBAInputs.ContextAction.JustPressed && CurrentState.Contains("POSE"))
+                {
+                    if(!TimeStopManagement.TimeStopped)
+                        Projectile.NewProjectile(Owner.Center, Vector2.Zero, mod.ProjectileType<TimeStopVFX>(), 0, 0, Owner.whoAmI);
+
+                    TimeStopManagement.ToggleTimeStopIfStopper(TBAPlayer.Get(Owner), 5 * Constants.TICKS_PER_SECOND);
+                }
             }
 
             projectile.Center = Owner.Center + new Vector2(34 * Owner.direction, -20 + Owner.gfxOffY);

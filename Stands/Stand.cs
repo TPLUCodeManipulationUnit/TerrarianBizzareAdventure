@@ -76,7 +76,7 @@ namespace TerrarianBizzareAdventure.Stands
                 HasSetAnimations = true;
             }
 
-            if (Animations.Count >= 1 && !projectile.GetGlobalProjectile<TBAGlobalProjectile>().IsStopped)
+            if (Animations.Count >= 1 && !TimeStopManagement.projectileStates.ContainsKey(projectile))
                 Animations[CurrentState].Update();
 
             return true;

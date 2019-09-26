@@ -6,6 +6,8 @@ using Terraria.ModLoader;
 using TerrarianBizzareAdventure.Stands;
 using TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio;
 using TerrarianBizzareAdventure.TimeStop;
+using System.Linq;
+using TerrarianBizzareAdventure.Projectiles.Misc;
 
 namespace TerrarianBizzareAdventure.Players
 {
@@ -48,6 +50,12 @@ namespace TerrarianBizzareAdventure.Players
                 player.direction = AttackDirection;
             }
             ResetDrawingEffects();
+        }
+
+        public override void UpdateBiomeVisuals()
+        {
+            bool shockWaveExist = Main.projectile.Count(x => x.modProjectile is TimeStopVFX && x.active) > 0;
+            player.ManageSpecialBiomeVisuals("TBA:TimeStopInvert", shockWaveExist);
         }
 
         public override void OnEnterWorld(Player player)
