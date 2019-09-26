@@ -38,17 +38,18 @@ namespace TerrarianBizzareAdventure.Players
             else
                 AttackDirection = 0;
 
-            OnPostUpdate?.Invoke(this);
-        }
-
-        public override void ResetEffects()
-        {
             if (AttackDirection != 0)
             {
                 player.velocity.X *= 0.2f;
                 player.velocity.Y *= 0.01f;
                 player.direction = AttackDirection;
             }
+
+            OnPostUpdate?.Invoke(this);
+        }
+
+        public override void ResetEffects()
+        {
             ResetDrawingEffects();
         }
 

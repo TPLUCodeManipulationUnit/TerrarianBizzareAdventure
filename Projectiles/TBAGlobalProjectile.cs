@@ -19,6 +19,8 @@ namespace TerrarianBizzareAdventure.Projectiles
 
                 TimeStopManagement.projectileStates[projectile].PreAI(projectile);
 
+                projectile.frameCounter = 0;
+
                 return false;
             }
             else

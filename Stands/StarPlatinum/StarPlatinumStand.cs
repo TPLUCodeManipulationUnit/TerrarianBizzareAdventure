@@ -73,8 +73,18 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
 
                 if (RushTimer % 2 == 0)
                 {
-                    Projectile.NewProjectile(projectile.Center, _punchRushDirection, mod.ProjectileType<StarPlatinumRushBack>(), 120, 3.5f, Owner.whoAmI, projectile.whoAmI);
-                    Projectile.NewProjectile(projectile.Center, _punchRushDirection, mod.ProjectileType<StarPlatinumRush>(), 120, 3.5f, Owner.whoAmI, projectile.whoAmI);
+                    for (int i = 0; i < 2; i++)
+                    {
+                        int projBack = Projectile.NewProjectile(projectile.Center, _punchRushDirection, mod.ProjectileType<StarPlatinumRushBack>(), 120, 3.5f, Owner.whoAmI);
+
+                        RushPunch rushBack = Main.projectile[projBack].modProjectile as RushPunch;
+                        rushBack.ParentProjectile = projectile.whoAmI;
+                    }
+
+                    int projFront = Projectile.NewProjectile(projectile.Center, _punchRushDirection, mod.ProjectileType<StarPlatinumRush>(), 120, 3.5f, Owner.whoAmI);
+
+                    RushPunch rushFront = Main.projectile[projFront].modProjectile as RushPunch;
+                    rushFront.ParentProjectile = projectile.whoAmI;
                 }
                 RushTimer--;
             }

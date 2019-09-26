@@ -1,4 +1,4 @@
-displayName = Terrarian's Bizzare Adventure
+displayName = Terrarian's Bizarre Adventure
 author = HellGoesOn, Webmilio, Skipping
 version = 0.1
 modReferences = WebmilioCommons@0.1
