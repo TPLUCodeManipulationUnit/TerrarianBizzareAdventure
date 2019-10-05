@@ -13,21 +13,24 @@ namespace TerrarianBizzareAdventure
         /// <param name="frameCount">How many frames does the animation contain.</param>
         /// <param name="frameSpeed">The amount of ticks to spend on each frame.</param>
         /// <param name="autoLoop">true to make the animation loop once it reaches the end. Recommended for idle animations.</param>
-        public SpriteAnimation(Texture2D texture, int frameCount, int frameSpeed, bool autoLoop = false)
+        public SpriteAnimation(Texture2D texture, int frameCount, int frameSpeed, bool autoLoop = false, SpriteAnimation nextAnimation = null, bool reverseNextAnimation = false)
         {
             SpriteSheet = texture;
             FrameCount = frameCount;
             FrameSpeed = frameSpeed;
 
             AutoLoop = autoLoop;
-        }
 
+            NextAnimation = nextAnimation;
+
+            ReverseNextAnimation = reverseNextAnimation;
+        }
 
         public void Update()
         {
             if (Finished)
             {
-                
+
             }
             else
             {
@@ -73,6 +76,12 @@ namespace TerrarianBizzareAdventure
             ReversePlayback = reversePlayback;
         }
 
+        public void SetNextAnimation(SpriteAnimation nextAnimation, bool reverse = false)
+        {
+            NextAnimation = nextAnimation;
+            ReverseNextAnimation = reverse;
+        }
+
         public bool ReversePlayback { get; set; }
 
         public Rectangle FrameRect => new Rectangle(0, (int)FrameSize.Y * CurrentFrame, (int)FrameSize.X, (int)FrameSize.Y);
@@ -95,6 +104,12 @@ namespace TerrarianBizzareAdventure
         public bool Finished { get; private set; }
 
         /// <summary>true if the animation loops after reaching the end; otherwise false.</summary>
-        public bool AutoLoop { get; }
+        public bool AutoLoop { get; set; }
+
+        // next animation that will be played after this one is finished
+        public SpriteAnimation NextAnimation { get; private set; }
+
+        // shall the next animation be reversed or not.
+        public bool ReverseNextAnimation { get; private set; }
     }
 }

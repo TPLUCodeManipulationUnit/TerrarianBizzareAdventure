@@ -55,7 +55,7 @@ namespace TerrarianBizzareAdventure.Players
 
         public override void UpdateBiomeVisuals()
         {
-            bool shockWaveExist = Main.projectile.Count(x => x.modProjectile is TimeStopVFX && x.active) > 0;
+            bool shockWaveExist = Main.projectile.Count(x => x.active && x.modProjectile is TimeStopVFX) > 0;
             player.ManageSpecialBiomeVisuals("TBA:TimeStopInvert", shockWaveExist);
         }
 

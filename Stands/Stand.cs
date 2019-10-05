@@ -8,6 +8,7 @@ using TerrarianBizzareAdventure.Players;
 using TerrarianBizzareAdventure.Projectiles;
 using TerrarianBizzareAdventure.TimeStop;
 using WebmilioCommons.Managers;
+using System.Linq;
 
 namespace TerrarianBizzareAdventure.Stands
 {
@@ -77,7 +78,19 @@ namespace TerrarianBizzareAdventure.Stands
             }
 
             if (Animations.Count >= 1 && !TimeStopManagement.projectileStates.ContainsKey(projectile))
+            {
                 Animations[CurrentState].Update();
+
+                SpriteAnimation nextAnimation = CurrentAnimation.NextAnimation;
+
+                bool reverseAnimation = CurrentAnimation.ReverseNextAnimation;
+
+                if (CurrentAnimation.Finished && nextAnimation != null && Animations.ContainsValue(nextAnimation))
+                {
+                    CurrentState = Animations.Where(x => x.Value == nextAnimation).Select(x => x.Key).First();
+                    CurrentAnimation.ResetAnimation(reverseAnimation);
+                }
+            }
 
             return true;
         }

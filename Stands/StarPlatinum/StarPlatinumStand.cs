@@ -30,25 +30,37 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
 
         public override void AddAnimations()
         {
-
             Animations.Add(ANIMATION_SUMMON, new SpriteAnimation(mod.GetTexture(TEXPATH + "SPSummon"), 10, 4));
-            Animations.Add(ANIMATION_IDLE, new SpriteAnimation(mod.GetTexture(TEXPATH + "SPIdle"), 14, 4));
+            Animations.Add(ANIMATION_IDLE, new SpriteAnimation(mod.GetTexture(TEXPATH + "SPIdle"), 14, 4, true));
 
-            Animations.Add("MIDDLEPUNCH_LEFTHAND", new SpriteAnimation(mod.GetTexture(TEXPATH + PUNCH + "Middle" + LEFTHAND), 3, 5));
-            Animations.Add("MIDDLEPUNCH_RIGHTHAND", new SpriteAnimation(mod.GetTexture(TEXPATH + PUNCH + "Middle" + RIGHTHAND), 3, 5));
+            Animations[ANIMATION_SUMMON].SetNextAnimation(Animations[ANIMATION_IDLE]);
 
-            Animations.Add("DOWNPUNCH_LEFTHAND", new SpriteAnimation(mod.GetTexture(TEXPATH + PUNCH + "Down" + LEFTHAND), 3, 5));
-            Animations.Add("DOWNPUNCH_RIGHTHAND", new SpriteAnimation(mod.GetTexture(TEXPATH + PUNCH + "Down" + RIGHTHAND), 3, 5));
+            Animations.Add("MIDDLEPUNCH_LEFTHAND", new SpriteAnimation(mod.GetTexture(TEXPATH + PUNCH + "Middle" + LEFTHAND), 3, 5, false, Animations[ANIMATION_IDLE]) );
+            Animations.Add("MIDDLEPUNCH_RIGHTHAND", new SpriteAnimation(mod.GetTexture(TEXPATH + PUNCH + "Middle" + RIGHTHAND), 3, 5, false, Animations[ANIMATION_IDLE]) );
 
-            Animations.Add("UPPUNCH_LEFTHAND", new SpriteAnimation(mod.GetTexture(TEXPATH + PUNCH + "Up" + LEFTHAND), 3, 5));
-            Animations.Add("UPPUNCH_RIGHTHAND", new SpriteAnimation(mod.GetTexture(TEXPATH + PUNCH + "Up" + RIGHTHAND), 3, 5));
+            Animations.Add("DOWNPUNCH_LEFTHAND", new SpriteAnimation(mod.GetTexture(TEXPATH + PUNCH + "Down" + LEFTHAND), 3, 5, false, Animations[ANIMATION_IDLE]) );
+            Animations.Add("DOWNPUNCH_RIGHTHAND", new SpriteAnimation(mod.GetTexture(TEXPATH + PUNCH + "Down" + RIGHTHAND), 3, 5, false, Animations[ANIMATION_IDLE]) );
+
+            Animations.Add("UPPUNCH_LEFTHAND", new SpriteAnimation(mod.GetTexture(TEXPATH + PUNCH + "Up" + LEFTHAND), 3, 5, false, Animations[ANIMATION_IDLE]) );
+            Animations.Add("UPPUNCH_RIGHTHAND", new SpriteAnimation(mod.GetTexture(TEXPATH + PUNCH + "Up" + RIGHTHAND), 3, 5, false, Animations[ANIMATION_IDLE]) );
 
             Animations.Add("POSE_TRANSITION", new SpriteAnimation(mod.GetTexture(TEXPATH + "SPPose_Transition"), 15, 4));
-            Animations.Add("POSE_IDLE", new SpriteAnimation(mod.GetTexture(TEXPATH + "SPPose_Idle"), 11, 6));
+            Animations.Add("POSE_TRANSITION_REVERSE", new SpriteAnimation(mod.GetTexture(TEXPATH + "SPPose_Transition"), 15, 4, false, Animations[ANIMATION_IDLE]));
+            Animations.Add("POSE_IDLE", new SpriteAnimation(mod.GetTexture(TEXPATH + "SPPose_Idle"), 11, 6, true, Animations["POSE_TRANSITION_REVERSE"], true));
+
+            Animations["POSE_TRANSITION"].SetNextAnimation(Animations["POSE_IDLE"]);
 
             Animations.Add("RUSH_UP", new SpriteAnimation(mod.GetTexture(TEXPATH + "SPRush_Up"), 4, 4));
             Animations.Add("RUSH_DOWN", new SpriteAnimation(mod.GetTexture(TEXPATH + "SPRush_Down"), 4, 4));
             Animations.Add("RUSH_MIDDLE", new SpriteAnimation(mod.GetTexture(TEXPATH + "SPRush_Middle"), 4, 4));
+
+            Animations.Add("BLOCK_IDLE", new SpriteAnimation(mod.GetTexture(TEXPATH + "SPBlockIdle"), 7, 6, true));
+
+            Animations.Add("BLOCK_TRANSITION", new SpriteAnimation(mod.GetTexture(TEXPATH + "SPBlockTransition"), 11, 3, false, Animations["BLOCK_IDLE"]));
+
+            Animations.Add("BLOCK_TRANSITION_REVERSE", new SpriteAnimation(mod.GetTexture(TEXPATH + "SPBlockTransition"), 11, 3, false, Animations[ANIMATION_IDLE]));
+
+            Animations["BLOCK_IDLE"].SetNextAnimation(Animations["BLOCK_TRANSITION_REVERSE"], true);
 
             Animations.Add(ANIMATION_DESPAWN, new SpriteAnimation(mod.GetTexture(TEXPATH + "SPDespawn"), 6, 4));
         }
@@ -73,18 +85,29 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
 
                 if (RushTimer % 2 == 0)
                 {
-                    for (int i = 0; i < 2; i++)
+                    if (RushTimer > 12)
                     {
-                        int projBack = Projectile.NewProjectile(projectile.Center, _punchRushDirection, mod.ProjectileType<StarPlatinumRushBack>(), 120, 3.5f, Owner.whoAmI);
+                        for (int i = 0; i < 2; i++)
+                        {
+                            int projBack = Projectile.NewProjectile(projectile.Center, _punchRushDirection, mod.ProjectileType<StarPlatinumRushBack>(), 120, 3.5f, Owner.whoAmI);
 
-                        RushPunch rushBack = Main.projectile[projBack].modProjectile as RushPunch;
-                        rushBack.ParentProjectile = projectile.whoAmI;
+                            RushPunch rushBack = Main.projectile[projBack].modProjectile as RushPunch;
+                            rushBack.ParentProjectile = projectile.whoAmI;
+                        }
+
+                        int projFront = Projectile.NewProjectile(projectile.Center, _punchRushDirection, mod.ProjectileType<StarPlatinumRush>(), 120, 3.5f, Owner.whoAmI);
+
+                        RushPunch rushFront = Main.projectile[projFront].modProjectile as RushPunch;
+                        rushFront.ParentProjectile = projectile.whoAmI;
                     }
+                    else
+                    {
+                        int projFront = Projectile.NewProjectile(projectile.Center, _punchRushDirection, mod.ProjectileType<StarPlatinumRush>(), 120, 3.5f, Owner.whoAmI);
 
-                    int projFront = Projectile.NewProjectile(projectile.Center, _punchRushDirection, mod.ProjectileType<StarPlatinumRush>(), 120, 3.5f, Owner.whoAmI);
-
-                    RushPunch rushFront = Main.projectile[projFront].modProjectile as RushPunch;
-                    rushFront.ParentProjectile = projectile.whoAmI;
+                        RushPunch rushFront = Main.projectile[projFront].modProjectile as RushPunch;
+                        rushFront.ParentProjectile = projectile.whoAmI;
+                        rushFront.IsFinalPunch = true;
+                    }
                 }
                 RushTimer--;
             }
@@ -120,29 +143,28 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                 }
             }
 
-            projectile.Center = Owner.Center + new Vector2(34 * Owner.direction, -20 + Owner.gfxOffY);
+            Vector2 lerpPos = Vector2.Zero;
 
-            if (!InPose && CurrentState == "POSE_TRANSITION" && Animations[CurrentState].Finished)
+            int xOffset = IsPunching || RushTimer > 0 || IsTaunting ? 34 : -16;
+
+            if (CurrentState.Contains("BLOCK"))
             {
-                InPose = true;
-                CurrentAnimation.ResetAnimation(true);
-                CurrentState = "POSE_IDLE";
+                Owner.heldProj = projectile.whoAmI;
+                lerpPos = Owner.Center + new Vector2(6 * Owner.direction, -16 + Owner.gfxOffY);
             }
+            else
+            {
+                lerpPos = Owner.Center + new Vector2(xOffset * Owner.direction, -16 + Owner.gfxOffY);
+            }
+
+            projectile.Center = Vector2.Lerp(projectile.Center, lerpPos, 0.26f);
 
             if (IsTaunting)
             {
-                if (!InPose)
-                    CurrentState = "POSE_TRANSITION";
-            }
-
-            if (InPose && !IsTaunting)
-            {
-                CurrentState = "POSE_TRANSITION";
-                if (CurrentState == "POSE_TRANSITION" && Animations[CurrentState].Finished)
+                if (!CurrentState.Contains("POSE"))
                 {
+                    CurrentState = "POSE_TRANSITION";
                     CurrentAnimation.ResetAnimation();
-                    InPose = false;
-                    CurrentState = ANIMATION_IDLE;
                 }
             }
 
@@ -151,11 +173,10 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                 Opacity = CurrentAnimation.FrameRect.Y / CurrentAnimation.FrameRect.Height * 0.25f;
             }
 
-            if (CurrentState == ANIMATION_SUMMON && CurrentAnimation.Finished)
-                CurrentState = ANIMATION_IDLE;
-
-            if (CurrentState.Contains(ANIMATION_IDLE) && CurrentAnimation.Finished)
-                CurrentAnimation.ResetAnimation();
+            if(!CurrentState.Contains("PUNCH"))
+            {
+                IsPunching = false;
+            }
 
             if (CurrentState == ANIMATION_IDLE && Owner.controlUseItem && !_leftMouseButtonLastState && !IsPunching && !IsTaunting && RushTimer <= 0)
             {
@@ -179,6 +200,8 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                     PunchCounterReset = 24;
 
                     IsPunching = true;
+
+                    CurrentAnimation.ResetAnimation();
                 }
 
                 else
@@ -201,14 +224,9 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                     RushTimer = 120;
 
                     SetOwnerDirection(120);
-                }
-            }
 
-            if (IsPunching && CurrentAnimation.Finished)
-            {
-                CurrentAnimation.ResetAnimation();
-                CurrentState = ANIMATION_IDLE;
-                IsPunching = false;
+                    CurrentAnimation.ResetAnimation();
+                }
             }
 
             if (CurrentState == ANIMATION_DESPAWN)
@@ -219,7 +237,19 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                     KillStand();
             }
 
+            if(CurrentState == ANIMATION_IDLE && Owner.controlDown)
+            {
+                CurrentState = "BLOCK_TRANSITION";
+                CurrentAnimation.ResetAnimation();
+            }
+
             IsFlipped = Owner.direction == 1;
+
+            if (projectile.active)
+            {
+                Animations["POSE_IDLE"].AutoLoop = IsTaunting;
+                Animations["BLOCK_IDLE"].AutoLoop = Owner.controlDown;
+            }
 
             _leftMouseButtonLastState = Owner.controlUseItem;
         }

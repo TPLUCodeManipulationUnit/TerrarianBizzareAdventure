@@ -62,8 +62,10 @@ namespace TerrarianBizzareAdventure.Projectiles
 
         public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
-            if(target.CanBeChasedBy(this))
-                target.velocity = projectile.velocity * 0.1f;
+            if (!IsFinalPunch)
+                target.velocity *= 0f;
+            else
+                target.velocity = projectile.velocity * 2f;
 
             target.immune[projectile.owner] = 4;
         }
@@ -72,17 +74,21 @@ namespace TerrarianBizzareAdventure.Projectiles
         {
             writer.Write(SpeedMultiplier);
             writer.Write(ParentProjectile);
+            writer.Write(IsFinalPunch);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader)
         {
             SpeedMultiplier = reader.ReadSingle();
             ParentProjectile = reader.ReadInt32();
+            IsFinalPunch = reader.ReadBoolean();
         }
 
         public float SpeedMultiplier { get; private set; }
 
         public int ParentProjectile { get; set; }
+
+        public bool IsFinalPunch { get; set; }
 
 
         public override string Texture => "TerrarianBizzareAdventure/Textures/EmptyPixel";
