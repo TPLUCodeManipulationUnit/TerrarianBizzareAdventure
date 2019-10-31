@@ -12,7 +12,10 @@ namespace TerrarianBizzareAdventure.Players
         public override bool Receive(BinaryReader reader, int fromWho)
         {
             if (!IsResponse && Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				IsResponse = true;
                 SendPacket(Main.myPlayer, Player.whoAmI);
+			}
 
             return true;
         }
