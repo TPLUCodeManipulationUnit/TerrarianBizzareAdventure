@@ -20,6 +20,7 @@ namespace TerrarianBizzareAdventure.NPCs
                     TimeStopManagement.RegisterStoppedNPC(npc);
 
                 TimeStopManagement.npcStates[npc].PreAI(npc);
+                npc.frameCounter = 0;
                 return false;
             }
 

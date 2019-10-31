@@ -1,7 +1,10 @@
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Graphics.Effects;
+using Terraria.Graphics.Shaders;
 using Terraria.ModLoader;
 using Terraria.UI;
 using TerrarianBizzareAdventure.Helpers;
@@ -29,14 +32,17 @@ namespace TerrarianBizzareAdventure
             TBAInputs.Load(this);
             TimeStopManagement.Load(this);
 
-            PlayerJoiningSynchronizationPacket = NetworkPacketLoader.Get<PlayerJoiningSynchronizationPacket>();
-            TimeStateChangedPacket = NetworkPacketLoader.Get<TimeStateChangedPacket>();
-
-            CompileAssemblyPacket = NetworkPacketLoader.Get<CompileAssemblyPacket>();
-            InstantlyRunnableRanPacket = NetworkPacketLoader.Get<InstantlyRunnableRanPacket>();
-
             if (!Main.dedServ)
+            {
+                Ref<Effect> screenRef = new Ref<Effect>(GetEffect("Effects/ShockwaveEffect")); // The path to the compiled shader file.
+                Filters.Scene["Shockwave"] = new Filter(new ScreenShaderData(screenRef, "Shockwave"), EffectPriority.VeryHigh);
+                Filters.Scene["Shockwave"].Load();
+
+                SkyManager.Instance["TBA:TimeStopInvert"] = new PerfectlyNormalSky();
+                Filters.Scene["TBA:TimeStopInvert"] = new Filter(new ScreenShaderData("FilterInvert"), EffectPriority.High);
+
                 UIManager.Load();
+            }
         }
 
         public override void Unload()
@@ -52,7 +58,7 @@ namespace TerrarianBizzareAdventure
 
         public override void HandlePacket(BinaryReader reader, int whoAmI)
         {
-            NetworkPacketLoader.HandlePacket(reader, whoAmI);
+            NetworkPacketLoader.Instance.HandlePacket(reader, whoAmI);
         }
 
         public override bool HijackGetData(ref byte messageType, ref BinaryReader reader, int playerNumber)
@@ -92,7 +98,7 @@ namespace TerrarianBizzareAdventure
         }
 
 
-        #region Packets
+        /*#region Packets
 
         public PlayerJoiningSynchronizationPacket PlayerJoiningSynchronizationPacket { get; private set; }
         public TimeStateChangedPacket TimeStateChangedPacket { get; private set; }
@@ -100,7 +106,7 @@ namespace TerrarianBizzareAdventure
         public CompileAssemblyPacket CompileAssemblyPacket { get; private set; }
         public InstantlyRunnableRanPacket InstantlyRunnableRanPacket { get; private set; }
 
-        #endregion
+        #endregion*/
 
 
 

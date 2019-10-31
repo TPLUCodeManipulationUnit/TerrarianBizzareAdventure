@@ -200,12 +200,12 @@ namespace TerrarianBizzareAdventure.TimeStop
         {
             if (Main.netMode == NetmodeID.MultiplayerClient)
             {
-                TimeStateChangedPacket packet = TBAMod.Instance.TimeStateChangedPacket;
+                TimeStateChangedPacket packet = new TimeStateChangedPacket();
 
                 packet.Duration = !stopped ? 0 : duration;
                 packet.Stopped = stopped;
 
-                TBAMod.Instance.TimeStateChangedPacket.SendPacket();
+                packet.Send();
             }
         }
 

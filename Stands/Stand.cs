@@ -5,8 +5,10 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ModLoader;
 using TerrarianBizzareAdventure.Players;
+using TerrarianBizzareAdventure.Projectiles;
 using TerrarianBizzareAdventure.TimeStop;
 using WebmilioCommons.Managers;
+using System.Linq;
 
 namespace TerrarianBizzareAdventure.Stands
 {
@@ -53,6 +55,9 @@ namespace TerrarianBizzareAdventure.Stands
 
         public override bool PreAI()
         {
+            projectile.netUpdate = true;
+            projectile.netUpdate2 = true;
+
             if (Main.dedServ)
                 return false;
 
@@ -72,8 +77,20 @@ namespace TerrarianBizzareAdventure.Stands
                 HasSetAnimations = true;
             }
 
-            if (Animations.Count >= 1)
+            if (Animations.Count >= 1 && !TimeStopManagement.projectileStates.ContainsKey(projectile))
+            {
                 Animations[CurrentState].Update();
+
+                SpriteAnimation nextAnimation = CurrentAnimation.NextAnimation;
+
+                bool reverseAnimation = CurrentAnimation.ReverseNextAnimation;
+
+                if (CurrentAnimation.Finished && nextAnimation != null && Animations.ContainsValue(nextAnimation))
+                {
+                    CurrentState = Animations.Where(x => x.Value == nextAnimation).Select(x => x.Key).First();
+                    CurrentAnimation.ResetAnimation(reverseAnimation);
+                }
+            }
 
             return true;
         }
@@ -139,6 +156,8 @@ namespace TerrarianBizzareAdventure.Stands
 
         public string CurrentState { get; set; }
         public SpriteAnimation CurrentAnimation => Animations[CurrentState];
+
+        public Color AuraColor { get; set; }
 
 
         // Automaticly supplies all future stands with a transparent texture so it won't ever draw
