@@ -87,6 +87,7 @@ namespace TerrarianBizzareAdventure.Stands
 
                 if (CurrentAnimation.Finished && nextAnimation != null && Animations.ContainsValue(nextAnimation))
                 {
+                    CurrentAnimation.ResetAnimation(CurrentAnimation.ReversePlayback);
                     CurrentState = Animations.Where(x => x.Value == nextAnimation).Select(x => x.Key).First();
                     CurrentAnimation.ResetAnimation(reverseAnimation);
                 }
@@ -95,6 +96,10 @@ namespace TerrarianBizzareAdventure.Stands
             return true;
         }
 
+        public override bool? CanCutTiles()
+        {
+            return false;
+        }
 
         public override void SendExtraAI(BinaryWriter writer)
         {

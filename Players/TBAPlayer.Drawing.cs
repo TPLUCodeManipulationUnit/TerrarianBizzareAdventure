@@ -43,6 +43,9 @@ namespace TerrarianBizzareAdventure.Players
 
                 if(OldAnimationID != AuraAnimationID)
                     new AuraSyncPacket().Send();
+
+
+                OldAnimationID = AuraAnimationID;
             }
             else
             {
@@ -65,8 +68,6 @@ namespace TerrarianBizzareAdventure.Players
                     AuraAnimation.ResetAnimation(true);
                 }
             }
-
-            OldAnimationID = AuraAnimationID;
         }
 
         public readonly PlayerLayer standAuraLayer = new PlayerLayer("TBAMod", "StandAura", PlayerLayer.Body, delegate (PlayerDrawInfo drawInfo)

@@ -51,6 +51,21 @@ namespace TerrarianBizzareAdventure.Players
         public override void ResetEffects()
         {
             ResetDrawingEffects();
+
+            if (player.controlUseItem)
+            {
+                MouseTimeReset = 3;
+                MouseTime++;
+            }
+            else
+            {
+                if (MouseTimeReset > 0)
+                    MouseTimeReset--;
+            }
+
+            // I give 2 ticks to w.e. is using MouseTime to do its thing before it ultimately resets to 0
+            if (MouseTimeReset <= 0)
+                MouseTime = 0;
         }
 
         public override void UpdateBiomeVisuals()
@@ -115,5 +130,10 @@ namespace TerrarianBizzareAdventure.Players
         public int AttackDirectionResetTimer { get; set; }
 
         public Vector2 PreTimeStopPosition { get; private set; }
+
+        // Used for stuff that happens when you hold LMB for some time.
+        public int MouseTime { get; private set; }
+
+        public int MouseTimeReset { get; private set; }
     }
 }

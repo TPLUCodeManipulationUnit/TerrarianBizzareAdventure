@@ -150,11 +150,11 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
             if (CurrentState.Contains("BLOCK"))
             {
                 Owner.heldProj = projectile.whoAmI;
-                lerpPos = Owner.Center + new Vector2(6 * Owner.direction, -16 + Owner.gfxOffY);
+                lerpPos = Owner.Center + new Vector2(6 * Owner.direction, -24 + Owner.gfxOffY);
             }
             else
             {
-                lerpPos = Owner.Center + new Vector2(xOffset * Owner.direction, -16 + Owner.gfxOffY);
+                lerpPos = Owner.Center + new Vector2(xOffset * Owner.direction, -24 + Owner.gfxOffY);
             }
 
             projectile.Center = Vector2.Lerp(projectile.Center, lerpPos, 0.26f);
