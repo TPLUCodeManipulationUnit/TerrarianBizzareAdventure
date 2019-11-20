@@ -95,7 +95,7 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
 
                 InstantlyRunnables = compiled;
 
-                if (local && Main.netMode == NetmodeID.MultiplayerClient)
+                if (local)
                 {
                     //string.Join("\0", sources)
                     new CompileAssemblyPacket().Send();
@@ -144,9 +144,10 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
 
             if (local && Main.netMode == NetmodeID.MultiplayerClient)
             {
-                InstantlyRunnableRanPacket packet = new InstantlyRunnableRanPacket();
-                packet.StringifiedClass = instantlyRunnable.GetType().ToString();
-                packet.Send();
+                new InstantlyRunnableRanPacket
+                {
+                    StringifiedClass = instantlyRunnable.GetType().ToString()
+                }.Send();
             }
 
             return true;

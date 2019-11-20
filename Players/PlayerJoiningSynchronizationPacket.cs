@@ -24,13 +24,7 @@ namespace TerrarianBizzareAdventure.Players
 
         public string StandName
         {
-            get
-            {
-                if (!ModPlayer.StandUser)
-                    return "";
-
-                return ModPlayer.Stand.UnlocalizedName;
-            }
+            get => !ModPlayer.StandUser ? "" : ModPlayer.Stand.UnlocalizedName;
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
