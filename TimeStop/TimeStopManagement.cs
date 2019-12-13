@@ -22,7 +22,7 @@ namespace TerrarianBizzareAdventure.TimeStop
 
         #region Immunity Registration
 
-        public static void AddNPCImmunity<T>() where T : ModNPC => _npcs.Add(typeof(T).GetModFromType().NPCType<T>());
+        public static void AddNPCImmunity<T>() where T : ModNPC => _npcs.Add(ModContent.NPCType<T>());
         public static void AddNPCImmunity(int type) => _npcs.Add(type);
 
         public static bool IsNPCImmune(NPC npc)
@@ -42,7 +42,7 @@ namespace TerrarianBizzareAdventure.TimeStop
         }
 
 
-        public static void AddItemImmunity<T>() where T : ModItem => AddItemImmunity(typeof(T).GetModFromType().ItemType<T>());
+        public static void AddItemImmunity<T>() where T : ModItem => AddItemImmunity(ModContent.ItemType<T>());
         public static void AddItemImmunity(int itemType) => _items.Add(itemType);
 
         public static bool IsImmune(Item item)
@@ -198,15 +198,10 @@ namespace TerrarianBizzareAdventure.TimeStop
 
         private static void TimeStateChanged(ModPlayer modPlayer, int duration, bool stopped)
         {
-            if (Main.netMode == NetmodeID.MultiplayerClient)
+            new TimeStateChangedPacket
             {
-                TimeStateChangedPacket packet = new TimeStateChangedPacket();
-
-                packet.Duration = !stopped ? 0 : duration;
-                packet.Stopped = stopped;
-
-                packet.Send();
-            }
+                Duration = !stopped ? 0 : duration, Stopped = stopped
+            }.Send();
         }
 
 

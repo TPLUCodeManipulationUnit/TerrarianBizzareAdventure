@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.ModLoader;
 using TerrarianBizzareAdventure.Helpers;
 using TerrarianBizzareAdventure.Players;
 using TerrarianBizzareAdventure.Projectiles;
@@ -89,20 +90,20 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                     {
                         for (int i = 0; i < 2; i++)
                         {
-                            int projBack = Projectile.NewProjectile(projectile.Center, _punchRushDirection, mod.ProjectileType<StarPlatinumRushBack>(), 120, 3.5f, Owner.whoAmI);
+                            int projBack = Projectile.NewProjectile(projectile.Center, _punchRushDirection, ModContent.ProjectileType<StarPlatinumRushBack>(), 120, 3.5f, Owner.whoAmI);
 
                             RushPunch rushBack = Main.projectile[projBack].modProjectile as RushPunch;
                             rushBack.ParentProjectile = projectile.whoAmI;
                         }
 
-                        int projFront = Projectile.NewProjectile(projectile.Center, _punchRushDirection, mod.ProjectileType<StarPlatinumRush>(), 120, 3.5f, Owner.whoAmI);
+                        int projFront = Projectile.NewProjectile(projectile.Center, _punchRushDirection, ModContent.ProjectileType<StarPlatinumRush>(), 120, 3.5f, Owner.whoAmI);
 
                         RushPunch rushFront = Main.projectile[projFront].modProjectile as RushPunch;
                         rushFront.ParentProjectile = projectile.whoAmI;
                     }
                     else
                     {
-                        int projFront = Projectile.NewProjectile(projectile.Center, _punchRushDirection, mod.ProjectileType<StarPlatinumRush>(), 120, 3.5f, Owner.whoAmI);
+                        int projFront = Projectile.NewProjectile(projectile.Center, _punchRushDirection, ModContent.ProjectileType<StarPlatinumRush>(), 120, 3.5f, Owner.whoAmI);
 
                         RushPunch rushFront = Main.projectile[projFront].modProjectile as RushPunch;
                         rushFront.ParentProjectile = projectile.whoAmI;
@@ -137,7 +138,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                 if (TBAInputs.ContextAction.JustPressed && CurrentState.Contains("POSE"))
                 {
                     if(!TimeStopManagement.TimeStopped)
-                        Projectile.NewProjectile(Owner.Center, Vector2.Zero, mod.ProjectileType<TimeStopVFX>(), 0, 0, Owner.whoAmI);
+                        Projectile.NewProjectile(Owner.Center, Vector2.Zero, ModContent.ProjectileType<TimeStopVFX>(), 0, 0, Owner.whoAmI);
 
                     TimeStopManagement.ToggleTimeStopIfStopper(TBAPlayer.Get(Owner), 5 * Constants.TICKS_PER_SECOND);
                 }
@@ -257,7 +258,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
 
         private void SpawnPunch()
         {
-            Projectile.NewProjectile(projectile.Center, VectorHelpers.DirectToMouse(projectile.Center, 22f), mod.ProjectileType<Punch>(), 120, 3.5f, Owner.whoAmI, projectile.whoAmI);
+            Projectile.NewProjectile(projectile.Center, VectorHelpers.DirectToMouse(projectile.Center, 22f), ModContent.ProjectileType<Punch>(), 120, 3.5f, Owner.whoAmI, projectile.whoAmI);
         }
 
         private void SetOwnerDirection(int time = 5)

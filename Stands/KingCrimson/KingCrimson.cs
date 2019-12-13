@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.ModLoader;
 using TerrarianBizzareAdventure.Helpers;
 using TerrarianBizzareAdventure.Players;
 using TerrarianBizzareAdventure.Projectiles;
@@ -101,15 +102,14 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
                         else
                             CurrentState = "PUNCH_" + (Main.rand.NextBool() ? "R" : "L");
 
-
                         Projectile.NewProjectile(projectile.Center, VectorHelpers.DirectToMouse(projectile.Center, 22f), mod.ProjectileType<Punch>(), 120, 3.5f, Owner.whoAmI, projectile.whoAmI);
+
                     }
 
                     if (TBAPlayer.Get(Owner).MouseTime >= 10)
                     {
                         Owner.direction = Main.MouseWorld.X < Owner.Center.X ? -1 : 1;
                         CurrentState = "CUT_PREP";
-                        Projectile.NewProjectile(projectile.Center, VectorHelpers.DirectToMouse(projectile.Center, 22f), mod.ProjectileType<Punch>(), 120, 3.5f, Owner.whoAmI, projectile.whoAmI);
                     }
                 }
             }
