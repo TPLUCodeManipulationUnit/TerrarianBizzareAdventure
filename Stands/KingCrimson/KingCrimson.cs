@@ -23,8 +23,21 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
             Animations.Add("PUNCH_R", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCPunchRight"), 4, 5));
             Animations.Add("PUNCH_L", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCPunchLeft"), 4, 5));
 
+            Animations.Add("PUNCH_RU", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCPunchRightU"), 4, 5));
+            Animations.Add("PUNCH_LU", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCPunchLeftU"), 4, 5));
+
+            Animations.Add("PUNCH_RD", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCPunchRightD"), 4, 5));
+            Animations.Add("PUNCH_LD", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCPunchLeftD"), 4, 5));
+
             Animations["PUNCH_R"].SetNextAnimation(Animations[ANIMATION_IDLE]);
             Animations["PUNCH_L"].SetNextAnimation(Animations[ANIMATION_IDLE]);
+
+            Animations["PUNCH_RU"].SetNextAnimation(Animations[ANIMATION_IDLE]);
+            Animations["PUNCH_LU"].SetNextAnimation(Animations[ANIMATION_IDLE]);
+
+            Animations["PUNCH_RD"].SetNextAnimation(Animations[ANIMATION_IDLE]);
+            Animations["PUNCH_LD"].SetNextAnimation(Animations[ANIMATION_IDLE]);
+
             Animations[ANIMATION_SUMMON].SetNextAnimation(Animations[ANIMATION_IDLE]);
 
             Animations.Add("CUT_PREP", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCCut"), 20, 3));
@@ -80,9 +93,18 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
                     if (TBAPlayer.Get(Owner).MouseTime < 10 && !Owner.controlUseItem)
                     {
                         Owner.direction = Main.MouseWorld.X < Owner.Center.X ? -1 : 1;
-                        CurrentState = "PUNCH_" + (Main.rand.NextBool() ? "R" : "L");
+
+                        if(Main.MouseWorld.Y > Owner.Center.Y + 60)
+                            CurrentState = "PUNCH_" + (Main.rand.NextBool() ? "R" : "L") + "D";
+                        else if (Main.MouseWorld.Y < Owner.Center.Y - 60)
+                            CurrentState = "PUNCH_" + (Main.rand.NextBool() ? "R" : "L") + "U";
+                        else
+                            CurrentState = "PUNCH_" + (Main.rand.NextBool() ? "R" : "L");
+
+
                         Projectile.NewProjectile(projectile.Center, VectorHelpers.DirectToMouse(projectile.Center, 22f), mod.ProjectileType<Punch>(), 120, 3.5f, Owner.whoAmI, projectile.whoAmI);
                     }
+
                     if (TBAPlayer.Get(Owner).MouseTime >= 10)
                     {
                         Owner.direction = Main.MouseWorld.X < Owner.Center.X ? -1 : 1;

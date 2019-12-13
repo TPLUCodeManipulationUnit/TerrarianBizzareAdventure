@@ -30,6 +30,7 @@
     <None Remove="TerrarianBizzareAdventure.sln.DotSettings" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="TimeSkip\" />
     <Folder Include="Stands\StickyFinger\" />
     <Folder Include="Textures\Stands\StarPlatinum\" />
   </ItemGroup>
