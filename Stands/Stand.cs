@@ -172,5 +172,7 @@ namespace TerrarianBizzareAdventure.Stands
         public Player Owner => Main.player[projectile.owner];
 
         public float Opacity { get; set; }
+
+        public string CallSoundPath { get; set; }
     }
 }

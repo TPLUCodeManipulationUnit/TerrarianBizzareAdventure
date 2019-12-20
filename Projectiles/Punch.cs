@@ -27,6 +27,13 @@ namespace TerrarianBizzareAdventure.Projectiles
             projectile.Center = ParentProjectile.Center + projectile.velocity;
         }
 
+        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        {
+            base.ModifyHitNPC(target, ref damage, ref knockback, ref crit, ref hitDirection);
+
+            Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Punch" + Main.rand.Next(1, 5)));
+        }
+
         private Projectile ParentProjectile => Main.projectile[(int)projectile.ai[0]];
     }
 }

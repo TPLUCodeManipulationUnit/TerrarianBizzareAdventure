@@ -10,7 +10,7 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
 {
     public sealed class InstantlyRunnableRanPacket : ModPlayerNetworkPacket<TBAPlayer>
     {
-        public override bool PostReceive(BinaryReader reader, int fromWho)
+        protected override bool PostReceive(BinaryReader reader, int fromWho)
         {
             InstantEnvironment instantEnvironment = new CompileAssemblyPacket().playerInstantEnvironments[Player.whoAmI];
 

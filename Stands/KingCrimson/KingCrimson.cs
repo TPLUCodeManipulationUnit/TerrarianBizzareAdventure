@@ -17,7 +17,7 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
         public override void AddAnimations()
         {
             Animations.Add(ANIMATION_SUMMON, new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCSpawn"), 7, 4));
-            Animations.Add(ANIMATION_IDLE, new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCIdle"), 5, 10));
+            Animations.Add(ANIMATION_IDLE, new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCIdle"), 5, 22));
 
             Animations.Add(ANIMATION_DESPAWN, new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCSpawn"), 7, 4));
 
@@ -29,6 +29,8 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
 
             Animations.Add("PUNCH_RD", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCPunchRightD"), 4, 5));
             Animations.Add("PUNCH_LD", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCPunchLeftD"), 4, 5));
+
+            Animations.Add("CUT_IDLE", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCCutIdle"), 5, 25));
 
             Animations["PUNCH_R"].SetNextAnimation(Animations[ANIMATION_IDLE]);
             Animations["PUNCH_L"].SetNextAnimation(Animations[ANIMATION_IDLE]);
@@ -45,7 +47,8 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
             Animations.Add("CUT_ATT", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCYeet"), 13, 3));
 
             Animations["CUT_ATT"].SetNextAnimation(Animations[ANIMATION_IDLE]);
-            Animations["CUT_PREP"].SetNextAnimation(Animations["CUT_ATT"]);
+            Animations["CUT_PREP"].SetNextAnimation(Animations["CUT_IDLE"]);
+            Animations["CUT_IDLE"].SetNextAnimation(Animations["CUT_ATT"]);
         }
 
         public override void AI()
@@ -91,7 +94,7 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
             {
                 if (TBAPlayer.Get(Owner).MouseTimeReset > 0)
                 {
-                    if (TBAPlayer.Get(Owner).MouseTime < 10 && !Owner.controlUseItem)
+                    if (TBAPlayer.Get(Owner).MouseTime < 15 && !Owner.controlUseItem)
                     {
                         Owner.direction = Main.MouseWorld.X < Owner.Center.X ? -1 : 1;
 
@@ -102,11 +105,11 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
                         else
                             CurrentState = "PUNCH_" + (Main.rand.NextBool() ? "R" : "L");
 
-                        Projectile.NewProjectile(projectile.Center, VectorHelpers.DirectToMouse(projectile.Center, 22f), mod.ProjectileType<Punch>(), 120, 3.5f, Owner.whoAmI, projectile.whoAmI);
+                        Projectile.NewProjectile(projectile.Center, VectorHelpers.DirectToMouse(projectile.Center, 22f), ModContent.ProjectileType<Punch>(), 120, 3.5f, Owner.whoAmI, projectile.whoAmI);
 
                     }
 
-                    if (TBAPlayer.Get(Owner).MouseTime >= 10)
+                    if (TBAPlayer.Get(Owner).MouseTime >= 15)
                     {
                         Owner.direction = Main.MouseWorld.X < Owner.Center.X ? -1 : 1;
                         CurrentState = "CUT_PREP";
@@ -114,9 +117,18 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
                 }
             }
 
+            if (CurrentState.Contains("PUNCH") || CurrentState.Contains("ATT"))
+                Owner.heldProj = projectile.whoAmI;
+
             // If we do a YEET attack, damage is dealt by stand itself instead of a seperate projectile
             projectile.damage = CurrentState == "CUT_ATT" && CurrentAnimation.CurrentFrame > 3 && CurrentAnimation.CurrentFrame < 9 ? 400 : 0;
-            Animations["CUT_PREP"].AutoLoop = Owner.controlUseItem;
+            Animations["CUT_IDLE"].AutoLoop = Owner.controlUseItem;
+            
+            if(CurrentState == "CUT_IDLE" && !Owner.controlUseItem)
+            {
+                CurrentAnimation.ResetAnimation();
+                CurrentState = "CUT_ATT";
+            }
 
 
             if (CurrentState == ANIMATION_IDLE && CurrentAnimation.Finished)

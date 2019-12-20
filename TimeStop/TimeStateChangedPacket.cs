@@ -7,7 +7,7 @@ namespace TerrarianBizzareAdventure.TimeStop
 {
     public sealed class TimeStateChangedPacket : ModPlayerNetworkPacket<TBAPlayer>
     {
-        public override bool PostReceive(BinaryReader reader, int fromWho)
+        protected override bool PostReceive(BinaryReader reader, int fromWho)
         {
             if (Stopped)
                 TimeStopManagement.TryStopTime(ModPlayer, Duration, false);

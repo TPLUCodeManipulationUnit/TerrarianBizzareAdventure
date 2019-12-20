@@ -36,7 +36,7 @@ namespace TerrarianBizzareAdventure.Projectiles.Misc
 
             if (!Filters.Scene["Shockwave"].IsActive())
             {
-                Filters.Scene.Activate("Shockwave", projectile.Center).GetShader().UseColor(RIPPLE_COUNT, RIPPLE_SIZE, RIPPLE_SPEED).UseTargetPosition(projectile.Center);
+                Filters.Scene.Activate("Shockwave", projectile.Center).GetShader().UseColor(RIPPLE_COUNT, RIPPLE_SIZE, RIPPLE_SPEED - 0.25f).UseTargetPosition(projectile.Center);
             }
 
             float progress = (180f - projectile.timeLeft) / 60f;

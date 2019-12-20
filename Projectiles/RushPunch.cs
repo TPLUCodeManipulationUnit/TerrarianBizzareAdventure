@@ -67,6 +67,7 @@ namespace TerrarianBizzareAdventure.Projectiles
             else
                 target.velocity = projectile.velocity * 2f;
 
+            Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Punch" + Main.rand.Next(1, 5)));
             target.immune[projectile.owner] = 4;
         }
 

@@ -11,7 +11,7 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
         internal Dictionary<int, InstantEnvironment> playerInstantEnvironments = new Dictionary<int, InstantEnvironment>();
 
 
-        public override bool PostReceive(BinaryReader reader, int fromWho)
+        protected override bool PostReceive(BinaryReader reader, int fromWho)
         {
             GetEnvironment(Player.whoAmI).CompileSource(false, Sources);
             return true;

@@ -89,7 +89,12 @@ namespace TerrarianBizzareAdventure.Players
             if (TBAInputs.SummonStand.JustPressed)
             {
                 if (ActiveStandProjectileId == -999) // Minimal value for a DAT in SHENZEN.IO :haha:
+                {
                     ActiveStandProjectileId = Projectile.NewProjectile(player.Center, Vector2.Zero, mod.ProjectileType(Stand.GetType().Name), 0, 0, player.whoAmI);
+
+                    if(Stand.CallSoundPath != "")
+                    Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, Stand.CallSoundPath));
+                }
             }
 
             if (ActiveStandProjectileId == ACTIVE_STAND_PROJECTILE_INACTIVE_ID)
