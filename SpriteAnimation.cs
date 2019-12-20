@@ -96,7 +96,7 @@ namespace TerrarianBizzareAdventure
         public Vector2 FrameSize => new Vector2(SpriteSheet.Width, SpriteSheet.Height / FrameCount);
 
         ///<summary>Determines how many ticks to spend on one frame.</summary>
-        public int FrameSpeed { get; }
+        public int FrameSpeed { get; set; }
         // Determines the amount of frames animation has
         public int FrameCount { get; }
 

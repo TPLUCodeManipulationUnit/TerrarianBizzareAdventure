@@ -78,6 +78,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
             if(CurrentState == ANIMATION_SUMMON && CurrentAnimation.CurrentFrame < 3)
                 Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/SP_Spawn"));
 
+            #region Rush
             if (PunchCounterReset > 0)
                 PunchCounterReset--;
             else
@@ -124,6 +125,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                     CurrentState = ANIMATION_IDLE;
                 }
             }
+            #endregion
 
             projectile.timeLeft = 200;
 
@@ -187,6 +189,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                 IsPunching = false;
             }
 
+            #region Punch
             if (CurrentState == ANIMATION_IDLE && Owner.controlUseItem && !_leftMouseButtonLastState && !IsPunching && !IsTaunting && RushTimer <= 0)
             {
                 if (PunchCounter < 3)
@@ -239,6 +242,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                     CurrentAnimation.ResetAnimation();
                 }
             }
+            #endregion
 
             if (CurrentState == ANIMATION_DESPAWN)
             {
@@ -261,7 +265,10 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                 Animations["POSE_IDLE"].AutoLoop = IsTaunting;
                 Animations["BLOCK_IDLE"].AutoLoop = Owner.controlDown;
             }
+
             _leftMouseButtonLastState = Owner.controlUseItem;
+
+            #region Time Stop
 
             if (TimeStopDelay > 1)
                 TimeStopDelay--;
@@ -276,6 +283,8 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                 TimeStopManagement.ToggleTimeStopIfStopper(TBAPlayer.Get(Owner), 5 * Constants.TICKS_PER_SECOND);
                 TimeStopDelay--;
             }
+
+            #endregion
 
             if (CurrentState == "POSE_IDLE" && !IsTaunting)
             {

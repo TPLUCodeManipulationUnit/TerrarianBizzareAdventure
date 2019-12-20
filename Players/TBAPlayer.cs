@@ -54,18 +54,33 @@ namespace TerrarianBizzareAdventure.Players
 
             if (player.controlUseItem)
             {
-                MouseTimeReset = 3;
-                MouseTime++;
+                MouseOneTimeReset = 3;
+                MouseOneTime++;
             }
             else
             {
-                if (MouseTimeReset > 0)
-                    MouseTimeReset--;
+                if (MouseOneTimeReset > 0)
+                    MouseOneTimeReset--;
+            }
+
+            if (player.controlUseTile)
+            {
+                MouseTwoTimeReset = 3;
+                MouseTwoTime++;
+            }
+            else
+            {
+                if (MouseTwoTimeReset > 0)
+                    MouseTwoTimeReset--;
             }
 
             // I give 2 ticks to w.e. is using MouseTime to do its thing before it ultimately resets to 0
-            if (MouseTimeReset <= 0)
-                MouseTime = 0;
+            if (MouseOneTimeReset <= 0)
+                MouseOneTime = 0;
+
+
+            if (MouseTwoTimeReset <= 0)
+                MouseTwoTime = 0;
         }
 
         public override void UpdateBiomeVisuals()
@@ -137,8 +152,12 @@ namespace TerrarianBizzareAdventure.Players
         public Vector2 PreTimeStopPosition { get; private set; }
 
         // Used for stuff that happens when you hold LMB for some time.
-        public int MouseTime { get; private set; }
+        public int MouseOneTime { get; private set; }
 
-        public int MouseTimeReset { get; private set; }
+        public int MouseOneTimeReset { get; private set; }
+
+        public int MouseTwoTime { get; private set; }
+
+        public int MouseTwoTimeReset { get; private set; }
     }
 }
