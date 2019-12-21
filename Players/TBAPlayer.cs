@@ -81,6 +81,8 @@ namespace TerrarianBizzareAdventure.Players
 
             if (MouseTwoTimeReset <= 0)
                 MouseTwoTime = 0;
+
+            CanTransform = false;
         }
 
         public override void UpdateBiomeVisuals()

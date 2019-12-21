@@ -49,10 +49,12 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
             Animations.Add("DONUT_IDLE", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCDonutIdle"), 7, 15, true));
             Animations.Add("DONUT_ATT", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCDonutCommit"), 6, 4));
             Animations.Add("DONUT_UNDO", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCDonutUndo"), 12, 4));
+            Animations.Add("DONUT_MISS", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCDonutMiss"), 7, 4));
 
             Animations["DONUT_PREP"].SetNextAnimation(Animations["DONUT_IDLE"]);
-            Animations["DONUT_ATT"].SetNextAnimation(Animations["DONUT_UNDO"]);
+            Animations["DONUT_ATT"].SetNextAnimation(Animations["DONUT_MISS"]);
             Animations["DONUT_UNDO"].SetNextAnimation(Animations[ANIMATION_IDLE]);
+            Animations["DONUT_MISS"].SetNextAnimation(Animations[ANIMATION_IDLE]);
             #endregion
 
             #region Rush
@@ -83,11 +85,12 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
         {
             base.AI();
 
-            projectile.width = (int)CurrentAnimation.FrameSize.X;
-            projectile.height = (int)CurrentAnimation.FrameSize.Y;
-
             if (Animations.Count <= 0)
                 return;
+
+
+            projectile.width = (int)CurrentAnimation.FrameSize.X;
+            projectile.height = (int)CurrentAnimation.FrameSize.Y;
 
             IsFlipped = Owner.direction == 1;
 
@@ -98,7 +101,7 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
             {
                 /*if (TBAInputs.StandPose.JustPressed)
                     if (CurrentState == ANIMATION_IDLE)
-                        IsTaunting = true;
+                        IsTaunting = true;  
                     else
                         IsTaunting = false;*/
 
@@ -108,7 +111,7 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
 
             Vector2 lerpPos = Vector2.Zero;
 
-            int xOffset = IsTaunting || CurrentState.Contains("PUNCH") || CurrentState.Contains("ATT") || CurrentState == "DONUT_UNDO" || RushTimer > 0? 34 : -16;
+            int xOffset = IsTaunting || CurrentState.Contains("PUNCH") || CurrentState.Contains("ATT") || CurrentState == "DONUT_UNDO" ||  CurrentState == "DONUT_MISS" ||RushTimer > 0? 34 : -16;
 
             lerpPos = Owner.Center + new Vector2(xOffset * Owner.direction, -24 + Owner.gfxOffY);
 
@@ -141,7 +144,7 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
 
                             PunchCounterReset = 28;
 
-                            Projectile.NewProjectile(projectile.Center, VectorHelpers.DirectToMouse(projectile.Center, 22f), ModContent.ProjectileType<Punch>(), 120, 3.5f, Owner.whoAmI, projectile.whoAmI);
+                            Projectile.NewProjectile(projectile.Center, VectorHelpers.DirectToMouse(projectile.Center, 22f), ModContent.ProjectileType<Punch>(), 60, 3.5f, Owner.whoAmI, projectile.whoAmI);
 
                         }
 
@@ -211,14 +214,17 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
             Animations["RUSH_MID"].AutoLoop = RushTimer > 0;
             #endregion
 
-            if (CurrentState.Contains("PUNCH") || CurrentState.Contains("ATT") || CurrentState.Contains("UNDO"))
+            if (CurrentState.Contains("PUNCH") || CurrentState.Contains("ATT") || CurrentState.Contains("UNDO") || CurrentState == "DONUT_MISS")
                 Owner.heldProj = projectile.whoAmI;
 
             #region Yeet attacc
             // If we do a YEET attack, damage is dealt by stand itself instead of a seperate projectile
             bool yeeting = CurrentState == "CUT_ATT" && CurrentAnimation.CurrentFrame > 3 && CurrentAnimation.CurrentFrame < 9;
-            bool donuting = CurrentState == "DONUT_ATT" && CurrentAnimation.CurrentFrame > 2;
-            projectile.damage = yeeting || donuting ? 400 : 0;
+            bool donuting = CurrentState == "DONUT_ATT" && CurrentAnimation.CurrentFrame == 3;
+            projectile.damage = yeeting ? 400 : 0;
+
+            if (donuting && Owner.ownedProjectileCounts[ModContent.ProjectileType<DonutPunch>()] <= 1)
+                Projectile.NewProjectile(projectile.Center, Vector2.Zero, ModContent.ProjectileType<DonutPunch>(), 60, 0, Owner.whoAmI, projectile.whoAmI, -1);
 
             Animations["CUT_IDLE"].AutoLoop = Owner.controlUseItem;
             
@@ -234,12 +240,13 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
                 CurrentState = "DONUT_PREP";
             }
 
-            if(!Owner.controlUseTile && CurrentState == "DONUT_IDLE")
+            if(CurrentState == "DONUT_IDLE" && !Owner.controlUseTile)
             {
+                CurrentAnimation.ResetAnimation();
                 CurrentState = "DONUT_ATT";
             }
-
-            Animations["DONUT_UNDO"].FrameSpeed = Animations["DONUT_UNDO"].CurrentFrame < 5 ? 9 : 5;
+            
+            Animations["DONUT_UNDO"].FrameSpeed = Animations["DONUT_UNDO"].CurrentFrame < 5 ? 12 : 5;
 
 
 
@@ -254,12 +261,20 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
                     KillStand();
             }
 
+            if (CurrentState == ANIMATION_IDLE)
+                HasMissedDonut = true;
+
+            if (CurrentState == "DONUT_ATT")
+                Animations["DONUT_ATT"].SetNextAnimation(HasMissedDonut ? Animations["DONUT_MISS"] : Animations["DONUT_UNDO"]);
+
             if (PunchCounterReset > 0)
                 PunchCounterReset--;
             else
                 PunchCounter = 0;
 
         }
+
+        public bool HasMissedDonut { get; set; }
 
         public int PunchCounter { get; private set; }
         public int PunchCounterReset { get; private set; }

@@ -61,9 +61,6 @@ namespace TerrarianBizzareAdventure.Stands
             if (Main.dedServ)
                 return false;
 
-            if (Owner.dead || !Owner.active)
-                KillStand();
-
             if (!HasSetAnimations)
             {
                 AddAnimations();
@@ -92,6 +89,9 @@ namespace TerrarianBizzareAdventure.Stands
                     CurrentAnimation.ResetAnimation(reverseAnimation);
                 }
             }
+
+            if (Owner.dead || !Owner.active)
+                KillStand();
 
             return true;
         }
@@ -160,7 +160,7 @@ namespace TerrarianBizzareAdventure.Stands
         public bool HasSetAnimations { get; private set; }
 
         public string CurrentState { get; set; }
-        public SpriteAnimation CurrentAnimation => Animations[CurrentState];
+        public SpriteAnimation CurrentAnimation => Animations.Count > 0 ? Animations[CurrentState] : null;
 
         public Color AuraColor { get; set; }
 

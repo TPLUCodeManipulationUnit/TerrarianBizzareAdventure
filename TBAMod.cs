@@ -42,6 +42,9 @@ namespace TerrarianBizzareAdventure
                 Filters.Scene["TBA:TimeStopInvert"] = new Filter(new ScreenShaderData("FilterInvert"), EffectPriority.High);
 
                 UIManager.Load();
+
+                AddEquipTexture(null, EquipType.Head, "DiavoloHead", "TerrarianBizzareAdventure/Items/Armor/Vanity/Vinegar/DiavoloHead_Head");
+                AddEquipTexture(null, EquipType.Body, "DiavoloBody", "TerrarianBizzareAdventure/Items/Armor/Vanity/Vinegar/DiavoloChest_Body", "TerrarianBizzareAdventure/Items/Armor/Vanity/Vinegar/DiavoloChest_Arms");
             }
         }
 
