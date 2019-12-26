@@ -4,6 +4,7 @@ using Terraria.ModLoader;
 using TerrarianBizzareAdventure.Helpers;
 using TerrarianBizzareAdventure.Players;
 using TerrarianBizzareAdventure.Projectiles;
+using TerrarianBizzareAdventure.TimeSkip;
 
 namespace TerrarianBizzareAdventure.Stands.KingCrimson
 {
@@ -261,7 +262,7 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
                     KillStand();
             }
 
-            if (CurrentState == ANIMATION_IDLE)
+            if (CurrentState == ANIMATION_IDLE) 
                 HasMissedDonut = true;
 
             if (CurrentState == "DONUT_ATT")
@@ -271,6 +272,12 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
                 PunchCounterReset--;
             else
                 PunchCounter = 0;
+
+            if (TBAInputs.ContextAction.JustPressed && Owner.whoAmI == Main.myPlayer)
+            {
+                if(TimeSkipManager.TimeSkippedFor <= 0)
+                    TimeSkipManager.SkipTime(TBAPlayer.Get(Owner), Constants.TICKS_PER_SECOND * 10 + 26);
+            }
 
         }
 

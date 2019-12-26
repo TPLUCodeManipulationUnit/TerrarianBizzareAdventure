@@ -12,6 +12,7 @@ using TerrarianBizzareAdventure.Items.Developer;
 using TerrarianBizzareAdventure.Players;
 using TerrarianBizzareAdventure.Stands;
 using TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio;
+using TerrarianBizzareAdventure.TimeSkip;
 using TerrarianBizzareAdventure.TimeStop;
 using TerrarianBizzareAdventure.UserInterfaces;
 using WebmilioCommons.Networking;
@@ -31,6 +32,7 @@ namespace TerrarianBizzareAdventure
 
             TBAInputs.Load(this);
             TimeStopManagement.Load(this);
+            TimeSkipManager.Load();
 
             if (!Main.dedServ)
             {
@@ -48,6 +50,19 @@ namespace TerrarianBizzareAdventure
             }
         }
 
+        public override void UpdateMusic(ref int music, ref MusicPriority priority)
+        {
+            if (Main.myPlayer == -1 || Main.gameMenu || !Main.LocalPlayer.active)
+            {
+                return;
+            }
+
+            if(TimeSkipManager.IsTimeSkipped)
+            {
+                music = GetSoundSlot(SoundType.Music, "Sounds/Music/KingCrimsonMusic");
+                priority = MusicPriority.BossHigh;
+            }
+        }
         public override void Unload()
         {
             Instance = null;
@@ -116,6 +131,7 @@ namespace TerrarianBizzareAdventure
         public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
         {
             layers.Insert(0, new RATMLayer(UIManager.RATMState));
+            layers.Add(UIManager.TimeSkipLayer);
         }
 
         public override void UpdateUI(GameTime gameTime)

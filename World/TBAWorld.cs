@@ -3,6 +3,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using TerrarianBizzareAdventure.Players;
+using TerrarianBizzareAdventure.TimeSkip;
 using TerrarianBizzareAdventure.TimeStop;
 
 namespace TerrarianBizzareAdventure.World
@@ -12,16 +13,20 @@ namespace TerrarianBizzareAdventure.World
         public override void PostDrawTiles()
         {
             if (Main.netMode == NetmodeID.MultiplayerClient)
+            {
+                TimeSkipManager.UpdateTimeSkip();
                 TimeStopManagement.MainOnOnTick();
-
+            }
             base.PostDrawTiles();
         }
 
         public override void PreUpdate()
         {
             if (Main.netMode == NetmodeID.SinglePlayer || Main.dedServ)
+            {
+                TimeSkipManager.UpdateTimeSkip();
                 TimeStopManagement.MainOnOnTick();
-
+            }
             base.PreUpdate();
         }
 

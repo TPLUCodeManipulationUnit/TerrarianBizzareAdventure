@@ -1,12 +1,21 @@
-﻿using Terraria;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
+using Terraria;
 using Terraria.ModLoader;
 using TerrarianBizzareAdventure.States;
+using TerrarianBizzareAdventure.TimeSkip;
 using TerrarianBizzareAdventure.TimeStop;
 
 namespace TerrarianBizzareAdventure.NPCs
 {
     public sealed class TBAGlobalNPC : GlobalNPC
     {
+        public override void SetDefaults(NPC npc)
+        {
+            TimeSkipStates = new List<TimeSkipState>();
+        }
+
         public override bool PreAI(NPC npc)
         {
             if (TimeStopManagement.IsNPCImmune(npc))
@@ -23,6 +32,29 @@ namespace TerrarianBizzareAdventure.NPCs
                 npc.frameCounter = 0;
                 return false;
             }
+
+            var IsTimeSkipped = TimeSkipManager.IsTimeSkipped;
+
+            if (IsTimeSkipped)
+            {
+                if (TimeSkipManager.TimeSkippedFor % 6 == 0)
+                {
+                        TimeSkipStates.Add
+                        (
+                            new TimeSkipState(npc.Center, npc.scale, npc.rotation, npc.frame, npc.direction)
+                        );
+                }
+            }
+
+            if (TimeSkipStates.Count > 12 || (!IsTimeSkipped && TimeSkipStates.Count > 0))
+                TimeSkipStates.RemoveAt(0);
+
+            if(TimeSkipStates.Count <= 0 && IsTimeSkipped)
+                for(int i = 0; i < 13; i++)
+                TimeSkipStates.Add
+                (
+                    new TimeSkipState(npc.Center, npc.scale, npc.rotation, npc.frame, npc.direction)
+                );
 
             return true;
         }
@@ -48,9 +80,38 @@ namespace TerrarianBizzareAdventure.NPCs
                 knockback = 0;
             }
         }
-        
+
+        public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Color drawColor)
+        {
+            if (TimeSkipManager.IsTimeSkipped)
+            {
+                Texture2D texture = Main.npcTexture[npc.type];
+                int frameCount = Main.npcFrameCount[npc.type];
+                int frameHeight = texture.Height / frameCount;
+
+                Vector2 drawOrig = new Vector2(texture.Width * 0.5f, (texture.Height / frameCount) * 0.5f);
+
+                for (int i = TimeSkipStates.Count - 1; i > 0; i--)
+                {
+                    SpriteEffects spriteEffects = TimeSkipStates[i].Direction == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+                    spriteBatch.Draw(texture, TimeSkipStates[i].Position - Main.screenPosition, TimeSkipStates[i].Frame, (i == 1 ? LastDrawColor : Color.Red * 0.5f), TimeSkipStates[i].Rotation, drawOrig, TimeSkipStates[i].Scale, spriteEffects, 1f);
+                }
+            }
+        }
+
+        public override void DrawEffects(NPC npc, ref Color drawColor)
+        {
+            if (TimeSkipManager.IsTimeSkipped)
+                drawColor = Color.Red * 0.5f;
+            else
+                LastDrawColor = Color.White;
+        }
+
+        public List<TimeSkipState> TimeSkipStates { get; private set; }
 
         public bool IsStopped { get; private set; }
+
+        public Color LastDrawColor { get; private set; }
 
         public override bool InstancePerEntity => true;
     }

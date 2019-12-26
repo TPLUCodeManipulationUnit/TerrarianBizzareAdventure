@@ -8,6 +8,7 @@ using TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio;
 using TerrarianBizzareAdventure.TimeStop;
 using System.Linq;
 using TerrarianBizzareAdventure.Projectiles.Misc;
+using TerrarianBizzareAdventure.TimeSkip;
 
 namespace TerrarianBizzareAdventure.Players
 {
