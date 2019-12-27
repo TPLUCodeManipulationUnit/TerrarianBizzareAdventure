@@ -12,13 +12,6 @@ namespace TerrarianBizzareAdventure.TimeSkip
     {
         internal static void UpdateTimeSkip()
         {
-            if (!Init)
-            {
-                TwilightShader = GameShaders.Armor.GetShaderFromItemId(ItemID.TwilightDye).Shader;
-                Init = true;
-            }
-
-
             if (TimeSkippedFor > 0)
                 TimeSkippedFor--;
             
@@ -27,17 +20,27 @@ namespace TerrarianBizzareAdventure.TimeSkip
                 TimeSkipper = null;
             }
 
+            if (TimeSkippedFor <= 0)
+                WaveQuality = Main.WaveQuality;
+
+            if (TimeSkippedFor == 1)
+                Main.WaveQuality = WaveQuality;
+
+
             if(IsTimeSkipped)
             {
+                if (TimeSkippedFor > 2)
+                    Main.WaveQuality = 0;
+
                 #region Shader
-                TwilightShader.Parameters["uColor"].SetValue(new Vector3(.65f, 0.1f, .65f));
+                TwilightShader.Parameters["uColor"].SetValue(new Vector3(.2f));
                 TwilightShader.Parameters["uSourceRect"].SetValue(new Vector4(0, 0, 16, 16));
                 TwilightShader.Parameters["uSecondaryColor"].SetValue(new Vector3(1f, 1f, 1f));
                 TwilightShader.Parameters["uTime"].SetValue(TwiTime);
                 TwilightShader.Parameters["uOpacity"].SetValue(1);
                 TwilightShader.Parameters["uSaturation"].SetValue(1);
                 TwilightShader.Parameters["uRotation"].SetValue(0);
-                TwilightShader.Parameters["uImageSize0"].SetValue(new Vector2(30, 330));
+                TwilightShader.Parameters["uImageSize0"].SetValue(new Vector2(20, 170));
                 TwilightShader.Parameters["uImageSize1"].SetValue(new Vector2(16, 16));
 
                 if (Main.myPlayer == Main.LocalPlayer.whoAmI)
@@ -79,7 +82,6 @@ namespace TerrarianBizzareAdventure.TimeSkip
 
             if(TimeSkippedFor >= 610)
                 Main.PlaySound(TBAMod.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/StandAbilityEffects/BigTimeSkip"));
-
         }
 
         internal static void Load()
@@ -103,7 +105,7 @@ namespace TerrarianBizzareAdventure.TimeSkip
 
         public static float TwiTime { get; private set; }
 
-        public static bool Init { get; private set; }
+        public static bool Init { get; set; }
 
 
 
@@ -112,5 +114,7 @@ namespace TerrarianBizzareAdventure.TimeSkip
         public static int CurrentFrame { get; private set; }
 
         public static bool FullCycle { get; private set; }
+
+        public static int WaveQuality { get; private set; }
     }
 }

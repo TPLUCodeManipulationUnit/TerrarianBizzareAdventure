@@ -9,6 +9,7 @@ using TerrarianBizzareAdventure.TimeStop;
 using System.Linq;
 using TerrarianBizzareAdventure.Projectiles.Misc;
 using TerrarianBizzareAdventure.TimeSkip;
+using Terraria.Graphics.Shaders;
 
 namespace TerrarianBizzareAdventure.Players
 {
@@ -90,6 +91,8 @@ namespace TerrarianBizzareAdventure.Players
         {
             bool shockWaveExist = Main.projectile.Count(x => x.active && x.modProjectile is TimeStopVFX) > 0;
             player.ManageSpecialBiomeVisuals("TBA:TimeStopInvert", shockWaveExist);
+
+            GameShaders.Armor.Apply(GameShaders.Armor.GetShaderIdFromItemId(ItemID.TwilightDye), player);
         }
 
         public override void OnEnterWorld(Player player)

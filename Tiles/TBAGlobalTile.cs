@@ -26,8 +26,9 @@ namespace TerrarianBizzareAdventure.Tiles
 
         public override void PostDraw(int i, int j, int type, SpriteBatch spriteBatch)
         {
-            if (TimeSkipManager.IsTimeSkipped)
-                DrawHelpers.EndShader(spriteBatch);
+            //if (TimeSkipManager.IsTimeSkipped)
+                //DrawHelpers.EndShader(spriteBatch);
+
             base.PostDraw(i, j, type, spriteBatch);
         }
 
@@ -50,8 +51,9 @@ namespace TerrarianBizzareAdventure.Tiles
 
         public override void PostDraw(int i, int j, int type, SpriteBatch spriteBatch)
         {
-            if (TimeSkipManager.IsTimeSkipped)
-                DrawHelpers.EndShader(spriteBatch);
+            //if (TimeSkipManager.IsTimeSkipped)
+                //DrawHelpers.EndShader(spriteBatch);
+
             base.PostDraw(i, j, type, spriteBatch);
         }
     }

@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Graphics.Shaders;
+using Terraria.ID;
 using Terraria.ModLoader;
 using TerrarianBizzareAdventure.States;
 using TerrarianBizzareAdventure.TimeSkip;
@@ -83,6 +85,7 @@ namespace TerrarianBizzareAdventure.NPCs
 
         public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Color drawColor)
         {
+
             if (TimeSkipManager.IsTimeSkipped)
             {
                 Texture2D texture = Main.npcTexture[npc.type];

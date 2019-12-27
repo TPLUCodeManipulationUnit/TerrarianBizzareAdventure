@@ -21,7 +21,7 @@ namespace TerrarianBizzareAdventure.Projectiles
             int tickLimit = TimeStopManagement.TimeStopped && projectile.owner == TimeStopManagement.TimeStopper.player.whoAmI ? 10 : 1;
             IsStopped = TimeStopManagement.TimeStopped && !(projectile.modProjectile is IProjectileHasImmunityToTimeStop iisitts && iisitts.IsNativelyImmuneToTimeStop(projectile)) && RanForTicks > tickLimit && (!(projectile.modProjectile is Stand) && projectile.owner == TimeStopManagement.TimeStopper.player.whoAmI);
 
-            var IsTimeSkipped = TimeSkipManager.IsTimeSkipped;
+            var IsTimeSkipped = TimeSkipManager.IsTimeSkipped && TimeSkipManager.TimeSkipper.player.whoAmI != projectile.owner;
 
             if (IsTimeSkipped)
             {
@@ -55,18 +55,14 @@ namespace TerrarianBizzareAdventure.Projectiles
             }
         }
 
-        public override bool PreDraw(Projectile projectile, SpriteBatch spriteBatch, Color lightColor)
-        {
-            if (TimeSkipManager.IsTimeSkipped)
-                lightColor = Color.Red;
-
-            return base.PreDraw(projectile, spriteBatch, lightColor);
-        }
-
         public override void PostDraw(Projectile projectile, SpriteBatch spriteBatch, Color lightColor)
         {
-            base.PostDraw(projectile, spriteBatch, lightColor);
-            if (TimeSkipManager.IsTimeSkipped)
+            var IsTimeSkipped = TimeSkipManager.IsTimeSkipped && TimeSkipManager.TimeSkipper.player.whoAmI != projectile.owner;
+
+            if (IsTimeSkipped)
+                lightColor = Color.Red;
+
+            if (IsTimeSkipped)
             {
                 Texture2D texture = Main.projectileTexture[projectile.type];
                 int frameCount = Main.projFrames[projectile.type];

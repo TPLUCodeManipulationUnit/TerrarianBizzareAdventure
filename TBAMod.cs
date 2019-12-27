@@ -136,6 +136,9 @@ namespace TerrarianBizzareAdventure
 
         public override void UpdateUI(GameTime gameTime)
         {
+            if (Main.gameMenu)
+                TimeSkipManager.Init = false;
+
             UIManager.Update(gameTime);
         }
 
