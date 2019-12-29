@@ -18,7 +18,6 @@ namespace TerrarianBizzareAdventure.Players
             }
 
             return true;
-
         }
 
 

@@ -1,10 +1,10 @@
 ﻿using System.IO;
 using Microsoft.Xna.Framework;
 using Terraria;
-using TerrarianBizzareAdventure.Extensions;
 using TerrarianBizzareAdventure.Helpers;
 using TerrarianBizzareAdventure.Players;
 using TerrarianBizzareAdventure.UserInterfaces;
+using WebmilioCommons.Extensions;
 
 namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
 {
@@ -19,7 +19,7 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
 
         public WebmilioStand() : base("special.developer.webmilio.RATM", "Rage Against The Machine")
         {
-            _texturePath = this.GetType().GetTexturePath();
+            _texturePath = this.GetType().GetPath();
         }
 
 

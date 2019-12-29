@@ -35,7 +35,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="WebmilioCommons">
-      <HintPath>..\..\..\..\..\WebmilioCommons.dll</HintPath>
+      <HintPath>..\WebmilioCommons-Releases\WebmilioCommons.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Target Name="BuildMod" AfterTargets="Build">
