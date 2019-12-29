@@ -20,10 +20,14 @@ namespace TerrarianBizzareAdventure.NPCs
 
         public override bool PreAI(NPC npc)
         {
-            if (TimeStopManagement.IsNPCImmune(npc))
+            if (TimeStopManagement.TimeStopped && TimeStopManagement.IsNPCImmune(npc))
                 return true;
 
             IsStopped = TimeStopManagement.TimeStopped;
+
+            int TimeSkipDuration = TimeSkipManager.TimeSkippedFor;
+
+            var IsTimeSkipped = TimeSkipManager.IsTimeSkipped;
 
             if (IsStopped)
             {
@@ -35,7 +39,6 @@ namespace TerrarianBizzareAdventure.NPCs
                 return false;
             }
 
-            var IsTimeSkipped = TimeSkipManager.IsTimeSkipped;
 
             if (IsTimeSkipped)
             {
@@ -43,21 +46,29 @@ namespace TerrarianBizzareAdventure.NPCs
                 {
                         TimeSkipStates.Add
                         (
-                            new TimeSkipState(npc.Center, npc.scale, npc.rotation, npc.frame, npc.direction)
+                            new TimeSkipState(npc.Center, npc.velocity, npc.scale, npc.rotation, npc.frame, npc.direction, npc.ai)
                         );
                 }
             }
 
-            if (TimeSkipStates.Count > 12 || (!IsTimeSkipped && TimeSkipStates.Count > 0))
+            if (IsTimeSkipped && TimeSkipStates.Count > 12)
                 TimeSkipStates.RemoveAt(0);
 
             if(TimeSkipStates.Count <= 0 && IsTimeSkipped)
                 for(int i = 0; i < 13; i++)
                 TimeSkipStates.Add
                 (
-                    new TimeSkipState(npc.Center, npc.scale, npc.rotation, npc.frame, npc.direction)
+                    new TimeSkipState(npc.Center, npc.velocity, npc.scale, npc.rotation, npc.frame, npc.direction, npc.ai)
                 );
 
+            if (IsTimeSkipped && TimeSkipDuration <= 2 && TimeSkipStates.Count > 0)
+            {
+                npc.ai = TimeSkipStates[0].AI;
+                npc.Center = TimeSkipStates[0].Position;
+                npc.scale = TimeSkipStates[0].Scale;
+                npc.direction = TimeSkipStates[0].Direction;
+                TimeSkipStates.Clear();
+            }
             return true;
         }
 
@@ -85,7 +96,6 @@ namespace TerrarianBizzareAdventure.NPCs
 
         public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Color drawColor)
         {
-
             if (TimeSkipManager.IsTimeSkipped)
             {
                 Texture2D texture = Main.npcTexture[npc.type];

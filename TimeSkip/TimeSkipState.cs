@@ -9,13 +9,15 @@ namespace TerrarianBizzareAdventure.TimeSkip
 {
     public class TimeSkipState
     {
-        public TimeSkipState(Vector2 pos, float scale, float rot, Rectangle frame, int dir)
+        public TimeSkipState(Vector2 pos, Vector2 vel, float scale, float rot, Rectangle frame, int dir, float[] ai)
         {
             Position = pos;
             Scale = scale;
             Rotation = rot;
             Frame = frame;
             Direction = dir;
+            AI = ai;
+            Velocity = vel;
         }
 
         public Vector2 Position { get; }
@@ -23,5 +25,7 @@ namespace TerrarianBizzareAdventure.TimeSkip
         public float Rotation { get; }
         public Rectangle Frame { get; }
         public int Direction { get; }
+        public float[] AI { get; }
+        public Vector2 Velocity { get; }
     }
 }

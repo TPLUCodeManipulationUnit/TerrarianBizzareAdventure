@@ -21,7 +21,10 @@ namespace TerrarianBizzareAdventure.Projectiles
             int tickLimit = TimeStopManagement.TimeStopped && projectile.owner == TimeStopManagement.TimeStopper.player.whoAmI ? 10 : 1;
             IsStopped = TimeStopManagement.TimeStopped && !(projectile.modProjectile is IProjectileHasImmunityToTimeStop iisitts && iisitts.IsNativelyImmuneToTimeStop(projectile)) && RanForTicks > tickLimit && (!(projectile.modProjectile is Stand) && projectile.owner == TimeStopManagement.TimeStopper.player.whoAmI);
 
-            var IsTimeSkipped = TimeSkipManager.IsTimeSkipped && TimeSkipManager.TimeSkipper.player.whoAmI != projectile.owner;
+
+            var IsTimeSkipped = TimeSkipManager.IsTimeSkipped;
+
+            RanForTicks++;
 
             if (IsTimeSkipped)
             {
@@ -29,13 +32,25 @@ namespace TerrarianBizzareAdventure.Projectiles
                 {
                     TimeSkipStates.Add
                         (
-                            new TimeSkipState(projectile.Center, projectile.scale, projectile.rotation, new Rectangle(0, projectile.frame, 0, 0), projectile.direction)
+                            new TimeSkipState(projectile.Center, projectile.velocity, projectile.scale, projectile.rotation, new Rectangle(0, projectile.frame, 0, 0), projectile.direction, projectile.ai)
                         );
                 }
             }
 
-            if (TimeSkipStates.Count > 12 || (!IsTimeSkipped && TimeSkipStates.Count > 0))
+            if (TimeSkipStates.Count > 12)
                 TimeSkipStates.RemoveAt(0);
+
+            if(IsTimeSkipped && TimeSkipManager.TimeSkippedFor <= 2 && TimeSkipStates.Count > 0)
+            {
+                projectile.Center = TimeSkipStates[0].Position;
+                projectile.ai = TimeSkipStates[0].AI;
+                projectile.scale = TimeSkipStates[0].Scale;
+                projectile.direction = TimeSkipStates[0].Direction;
+            }
+
+
+            if (IsTimeSkipped && RanForTicks > 2 && RanForTicks < 60)
+                return false;
 
             if (IsStopped)
             {
@@ -50,7 +65,6 @@ namespace TerrarianBizzareAdventure.Projectiles
             }
             else
             {
-                RanForTicks++;
                 return true;
             }
         }
@@ -78,8 +92,15 @@ namespace TerrarianBizzareAdventure.Projectiles
             }
         }
 
-        public override bool ShouldUpdatePosition(Projectile projectile) => !IsStopped;
+        public override bool ShouldUpdatePosition(Projectile projectile)
+        {
+            bool notMove = TimeSkipManager.IsTimeSkipped && RanForTicks > 2 && RanForTicks < 60;
 
+            if (notMove)
+                return false;
+
+            return !IsStopped;
+        }
 
         public bool IsStopped { get; private set; }
 
