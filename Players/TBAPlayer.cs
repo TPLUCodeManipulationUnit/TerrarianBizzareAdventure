@@ -10,6 +10,10 @@ using System.Linq;
 using TerrarianBizzareAdventure.Projectiles.Misc;
 using TerrarianBizzareAdventure.TimeSkip;
 using Terraria.Graphics.Shaders;
+using System.Collections.Generic;
+using TerrarianBizzareAdventure.Helpers;
+using TerrarianBizzareAdventure.Items.Tools;
+using TerrarianBizzareAdventure.Items.Weapons.Rewards;
 
 namespace TerrarianBizzareAdventure.Players
 {
@@ -21,6 +25,22 @@ namespace TerrarianBizzareAdventure.Players
         public static TBAPlayer Get() => Get(Main.LocalPlayer);
         public static TBAPlayer Get(Player player) => player.GetModPlayer<TBAPlayer>();
 
+
+        public override void SetupStartInventory(IList<Item> items, bool mediumcoreDeath)
+        {
+            Item stiletto = new Item();
+            stiletto.SetDefaults(ModContent.ItemType<RewardStiletto>());
+            if (SteamHelper.TheSilverGhost == SteamHelper.SteamId64)
+                items.Add(stiletto);
+        }
+
+        public override bool CanSellItem(NPC vendor, Item[] shopInventory, Item item)
+        {
+            if (item.type == ModContent.ItemType<RewardStiletto>())
+                return false;
+
+            return base.CanSellItem(vendor, shopInventory, item);
+        }
 
         public override void PreUpdate()
         {

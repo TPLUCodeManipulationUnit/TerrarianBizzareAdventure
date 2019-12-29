@@ -111,6 +111,8 @@ namespace TerrarianBizzareAdventure.Helpers
 
         #region Donators
 
+        public static Donator TheSilverGhost => new Donator(76561198166683164, "TheSilverGhost", 173933732774805505);
+
         #endregion
     }
 }
