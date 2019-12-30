@@ -31,7 +31,7 @@ namespace TerrarianBizzareAdventure.Projectiles
         {
             base.ModifyHitNPC(target, ref damage, ref knockback, ref crit, ref hitDirection);
 
-            Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Punch" + Main.rand.Next(1, 5)));
+            Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Punch" + Main.rand.Next(1, 5)).WithVolume(.2f));
         }
 
         private Projectile ParentProjectile => Main.projectile[(int)projectile.ai[0]];

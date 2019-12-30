@@ -22,7 +22,7 @@ namespace TerrarianBizzareAdventure.Projectiles
             IsStopped = TimeStopManagement.TimeStopped && !(projectile.modProjectile is IProjectileHasImmunityToTimeStop iisitts && iisitts.IsNativelyImmuneToTimeStop(projectile)) && RanForTicks > tickLimit && (!(projectile.modProjectile is Stand) && projectile.owner == TimeStopManagement.TimeStopper.player.whoAmI);
 
 
-            var IsTimeSkipped = TimeSkipManager.IsTimeSkipped;
+            var IsTimeSkipped = TimeSkipManager.IsTimeSkipped && projectile.hostile;
 
             RanForTicks++;
 
@@ -71,7 +71,7 @@ namespace TerrarianBizzareAdventure.Projectiles
 
         public override void PostDraw(Projectile projectile, SpriteBatch spriteBatch, Color lightColor)
         {
-            var IsTimeSkipped = TimeSkipManager.IsTimeSkipped && TimeSkipManager.TimeSkipper.player.whoAmI != projectile.owner;
+            var IsTimeSkipped = TimeSkipManager.IsTimeSkipped && projectile.hostile;
 
             if (IsTimeSkipped)
                 lightColor = Color.Red;
