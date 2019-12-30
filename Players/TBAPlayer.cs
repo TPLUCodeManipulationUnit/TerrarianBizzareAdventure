@@ -29,9 +29,17 @@ namespace TerrarianBizzareAdventure.Players
         public override void SetupStartInventory(IList<Item> items, bool mediumcoreDeath)
         {
             Item stiletto = new Item();
+
             stiletto.SetDefaults(ModContent.ItemType<RewardStiletto>());
-            if (SteamHelper.TheSilverGhost == SteamHelper.SteamId64)
+
+            if (KnifeGangMember)
                 items.Add(stiletto);
+        }
+
+        public override void Initialize()
+        {
+            MaxStamina = 100;
+            Stamina = MaxStamina;
         }
 
         public override bool CanSellItem(NPC vendor, Item[] shopInventory, Item item)
@@ -73,6 +81,7 @@ namespace TerrarianBizzareAdventure.Players
         public override void ResetEffects()
         {
             ResetDrawingEffects();
+            ResetStaminaEffects();
 
             if (player.controlUseItem)
             {
@@ -185,5 +194,7 @@ namespace TerrarianBizzareAdventure.Players
         public int MouseTwoTime { get; private set; }
 
         public int MouseTwoTimeReset { get; private set; }
+
+        public bool KnifeGangMember => SteamHelper.KnifeGangMembers.Count(x => x.SteamId64 == SteamHelper.SteamId64) > 0;
     }
 }

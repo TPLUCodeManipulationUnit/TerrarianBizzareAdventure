@@ -32,11 +32,12 @@ namespace TerrarianBizzareAdventure.Items.Weapons.Rewards
         public override void UpdateInventory(Player player)
         {
             item.favorited = true;
+            TBAPlayer.Get(player).StaminaRegenBuff += 60;
 
-            if (SteamHelper.TheSilverGhost.SteamId64 != SteamHelper.SteamId64)
+            if (!TBAPlayer.Get(player).KnifeGangMember)
                 item.TurnToAir();
         }
 
-        public override bool CanUseItem(Player player) => SteamHelper.TheSilverGhost.SteamId64 == SteamHelper.SteamId64;
+        public override bool CanUseItem(Player player) => TBAPlayer.Get(player).KnifeGangMember;
     }
 }

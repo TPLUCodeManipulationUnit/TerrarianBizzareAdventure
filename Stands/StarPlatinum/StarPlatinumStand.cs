@@ -143,11 +143,15 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
 
                 if (TBAInputs.ContextAction.JustPressed && CurrentState.Contains("POSE"))
                 {
-                    if (!TimeStopManagement.TimeStopped)
-                        Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/SP_TimeStopCall"));
-                    CurrentState = ANIMATION_IDLE;
-                    IsTaunting = false;
-                    TimeStopDelay = 25;
+                    if (TBAPlayer.Get(Owner).Stamina >= 75)
+                    {
+                        TBAPlayer.Get(Owner).Stamina -= 75;
+                        if (!TimeStopManagement.TimeStopped)
+                            Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/SP_TimeStopCall"));
+                        CurrentState = ANIMATION_IDLE;
+                        IsTaunting = false;
+                        TimeStopDelay = 25;
+                    }
                 }
             }
 
@@ -192,8 +196,10 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
             #region Punch
             if (CurrentState == ANIMATION_IDLE && Owner.controlUseItem && !_leftMouseButtonLastState && !IsPunching && !IsTaunting && RushTimer <= 0)
             {
-                if (PunchCounter < 3)
+                if (PunchCounter < 2)
                 {
+                    TBAPlayer.Get(Owner).Stamina -= 2;
+
                     if (Main.MouseWorld.Y > Owner.Center.Y + 60)
                         CurrentState = Main.rand.NextBool() ? "DOWNPUNCH_LEFTHAND" : "DOWNPUNCH_RIGHTHAND";
 
@@ -209,7 +215,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
 
                     PunchCounter++;
 
-                    PunchCounterReset = 24;
+                    PunchCounterReset = 26;
 
                     IsPunching = true;
 
@@ -218,6 +224,8 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
 
                 else
                 {
+                    TBAPlayer.Get(Owner).Stamina -= 16;
+
                     Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Ora"));
 
                     if (Main.MouseWorld.Y > Owner.Center.Y + 60)
@@ -280,6 +288,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
 
                     Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/SP_TimeStopSignal"));
                 }
+
                 TimeStopManagement.ToggleTimeStopIfStopper(TBAPlayer.Get(Owner), 5 * Constants.TICKS_PER_SECOND);
                 TimeStopDelay--;
             }

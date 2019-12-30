@@ -15,6 +15,8 @@ namespace TerrarianBizzareAdventure.UserInterfaces
             RATMUserInterface.SetState(RATMState);
 
             TimeSkipLayer = new TimeSkipLayer(new TimeSkipVFX());
+
+            ResourcesLayer = new ResourcesLayer(new ResourcesState());
         }
 
         public static void Update(GameTime gameTime)
@@ -30,5 +32,7 @@ namespace TerrarianBizzareAdventure.UserInterfaces
         internal static UserInterface RATMUserInterface { get; private set; }
 
         public static TimeSkipLayer TimeSkipLayer { get; private set; }
+
+        public static ResourcesLayer ResourcesLayer { get; private set; }
     }
 }

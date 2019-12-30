@@ -15,7 +15,7 @@ namespace TerrarianBizzareAdventure.UserInterfaces
         {
             if(TimeSkipManager.TimeSkippedFor > 0 && !TimeSkipManager.FullCycle)
             spriteBatch.Draw(
-                ModContent.GetTexture("TerrarianBizzareAdventure/Textures/TimeSkipVFX"),
+                Textures.TimeSkipVFX,
                 new Rectangle(0, 0, Main.screenWidth, Main.screenHeight),
                 new Rectangle(0, TimeSkipManager.CurrentFrame * FRAME_HEIGHT, FRAME_WIDTH, FRAME_HEIGHT),
                 Color.White,

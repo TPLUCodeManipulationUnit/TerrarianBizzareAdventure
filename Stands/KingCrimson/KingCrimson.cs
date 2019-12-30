@@ -12,6 +12,7 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
     {
         public KingCrimson() : base("howDoesItWork", "King Crimson")
         {
+            CallSoundPath = "Sounds/KC_Call";
             AuraColor = new Color(189, 0, 85);
         }
 
@@ -126,12 +127,13 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
             #region Punching
             if (CurrentState == ANIMATION_IDLE)
             {
-                if (PunchCounter < 3)
+                if (PunchCounter < 2)
                 {
                     if (TBAPlayer.Get(Owner).MouseOneTimeReset > 0)
                     {
                         if (TBAPlayer.Get(Owner).MouseOneTime < 15 && !Owner.controlUseItem)
                         {
+                            TBAPlayer.Get(Owner).Stamina -= 2;
                             Owner.direction = Main.MouseWorld.X < Owner.Center.X ? -1 : 1;
 
                             if (Main.MouseWorld.Y > Owner.Center.Y + 60)
@@ -151,13 +153,15 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
 
                         if (TBAPlayer.Get(Owner).MouseOneTime >= 15)
                         {
+                            TBAPlayer.Get(Owner).Stamina -= 10;
                             Owner.direction = Main.MouseWorld.X < Owner.Center.X ? -1 : 1;
                             CurrentState = "CUT_PREP";
                         }
                     }
                 }
-                else
+                else if(Owner.controlUseItem)
                 {
+                    TBAPlayer.Get(Owner).Stamina -= 16;
                     if (Main.MouseWorld.Y > Owner.Center.Y + 60)
                         CurrentState = "RUSH_DOWN";
 
@@ -238,6 +242,7 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
 
             if(TBAPlayer.Get(Owner).MouseTwoTime > 15 && CurrentState == ANIMATION_IDLE)
             {
+                TBAPlayer.Get(Owner).Stamina -= 10;
                 CurrentState = "DONUT_PREP";
             }
 
@@ -275,8 +280,11 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
 
             if (TBAInputs.ContextAction.JustPressed && Owner.whoAmI == Main.myPlayer)
             {
-                if(TimeSkipManager.TimeSkippedFor <= 0)
+                if (TimeSkipManager.TimeSkippedFor <= 0 && TBAPlayer.Get(Owner).Stamina >= 25)
+                {
+                    TBAPlayer.Get(Owner).Stamina -= 25;
                     TimeSkipManager.SkipTime(TBAPlayer.Get(Owner), Constants.TICKS_PER_SECOND * 10 + 26);
+                }
             }
 
         }
