@@ -19,18 +19,18 @@ namespace TerrarianBizzareAdventure.UserInterfaces
             Vector2 position = new Vector2(20, Main.screenHeight - 80);
             Rectangle barSize = new Rectangle((int)position.X, (int)position.Y, border.Width, border.Height);
 
-            bool hasActiveStand = mPlayer.ActiveStandProjectileId == -999;
+            bool hasNoActiveStand = mPlayer.ActiveStandProjectileId == -999;
 
             if (mPlayer.StandUser)
             {
                 int drawPercent = (mPlayer.Stamina * bar.Width) / mPlayer.MaxStamina;
 
-                float regen = mPlayer.StaminaRegenTickRate / 60;
+                float regen = (mPlayer.StaminaRegenTickRate + (hasNoActiveStand ? 0 : 8 * Constants.TICKS_PER_SECOND)) / 60;
 
                 string result = string.Format("{0}.{1}", regen, mPlayer.StaminaRegenTickRate % 60);
 
                 if (barSize.Contains(Main.MouseScreen.ToPoint()))
-                    Main.hoverItemName = hasActiveStand ? "You restore 1 stamina over " + result + " seconds" : "You cannot restore stamina while your Stand is active";
+                    Main.hoverItemName = "You restore 1 stamina over " + result + " seconds";
 
                 spriteBatch.Draw(
                     border,
@@ -62,9 +62,9 @@ namespace TerrarianBizzareAdventure.UserInterfaces
 
                 spriteBatch.DrawString(
                     Main.fontMouseText,
-                    hasActiveStand ? result + "s" : "0.0s",
+                    result + "s",
                     new Vector2(20, Main.screenHeight - 80) + new Vector2(116, 24),
-                    hasActiveStand ? Color.White : Color.Red,
+                    Color.White,
                     -MathHelper.Pi / 4 + .1f,
                     Vector2.Zero,
                     0.75f,
