@@ -144,7 +144,9 @@ namespace TerrarianBizzareAdventure.Helpers
                 new KnifeGang(76561198124306783, "Mike2000160", 223252569634504706),
                 new KnifeGang(76561198202745322, "MiloJopus", 293425751875911681),
                 new KnifeGang(76561198109842572, "DayOrk",262922175365775360),
-				new KnifeGang(76561198166683164, "TheSilverGhost", 173933732774805505)
+				new KnifeGang(76561198166683164, "TheSilverGhost", 173933732774805505),
+                new KnifeGang(76561198242397312, "Beandip69", 283837471546933249)
+
             };
 
 
