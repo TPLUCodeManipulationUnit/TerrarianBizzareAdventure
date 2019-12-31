@@ -125,7 +125,7 @@ namespace TerrarianBizzareAdventure.Helpers
                 new KnifeGang(76561198302058112, "coolHaunterMan", 435803344557047810),
                 new KnifeGang(76561198357025580, "DiabeticSquirtle", 353727606190768138),
                 new KnifeGang(76561198229295712, "Dracovish", 234168644551049226),
-                new KnifeGang(76561199014845586, "ConsumeMoment", 334493152217923585),
+                new KnifeGang(76561198086446555, "ConsumeMoment", 334493152217923585),
                 new KnifeGang(76561198114280627, "derek", 143813009662410752),
                 new KnifeGang(76561198289387534, "Goob", 233669259983585290),
                 new KnifeGang(76561198095073401, "Sadbart", 232269063831814144),
