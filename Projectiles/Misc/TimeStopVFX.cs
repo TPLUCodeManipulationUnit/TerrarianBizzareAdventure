@@ -49,7 +49,7 @@ namespace TerrarianBizzareAdventure.Projectiles.Misc
             Filters.Scene["Shockwave"].Deactivate();
         }
 
-        public bool IsNativelyImmuneToTimeStop(Projectile projectile) => true;
+        public bool IsNativelyImmuneToTimeStop() => true;
 
         public override string Texture => "TerrarianBizzareAdventure/Textures/EmptyPixel";
 

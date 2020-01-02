@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Terraria;
 using Terraria.ID;
 using TerrarianBizzareAdventure.Stands;
@@ -21,18 +22,18 @@ namespace TerrarianBizzareAdventure.Players
         }
 
 
+        public bool IsResponse { get; set; }
+
         public string StandName
         {
-            get => !ModPlayer.StandUser ? "" : ModPlayer.Stand.UnlocalizedName;
+            get => !ModPlayer.StandUser ? "" : ModPlayer.Stand.GetType().Name;
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
                     return;
 
-                ModPlayer.Stand = StandManager.Instance[value];
+                ModPlayer.Stand = StandLoader.Instance.GetGeneric(Type.GetType(value));
             }
         }
-
-        public bool IsResponse { get; set; }
     }
 }

@@ -16,7 +16,6 @@ namespace TerrarianBizzareAdventure.TimeStop
 
         internal static Dictionary<NPC, NPCInstantState> npcStates;
         internal static Dictionary<Projectile, ProjectileInstantState> projectileStates;
-        internal static Dictionary<Player, PlayerInstantState> playerStates;
         internal static Dictionary<Item, ItemInstantState> itemStates;
 
 
@@ -105,7 +104,7 @@ namespace TerrarianBizzareAdventure.TimeStop
             {
                 Projectile projectile = Main.projectile[i];
 
-                if (!projectile.active || projectile.modProjectile is IProjectileHasImmunityToTimeStop phitts && phitts.IsNativelyImmuneToTimeStop(projectile))
+                if (!projectile.active || projectile.modProjectile is IProjectileHasImmunityToTimeStop phitts && phitts.IsNativelyImmuneToTimeStop())
                     continue;
 
                 ModProjectile modProjectile = projectile.modProjectile as Stand;
@@ -114,22 +113,6 @@ namespace TerrarianBizzareAdventure.TimeStop
                     continue;
 
                 RegisterStoppedProjectile(projectile);
-            }
-
-
-            for (int i = 0; i < Main.player.Length; i++)
-            {
-                Player player = Main.player[i];
-
-                if (!player.active || player.name == "")
-                    continue;
-
-                TBAPlayer tbaPlayer = TBAPlayer.Get(player);
-
-                if (tbaPlayer == modPlayer || tbaPlayer.IsImmuneToTimeStop())
-                    continue;
-
-                RegisterStoppedPlayer(player);
             }
 
 
@@ -176,12 +159,6 @@ namespace TerrarianBizzareAdventure.TimeStop
             projectileStates.Clear(); ;
 
 
-            foreach (KeyValuePair<Player, PlayerInstantState> state in playerStates)
-                state.Value.Restore();
-
-            playerStates.Clear(); ;
-
-
             foreach (KeyValuePair<Item, ItemInstantState> state in itemStates)
                 state.Value.Restore();
 
@@ -217,7 +194,6 @@ namespace TerrarianBizzareAdventure.TimeStop
 
         public static void RegisterStoppedNPC(NPC npc) => npcStates.Add(npc, new NPCInstantState(npc));
         public static void RegisterStoppedProjectile(Projectile projectile) => projectileStates.Add(projectile, new ProjectileInstantState(projectile));
-        public static void RegisterStoppedPlayer(Player player) => playerStates.Add(player, new PlayerInstantState(player));
         public static void RegisterStoppedItem(Item item) => itemStates.Add(item, new ItemInstantState(item));
 
 
@@ -235,7 +211,7 @@ namespace TerrarianBizzareAdventure.TimeStop
             if (TimeStopped)
             {
                 TBAPlayer tbaPlayer = TBAPlayer.Get(Main.LocalPlayer);
-                Main.blockInput = !(tbaPlayer.StandUser && (tbaPlayer.Stand.IsNativelyImmuneToTimeStop(tbaPlayer) || TimeStopper == tbaPlayer));
+                Main.blockInput = !(tbaPlayer.StandUser && (tbaPlayer.Stand.IsNativelyImmuneToTimeStop() || TimeStopper == tbaPlayer));
 
                 Main.dayRate = 0;
                 Main.time = TimeStopManagement.MainTime;
@@ -254,7 +230,6 @@ namespace TerrarianBizzareAdventure.TimeStop
 
             npcStates = new Dictionary<NPC, NPCInstantState>();
             projectileStates = new Dictionary<Projectile, ProjectileInstantState>();
-            playerStates = new Dictionary<Player, PlayerInstantState>();
             itemStates = new Dictionary<Item, ItemInstantState>();
 
             AddItemImmunity(ItemID.GravityGlobe);
@@ -269,7 +244,6 @@ namespace TerrarianBizzareAdventure.TimeStop
 
             npcStates = null;
             projectileStates = null;
-            playerStates = null;
             itemStates = null;
         }
 
@@ -289,17 +263,6 @@ namespace TerrarianBizzareAdventure.TimeStop
             if (executeOriginal)
                 orig(self, gameTime);
         }*/
-
-        private static void PlayerOnUpdate(On.Terraria.Player.orig_Update orig, Player self, int i)
-        {
-            if (ModifyUpdate())
-                ; // LMAO WE DO NOT DO ANYTHING XD :haha:
-            else
-                orig(self, i);
-        }
-
-
-        private static bool ModifyUpdate() => !Main.gameMenu && Main.LocalPlayer.active && TimeStopped && TBAPlayer.Get().IsStopped();
 
 
         public static int TimeStoppedFor { get; set; }

@@ -73,7 +73,7 @@ namespace TerrarianBizzareAdventure
 
             Textures.Unload();
 
-            StandManager.Instance.Unload();
+            StandLoader.Instance.Unload();
         }
 
 

@@ -32,21 +32,6 @@ namespace TerrarianBizzareAdventure.Items
             return base.OnPickup(item, player);
         }
 
-        public override bool CanPickup(Item item, Player player)
-        {
-            if (IsStopped && TimeStopManagement.TimeStopped)
-            {
-                TBAPlayer tbaPlayer = TBAPlayer.Get(player);
-
-                if (tbaPlayer.IsImmuneToTimeStop())
-                    return true;
-                else
-                    return false;
-            }
-
-            return base.CanPickup(item, player);
-        }
-
 
         public bool IsStopped { get; private set; }
 

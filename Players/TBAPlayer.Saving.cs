@@ -1,4 +1,5 @@
-﻿using Terraria.ModLoader.IO;
+﻿using System;
+using Terraria.ModLoader.IO;
 using TerrarianBizzareAdventure.Stands;
 
 namespace TerrarianBizzareAdventure.Players
@@ -21,7 +22,7 @@ namespace TerrarianBizzareAdventure.Players
             ActiveStandProjectileId = -999;
 
             if (tag.ContainsKey(nameof(Stand)))
-                Stand = StandManager.Instance[tag.GetString(nameof(Stand))];
+                Stand = StandLoader.Instance.GetGeneric(Type.GetType(tag.GetString(nameof(Stand))));
         }
     }
 }

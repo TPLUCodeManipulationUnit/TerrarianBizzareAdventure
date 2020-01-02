@@ -52,13 +52,6 @@ namespace TerrarianBizzareAdventure.Players
 
         public override void PreUpdate()
         {
-            if (IsStopped())
-            {
-                if (!TimeStopManagement.playerStates.ContainsKey(player))
-                    TimeStopManagement.RegisterStoppedPlayer(player);
-
-                TimeStopManagement.playerStates[player].PreAI(player);
-            }
         }
 
         public override void PostUpdate()
@@ -169,10 +162,6 @@ namespace TerrarianBizzareAdventure.Players
         }
 
 
-        public bool IsStopped() => !IsImmuneToTimeStop() && TimeStopManagement.TimeStopped && TimeStopManagement.TimeStopper != this;
-        public bool IsImmuneToTimeStop() => StandUser && Stand.IsNativelyImmuneToTimeStop(this);
-
-
         public Stand Stand { get; set; }
         public int ActiveStandProjectileId { get; set; }
 
@@ -184,7 +173,6 @@ namespace TerrarianBizzareAdventure.Players
 
         public int AttackDirectionResetTimer { get; set; }
 
-        public Vector2 PreTimeStopPosition { get; private set; }
 
         // Used for stuff that happens when you hold LMB for some time.
         public int MouseOneTime { get; private set; }

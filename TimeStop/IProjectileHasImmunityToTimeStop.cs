@@ -4,6 +4,6 @@ namespace TerrarianBizzareAdventure.TimeStop
 {
     public interface IProjectileHasImmunityToTimeStop
     {
-        bool IsNativelyImmuneToTimeStop(Projectile projectile);
+        bool IsNativelyImmuneToTimeStop();
     }
 }

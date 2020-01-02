@@ -44,12 +44,6 @@ namespace TerrarianBizzareAdventure.Stands
         }
 
 
-
-
-        public virtual bool IsNativelyImmuneToTimeStop(TBAPlayer tbaPlayer) => false;
-        public virtual bool IsNativelyImmuneToTimeStop(Projectile projectile) => IsNativelyImmuneToTimeStop(TBAPlayer.Get(Main.player[projectile.owner]));
-
-
         public abstract void AddAnimations();
 
 
@@ -144,6 +138,8 @@ namespace TerrarianBizzareAdventure.Stands
             Animations.Clear();
         }
 
+
+        public bool IsNativelyImmuneToTimeStop() => true;
 
         public virtual bool CanAcquire(TBAPlayer tbaPlayer) => true;
         public virtual bool CanUse(TBAPlayer tbaPlayer) => CanAcquire(tbaPlayer);
