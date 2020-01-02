@@ -26,13 +26,13 @@ namespace TerrarianBizzareAdventure.Players
 
         public string StandName
         {
-            get => !ModPlayer.StandUser ? "" : ModPlayer.Stand.GetType().Name;
+            get => !ModPlayer.StandUser ? "" : ModPlayer.Stand.Name;
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
                     return;
 
-                ModPlayer.Stand = StandLoader.Instance.GetGeneric(Type.GetType(value));
+                ModPlayer.Stand = StandLoader.Instance.GetGeneric(value);
             }
         }
     }

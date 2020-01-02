@@ -22,7 +22,7 @@ namespace TerrarianBizzareAdventure.Players
             ActiveStandProjectileId = -999;
 
             if (tag.ContainsKey(nameof(Stand)))
-                Stand = StandLoader.Instance.GetGeneric(Type.GetType(tag.GetString(nameof(Stand))));
+                Stand = StandLoader.Instance.GetGeneric(tag.GetString(nameof(Stand)));
         }
     }
 }
