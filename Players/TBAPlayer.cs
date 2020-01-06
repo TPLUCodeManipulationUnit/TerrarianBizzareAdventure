@@ -119,8 +119,8 @@ namespace TerrarianBizzareAdventure.Players
         {
             TimeStopManagement.OnPlayerEnterWorld(player);
 
-            string text = VoiceRecognitionSystem.SuccesfulBoot ? "Successfully booted up Voice Recognition System;" : "Unsuccessful boot attempt at Voice Recognition System;";
-            Main.NewText(text + VoiceRecognitionSystem.FailReason, VoiceRecognitionSystem.SuccesfulBoot ? Color.Lime : Color.Red);
+            //string text = VoiceRecognitionSystem.SuccesfulBoot ? "Successfully booted up Voice Recognition System;" : "Unsuccessful boot attempt at Voice Recognition System;";
+            //Main.NewText(text + VoiceRecognitionSystem.FailReason, VoiceRecognitionSystem.SuccesfulBoot ? Color.Lime : Color.Red);
 
             ActiveStandProjectileId = ACTIVE_STAND_PROJECTILE_INACTIVE_ID;
 

@@ -21,12 +21,11 @@ namespace TerrarianBizzareAdventure.Players
             return true;
         }
 
-
         public bool IsResponse { get; set; }
 
         public string StandName
         {
-            get => !ModPlayer.StandUser ? "" : ModPlayer.Stand.Name;
+            get => !ModPlayer.StandUser ? "" : ModPlayer.Stand.UnlocalizedName;
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
