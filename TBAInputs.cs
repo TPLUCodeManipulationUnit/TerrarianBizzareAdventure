@@ -12,6 +12,9 @@ namespace TerrarianBizzareAdventure
 
             ExtraAction01 = mod.RegisterHotKey("Extra Action 01", null);
             ExtraAction02 = mod.RegisterHotKey("Extra Action 02", null);
+
+            if(VoiceRecognitionSystem.SuccesfulBoot)
+                VoiceRec = mod.RegisterHotKey("Voice controls", "V");
         }
 
         public static void Unload()
@@ -19,6 +22,11 @@ namespace TerrarianBizzareAdventure
             SummonStand = null;
             StandPose = null;
             ContextAction = null;
+
+            ExtraAction01 = null;
+            ExtraAction02 = null;
+
+            VoiceRec = null;
         }
 
 
@@ -28,5 +36,7 @@ namespace TerrarianBizzareAdventure
 
         public static ModHotKey ExtraAction01 { get; private set; }
         public static ModHotKey ExtraAction02 { get; private set; }
+
+        public static ModHotKey VoiceRec { get; private set; }
     }
 }

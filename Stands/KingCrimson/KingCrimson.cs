@@ -280,13 +280,18 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
 
             if (TBAInputs.ContextAction.JustPressed && Owner.whoAmI == Main.myPlayer)
             {
-                if (TimeSkipManager.TimeSkippedFor <= 0 && TBAPlayer.Get(Owner).Stamina >= 25)
-                {
-                    TBAPlayer.Get(Owner).Stamina -= 25;
-                    TimeSkipManager.SkipTime(TBAPlayer.Get(Owner), Constants.TICKS_PER_SECOND * 10 + 26);
-                }
+                EraseTime();
             }
 
+        }
+
+        public void EraseTime()
+        {
+            if (TimeSkipManager.TimeSkippedFor <= 0 && TBAPlayer.Get(Owner).Stamina >= 25)
+            {
+                TBAPlayer.Get(Owner).Stamina -= 25;
+                TimeSkipManager.SkipTime(TBAPlayer.Get(Owner), Constants.TICKS_PER_SECOND * 10 + 26);
+            }
         }
 
         public bool HasMissedDonut { get; set; }

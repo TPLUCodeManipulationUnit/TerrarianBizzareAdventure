@@ -16,6 +16,8 @@ using TerrarianBizzareAdventure.TimeSkip;
 using TerrarianBizzareAdventure.TimeStop;
 using TerrarianBizzareAdventure.UserInterfaces;
 using WebmilioCommons.Networking;
+using System.Globalization;
+using System.Linq;
 
 namespace TerrarianBizzareAdventure
 {
@@ -30,6 +32,8 @@ namespace TerrarianBizzareAdventure
         {
             SteamHelper.Initialize();
 
+
+            VoiceRecognitionSystem.Load();
             TBAInputs.Load(this);
             TimeStopManagement.Load(this);
             TimeSkipManager.Load();

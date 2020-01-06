@@ -1,19 +1,17 @@
 ﻿using Microsoft.Xna.Framework;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.GameInput;
+using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
+using TerrarianBizzareAdventure.Helpers;
+using TerrarianBizzareAdventure.Items.Weapons.Rewards;
+using TerrarianBizzareAdventure.Projectiles.Misc;
 using TerrarianBizzareAdventure.Stands;
 using TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio;
 using TerrarianBizzareAdventure.TimeStop;
-using System.Linq;
-using TerrarianBizzareAdventure.Projectiles.Misc;
-using TerrarianBizzareAdventure.TimeSkip;
-using Terraria.Graphics.Shaders;
-using System.Collections.Generic;
-using TerrarianBizzareAdventure.Helpers;
-using TerrarianBizzareAdventure.Items.Tools;
-using TerrarianBizzareAdventure.Items.Weapons.Rewards;
 
 namespace TerrarianBizzareAdventure.Players
 {
@@ -121,6 +119,11 @@ namespace TerrarianBizzareAdventure.Players
         {
             TimeStopManagement.OnPlayerEnterWorld(player);
 
+            string text = VoiceRecognitionSystem.SuccesfulBoot ? "Successfully booted up Voice Recognition System;" : "Unsuccessful boot attempt at Voice Recognition System;";
+            Main.NewText(text + VoiceRecognitionSystem.FailReason, VoiceRecognitionSystem.SuccesfulBoot ? Color.Lime : Color.Red);
+
+            ActiveStandProjectileId = ACTIVE_STAND_PROJECTILE_INACTIVE_ID;
+
             if (Main.netMode == NetmodeID.MultiplayerClient && player.whoAmI == Main.myPlayer)
                 new PlayerJoiningSynchronizationPacket().Send();
         }
@@ -128,6 +131,8 @@ namespace TerrarianBizzareAdventure.Players
         public override void ProcessTriggers(TriggersSet triggersSet)
         {
             if (!StandUser) return;
+
+            ProcessVoiceControls();
 
             if (TBAInputs.SummonStand.JustPressed)
             {
@@ -160,8 +165,6 @@ namespace TerrarianBizzareAdventure.Players
                 player.controlRight = AttackDirection != -1;
             }
         }
-
-
         public Stand Stand { get; set; }
         public int ActiveStandProjectileId { get; set; }
 

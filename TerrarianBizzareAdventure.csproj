@@ -34,6 +34,10 @@
     <Folder Include="Textures\Stands\StarPlatinum\" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Speech">
+      <HintPath>lib\Microsoft.Speech.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Speech" />
     <Reference Include="WebmilioCommons">
       <HintPath>..\WebmilioCommons-Releases\WebmilioCommons.dll</HintPath>
     </Reference>

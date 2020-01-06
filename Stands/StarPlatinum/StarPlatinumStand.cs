@@ -143,15 +143,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
 
                 if (TBAInputs.ContextAction.JustPressed && CurrentState.Contains("POSE"))
                 {
-                    if (TBAPlayer.Get(Owner).Stamina >= 75)
-                    {
-                        TBAPlayer.Get(Owner).Stamina -= 75;
-                        if (!TimeStopManagement.TimeStopped)
-                            Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/SP_TimeStopCall"));
-                        CurrentState = ANIMATION_IDLE;
-                        IsTaunting = false;
-                        TimeStopDelay = 25;
-                    }
+                    TimeStop();
                 }
             }
 
@@ -196,59 +188,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
             #region Punch
             if (CurrentState == ANIMATION_IDLE && Owner.controlUseItem && !_leftMouseButtonLastState && !IsPunching && !IsTaunting && RushTimer <= 0)
             {
-                if (PunchCounter < 2)
-                {
-                    TBAPlayer.Get(Owner).Stamina -= 2;
-
-                    if (Main.MouseWorld.Y > Owner.Center.Y + 60)
-                        CurrentState = Main.rand.NextBool() ? "DOWNPUNCH_LEFTHAND" : "DOWNPUNCH_RIGHTHAND";
-
-                    else if (Main.MouseWorld.Y < Owner.Center.Y - 60)
-                        CurrentState = Main.rand.NextBool() ? "UPPUNCH_LEFTHAND" : "UPPUNCH_RIGHTHAND";
-
-                    else
-                        CurrentState = Main.rand.NextBool() ? "MIDDLEPUNCH_LEFTHAND" : "MIDDLEPUNCH_RIGHTHAND";
-
-                    SpawnPunch();
-
-                    SetOwnerDirection();
-
-                    PunchCounter++;
-
-                    PunchCounterReset = 26;
-
-                    IsPunching = true;
-
-                    CurrentAnimation.ResetAnimation();
-                }
-
-                else
-                {
-                    TBAPlayer.Get(Owner).Stamina -= 16;
-
-                    Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Ora"));
-
-                    if (Main.MouseWorld.Y > Owner.Center.Y + 60)
-                        CurrentState = "RUSH_DOWN";
-
-                    else if (Main.MouseWorld.Y < Owner.Center.Y - 60)
-                        CurrentState = "RUSH_UP";
-
-                    else
-                        CurrentState = "RUSH_MIDDLE";
-
-                    PunchCounter = 0;
-
-                    PunchCounterReset = 0;
-
-                    _punchRushDirection = VectorHelpers.DirectToMouse(projectile.Center, 14f);
-
-                    RushTimer = 180;
-
-                    SetOwnerDirection(180);
-
-                    CurrentAnimation.ResetAnimation();
-                }
+                Punching(Main.rand.Next(2) == 0);
             }
             #endregion
 
@@ -301,6 +241,75 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
             }
         }
 
+        public void Punching(bool left)
+        {
+            if (PunchCounter < 2)
+            {
+                TBAPlayer.Get(Owner).Stamina -= 2;
+
+                if (Main.MouseWorld.Y > Owner.Center.Y + 60)
+                    CurrentState = left ? "DOWNPUNCH_LEFTHAND" : "DOWNPUNCH_RIGHTHAND";
+
+                else if (Main.MouseWorld.Y < Owner.Center.Y - 60)
+                    CurrentState = left ? "UPPUNCH_LEFTHAND" : "UPPUNCH_RIGHTHAND";
+
+                else
+                    CurrentState = left ? "MIDDLEPUNCH_LEFTHAND" : "MIDDLEPUNCH_RIGHTHAND";
+
+                SpawnPunch();
+
+                SetOwnerDirection();
+
+                PunchCounter++;
+
+                PunchCounterReset = 26;
+
+                IsPunching = true;
+
+                CurrentAnimation.ResetAnimation();
+            }
+
+            else
+            {
+                TBAPlayer.Get(Owner).Stamina -= 16;
+
+                Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Ora"));
+
+                if (Main.MouseWorld.Y > Owner.Center.Y + 60)
+                    CurrentState = "RUSH_DOWN";
+
+                else if (Main.MouseWorld.Y < Owner.Center.Y - 60)
+                    CurrentState = "RUSH_UP";
+
+                else
+                    CurrentState = "RUSH_MIDDLE";
+
+                PunchCounter = 0;
+
+                PunchCounterReset = 0;
+
+                _punchRushDirection = VectorHelpers.DirectToMouse(projectile.Center, 14f);
+
+                RushTimer = 180;
+
+                SetOwnerDirection(180);
+
+                CurrentAnimation.ResetAnimation();
+            }
+        }
+
+        public void TimeStop()
+        {
+            if (TBAPlayer.Get(Owner).Stamina >= 75)
+            {
+                TBAPlayer.Get(Owner).Stamina -= 75;
+                if (!TimeStopManagement.TimeStopped)
+                    Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/SP_TimeStopCall"));
+                CurrentState = ANIMATION_IDLE;
+                IsTaunting = false;
+                TimeStopDelay = 25;
+            }
+        }
 
         private void SpawnPunch()
         {
@@ -317,7 +326,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
         public bool IsPunching { get; private set; }
         public bool InPose { get; private set; }
 
-        public int PunchCounter { get; private set; }
+        public int PunchCounter { get; set; }
         public int PunchCounterReset { get; private set; }
         public int RushTimer { get; private set; }
 
