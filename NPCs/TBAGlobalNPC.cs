@@ -107,7 +107,7 @@ namespace TerrarianBizzareAdventure.NPCs
                 for (int i = TimeSkipStates.Count - 1; i > 0; i--)
                 {
                     SpriteEffects spriteEffects = TimeSkipStates[i].Direction == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-                    spriteBatch.Draw(texture, TimeSkipStates[i].Position - Main.screenPosition, TimeSkipStates[i].Frame, (i == 1 ? LastDrawColor : Color.Red * 0.5f), TimeSkipStates[i].Rotation, drawOrig, TimeSkipStates[i].Scale, spriteEffects, 1f);
+                    spriteBatch.Draw(texture, TimeSkipStates[i].Position - Main.screenPosition, TimeSkipStates[i].Frame, (i == 1 ? Color.White : Color.Red * 0.5f), TimeSkipStates[i].Rotation, drawOrig, TimeSkipStates[i].Scale, spriteEffects, 1f);
                 }
             }
         }
@@ -116,15 +116,11 @@ namespace TerrarianBizzareAdventure.NPCs
         {
             if (TimeSkipManager.IsTimeSkipped)
                 drawColor = Color.Red * 0.5f;
-            else
-                LastDrawColor = Color.White;
         }
 
         public List<TimeSkipState> TimeSkipStates { get; private set; }
 
         public bool IsStopped { get; private set; }
-
-        public Color LastDrawColor { get; private set; }
 
         public override bool InstancePerEntity => true;
     }

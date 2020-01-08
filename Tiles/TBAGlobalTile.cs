@@ -13,7 +13,7 @@ namespace TerrarianBizzareAdventure.Tiles
     {
         public override bool PreDraw(int i, int j, int type, SpriteBatch spriteBatch)
         {
-            if(TimeSkipManager.IsTimeSkipped)
+            if(ShaderEnabled && TimeSkipManager.IsTimeSkipped)
             {
                 DrawHelpers.StartShader(spriteBatch);
 
@@ -24,13 +24,7 @@ namespace TerrarianBizzareAdventure.Tiles
             return true;
         }
 
-        public override void PostDraw(int i, int j, int type, SpriteBatch spriteBatch)
-        {
-            //if (TimeSkipManager.IsTimeSkipped)
-                //DrawHelpers.EndShader(spriteBatch);
-
-            base.PostDraw(i, j, type, spriteBatch);
-        }
+        public static bool ShaderEnabled { get; set; }
 
     }
 
@@ -38,7 +32,7 @@ namespace TerrarianBizzareAdventure.Tiles
     {
         public override bool PreDraw(int i, int j, int type, SpriteBatch spriteBatch)
         {
-            if (TimeSkipManager.IsTimeSkipped)
+            if (ShaderEnabled && TimeSkipManager.IsTimeSkipped)
             {
                 DrawHelpers.StartShader(spriteBatch);
 
@@ -56,5 +50,7 @@ namespace TerrarianBizzareAdventure.Tiles
 
             base.PostDraw(i, j, type, spriteBatch);
         }
+
+        public static bool ShaderEnabled { get; set; }
     }
 }

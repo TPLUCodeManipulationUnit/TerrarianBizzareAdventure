@@ -8,8 +8,9 @@ namespace TerrarianBizzareAdventure.Players
     {
         public void ResetStaminaEffects()
         {
+            var staminaDebuff = 0;
             if (ActiveStandProjectileId != ACTIVE_STAND_PROJECTILE_INACTIVE_ID)
-                StaminaRegenBuff -= 8 * Constants.TICKS_PER_SECOND;
+                staminaDebuff -= 8 * Constants.TICKS_PER_SECOND;
 
             StaminaRegenTicks++;
 
@@ -22,7 +23,17 @@ namespace TerrarianBizzareAdventure.Players
             if (Stamina >= MaxStamina)
                 StaminaRegenTicks = 0;
 
+            int bonus = (player.statLifeMax - 200) + (player.statLife - player.statLifeMax) + StaminaRegenBuff;
+
+            if (bonus > 210)
+                bonus = 210;
+
             StaminaRegenBuff = 0;
+
+            ResultingRegen = bonus + staminaDebuff;
+
+            if (IsDebugging)
+                Stamina = MaxStamina;
         }
 
         private int _stamina;
@@ -40,8 +51,12 @@ namespace TerrarianBizzareAdventure.Players
 
         public int StaminaRegenTicks { get; private set; }
 
-        public int StaminaRegenTickRate => 4 * Constants.TICKS_PER_SECOND - StaminaRegenBuff;
+        public int StaminaRegenTickRate => 4 * Constants.TICKS_PER_SECOND - ResultingRegen;
 
         public int StaminaRegenBuff { get; set; }
+
+        public int ResultingRegen { get; set; }
+
+        public bool IsDebugging { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
+using TerrarianBizzareAdventure.Drawing;
 using TerrarianBizzareAdventure.Enums;
 using TerrarianBizzareAdventure.Stands;
 
@@ -13,62 +14,92 @@ namespace TerrarianBizzareAdventure.Players
     {
         public override void ModifyDrawLayers(List<PlayerLayer> layers)
         {
-            if (ActiveStandProjectileId == ACTIVE_STAND_PROJECTILE_INACTIVE_ID)
-                return;
-
-            Stand stand = Main.projectile[ActiveStandProjectileId].modProjectile as Stand;
-
-            if (stand != null)
-                layers.Insert(0, standAuraLayer);
+            layers.Insert(0, standAuraLayer);
         }
 
         public void ResetDrawingEffects()
         {
-            Stand stand = null;
-            if(ActiveStandProjectileId != ACTIVE_STAND_PROJECTILE_INACTIVE_ID)
-                stand = Main.projectile[ActiveStandProjectileId].modProjectile as Stand;
+            if (AuraAnimations.Count <= 0)
+                FillAnimations();
 
-            AuraAnimation?.Update();
-
-            if (stand != null)
+            if (Main.LocalPlayer.whoAmI == player.whoAmI)
             {
-                if (stand.CurrentState == Stand.ANIMATION_SUMMON)
-                    AuraAnimationID = (int)AuraAnimationType.Spawn;
+                int key = 3;
 
-                if (AuraAnimation != null)
-                    AuraAnimationID = (int)AuraAnimationType.Idle;
+                int stamina = (Stamina * 100) / MaxStamina;
 
-                if (stand.CurrentState == Stand.ANIMATION_DESPAWN)
-                    AuraAnimationID = (int)AuraAnimationType.Despawn;
+                if (stamina <= 100)
+                    key = 3;
 
-                if(OldAnimationID != AuraAnimationID)
-                    new AuraSyncPacket().Send();
+                if (stamina <= 75)
+                    key = 2;
 
+                if (stamina <= 50)
+                    key = 1;
 
-                OldAnimationID = AuraAnimationID;
+                if (stamina <= 25)
+                    key = 0;
+
+                AuraAnimationKey = key;
+            }
+
+            if (AuraAnimation == null || AuraAnimation != AuraAnimations[AuraAnimationKey])
+            {
+                AuraAnimation = AuraAnimations[AuraAnimationKey];
+            }
+
+            if (ActiveStandProjectileId != ACTIVE_STAND_PROJECTILE_INACTIVE_ID)
+            {
+                if (Opacity < 1)
+                    Opacity += 0.035f;
+
             }
             else
             {
-                AuraAnimationID = (int)AuraAnimationType.None;
-                AuraAnimation = null;
+                if (Opacity > 0)
+                    Opacity -= 0.035f;
             }
 
-            if (!Main.dedServ)
+            if (AuraAnimation != null)
             {
-                if (AuraAnimationID == (int)AuraAnimationType.Spawn && AuraAnimation == null)
-                    AuraAnimation = new SpriteAnimation(TBAMod.Instance.GetTexture("Textures/AuraSpawn"), 9, 4);
-
-                if (AuraAnimationID == (int)AuraAnimationType.Idle && AuraAnimation != null && AuraAnimation.Finished && !AuraAnimation.AutoLoop)
-                {
-                    AuraAnimation = new SpriteAnimation(TBAMod.Instance.GetTexture("Textures/AuraAnimation"), 11, 4, true);
-                }
-                if (AuraAnimationID == (int)AuraAnimationType.Despawn && AuraAnimation != null && AuraAnimation.AutoLoop)
-                {
-                    AuraAnimation = new SpriteAnimation(TBAMod.Instance.GetTexture("Textures/AuraSpawn"), 9, 2);
-                    AuraAnimation.ResetAnimation(true);
-                }
+                AuraAnimation.Update();
             }
         }
+
+        public void FillAnimations()
+        {
+            ServerFriendlyAnimation low = new ServerFriendlyAnimation("Textures/PlayerVFX/Aura_LowStamina", 80, 880, 11, 5, true);
+            ServerFriendlyAnimation medium = new ServerFriendlyAnimation("Textures/PlayerVFX/Aura_Medium", 80, 880, 11, 5, true);
+            ServerFriendlyAnimation high = new ServerFriendlyAnimation("Textures/PlayerVFX/Aura_HighStamina", 80, 880, 11, 5, true);
+            ServerFriendlyAnimation veryhigh = new ServerFriendlyAnimation("Textures/PlayerVFX/Aura_VeryHigh", 80, 880, 11, 5, true);
+
+            AuraAnimations.Add(0, low);
+            AuraAnimations.Add(1, medium);
+            AuraAnimations.Add(2, high);
+            AuraAnimations.Add(3, veryhigh);
+        }
+
+        public int ChooseAnimation()
+        {
+            int key = 0;
+
+            int stamina = (Stamina * 100) / MaxStamina;
+
+            if (stamina <= 100)
+                key = 3;
+
+            if (stamina <= 75)
+                key = 2;
+
+            if (stamina <= 50)
+                key = 1;
+
+            if (stamina <= 25)
+                key = 0;
+
+            return key;
+        }
+
 
         public readonly PlayerLayer standAuraLayer = new PlayerLayer("TBAMod", "StandAura", PlayerLayer.Body, delegate (PlayerDrawInfo drawInfo)
         {
@@ -79,15 +110,17 @@ namespace TerrarianBizzareAdventure.Players
 
             TBAPlayer tPlayer = Get(drawPlayer);
 
-            if (drawPlayer.dead || tPlayer.Stand == null || tPlayer.AuraAnimation == null) // If the player can't use the item, don't draw it.
+            if (drawPlayer.dead || tPlayer.AuraAnimation == null) // If the player can't use the item, don't draw it.
                 return;
+
+            Color drawColor = tPlayer.Stand == null ? Color.White : tPlayer.Stand.AuraColor;
 
             DrawData auraData = new DrawData
             (
-                tPlayer.AuraAnimation.SpriteSheet,
+                TBAMod.Instance.GetTexture(tPlayer.AuraAnimation.SpritePath),
                 new Vector2((int)drawPlayer.MountedCenter.X, (int)drawPlayer.MountedCenter.Y + drawPlayer.gfxOffY - 4) - Main.screenPosition,
                 tPlayer.AuraAnimation.FrameRect,
-                tPlayer.Stand.AuraColor,
+                drawColor * tPlayer.Opacity,
                 0,
                 tPlayer.AuraAnimation.DrawOrigin,
                 1f,
@@ -98,10 +131,28 @@ namespace TerrarianBizzareAdventure.Players
             Main.playerDrawData.Add(auraData);
         });
 
-        public int OldAnimationID { get; private set; }
 
-        public int AuraAnimationID { get; set; }
+        public ServerFriendlyAnimation AuraAnimation { get; set; }
 
-        public SpriteAnimation AuraAnimation { get; private set; }
+        private int _auraAnimationKey;
+
+        public int AuraAnimationKey
+        {
+            get => _auraAnimationKey;
+            set
+            {
+                if (_auraAnimationKey == value) return;
+
+                _auraAnimationKey = value;
+
+                if (Main.LocalPlayer == player)
+                    new AuraSyncPacket().Send();
+            }
+        }
+
+        public float Opacity { get; private set; }
+
+        public static Dictionary<int, ServerFriendlyAnimation> AuraAnimations
+            = new Dictionary<int, ServerFriendlyAnimation>();
     }
 }

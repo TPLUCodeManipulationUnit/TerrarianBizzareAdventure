@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using Microsoft.Xna.Framework;
 using Terraria;
+using TerrarianBizzareAdventure.Drawing;
 using TerrarianBizzareAdventure.Helpers;
 using TerrarianBizzareAdventure.Players;
 using TerrarianBizzareAdventure.UserInterfaces;

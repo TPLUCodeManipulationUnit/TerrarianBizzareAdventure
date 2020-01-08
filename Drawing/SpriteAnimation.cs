@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace TerrarianBizzareAdventure
+namespace TerrarianBizzareAdventure.Drawing
 {
     public sealed class SpriteAnimation
     {

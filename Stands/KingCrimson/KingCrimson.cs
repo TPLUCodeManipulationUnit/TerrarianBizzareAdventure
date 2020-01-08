@@ -1,6 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.IO;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
+using TerrarianBizzareAdventure.Drawing;
 using TerrarianBizzareAdventure.Helpers;
 using TerrarianBizzareAdventure.Players;
 using TerrarianBizzareAdventure.Projectiles;
@@ -72,7 +74,7 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
             Animations[ANIMATION_SUMMON].SetNextAnimation(Animations[ANIMATION_IDLE]);
 
             #region Cut
-            Animations.Add("CUT_IDLE", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCCutIdle"), 5, 25));
+            Animations.Add("CUT_IDLE", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCCutIdle"), 5, 25, true));
 
             Animations.Add("CUT_PREP", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCCut"), 20, 3));
             Animations.Add("CUT_ATT", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCYeet"), 13, 3));
@@ -86,9 +88,11 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
         public override void AI()
         {
             base.AI();
-
+            AuraColor = new Color(189, 0, 85);
             if (Animations.Count <= 0)
                 return;
+
+            OwnerCtrlUse = Owner.controlUseTile;
 
 
             projectile.width = (int)CurrentAnimation.FrameSize.X;
@@ -231,8 +235,6 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
             if (donuting && Owner.ownedProjectileCounts[ModContent.ProjectileType<DonutPunch>()] <= 1)
                 Projectile.NewProjectile(projectile.Center, Vector2.Zero, ModContent.ProjectileType<DonutPunch>(), 60, 0, Owner.whoAmI, projectile.whoAmI, -1);
 
-            Animations["CUT_IDLE"].AutoLoop = Owner.controlUseItem;
-            
             if(CurrentState == "CUT_IDLE" && !Owner.controlUseItem)
             {
                 CurrentAnimation.ResetAnimation();
@@ -246,7 +248,7 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
                 CurrentState = "DONUT_PREP";
             }
 
-            if(CurrentState == "DONUT_IDLE" && !Owner.controlUseTile)
+            if(CurrentState == "DONUT_IDLE" && !OwnerCtrlUse)
             {
                 CurrentAnimation.ResetAnimation();
                 CurrentState = "DONUT_ATT";
@@ -285,6 +287,20 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
 
         }
 
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            base.SendExtraAI(writer);
+
+            writer.Write(OwnerCtrlUse);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            base.ReceiveExtraAI(reader);
+
+            OwnerCtrlUse = reader.ReadBoolean();
+        }
+
         public void EraseTime()
         {
             if (TimeSkipManager.TimeSkippedFor <= 0 && TBAPlayer.Get(Owner).Stamina >= 25)
@@ -299,5 +315,7 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
         public int PunchCounter { get; private set; }
         public int PunchCounterReset { get; private set; }
         public int RushTimer { get; private set; }
+
+        public bool OwnerCtrlUse { get; set; }
     }
 }

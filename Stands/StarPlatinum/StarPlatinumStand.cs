@@ -7,6 +7,8 @@ using TerrarianBizzareAdventure.Projectiles;
 using TerrarianBizzareAdventure.Projectiles.Misc;
 using TerrarianBizzareAdventure.TimeStop;
 using System.Linq;
+using TerrarianBizzareAdventure.Drawing;
+using System.IO;
 
 namespace TerrarianBizzareAdventure.Stands.StarPlatinum
 {
@@ -71,6 +73,8 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
         public override void AI()
         {
             base.AI();
+
+            AuraColor = new Color(1f, 0f, 1f);
 
             if (Animations.Count <= 0)
                 return;
@@ -320,6 +324,20 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
         {
             TBAPlayer.Get(Owner).AttackDirectionResetTimer = time;
             TBAPlayer.Get(Owner).AttackDirection = Main.MouseWorld.X < projectile.Center.X ? -1 : 1;
+        }
+
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            base.SendExtraAI(writer);
+
+            writer.Write(IsTaunting);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            base.ReceiveExtraAI(reader);
+
+            IsTaunting = reader.ReadBoolean();
         }
 
 

@@ -11,8 +11,8 @@ namespace TerrarianBizzareAdventure.Players
     {
         public int AnimationID
         {
-            get => ModPlayer.AuraAnimationID;
-            set => ModPlayer.AuraAnimationID = value;
+            get => ModPlayer.AuraAnimationKey;
+            set => ModPlayer.AuraAnimationKey = value;
         }
     }
 }

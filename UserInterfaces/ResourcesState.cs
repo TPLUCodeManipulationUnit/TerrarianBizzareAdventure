@@ -25,7 +25,7 @@ namespace TerrarianBizzareAdventure.UserInterfaces
             {
                 int drawPercent = (mPlayer.Stamina * bar.Width) / mPlayer.MaxStamina;
 
-                float regen = (mPlayer.StaminaRegenTickRate + (hasNoActiveStand ? 0 : 8 * Constants.TICKS_PER_SECOND)) / 60;
+                float regen = (mPlayer.StaminaRegenTickRate) / 60;
 
                 string result = string.Format("{0}.{1}", regen, mPlayer.StaminaRegenTickRate % 60);
 
@@ -68,6 +68,19 @@ namespace TerrarianBizzareAdventure.UserInterfaces
                     -MathHelper.Pi / 4 + .1f,
                     Vector2.Zero,
                     0.75f,
+                    SpriteEffects.None,
+                    1f
+                    );
+
+                if(mPlayer.IsDebugging)
+                spriteBatch.DrawString(
+                    Main.fontMouseText,
+                    "DEBUG",
+                    new Vector2(20, Main.screenHeight - 80) + new Vector2(16, -36),
+                    Color.Red,
+                    0,
+                    Vector2.Zero,
+                    1,
                     SpriteEffects.None,
                     1f
                     );

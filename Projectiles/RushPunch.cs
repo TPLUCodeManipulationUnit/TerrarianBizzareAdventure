@@ -45,8 +45,11 @@ namespace TerrarianBizzareAdventure.Projectiles
 
         public override void AI()
         {
-            projectile.netUpdate = true;
-            projectile.netUpdate2 = true;
+            if (projectile.timeLeft >= 5)
+            {
+                projectile.netUpdate = true;
+                projectile.netUpdate2 = true;
+            }
 
             SpeedMultiplier += 0.28f;
 
@@ -55,9 +58,10 @@ namespace TerrarianBizzareAdventure.Projectiles
             float x = Main.rand.NextFloat(-10, 10);
             float y = Main.rand.NextFloat(-20, 20);
 
-            projectile.ai[0] = (Main.projectile[ParentProjectile].Center + projectile.velocity * SpeedMultiplier).X;
-            projectile.ai[1] = (Main.projectile[ParentProjectile].Center + projectile.velocity * SpeedMultiplier).Y;
-            projectile.Center = new Vector2(projectile.ai[0], projectile.ai[1]) + new Vector2(x, y).RotatedBy(projectile.velocity.ToRotation());
+            var xx = (Main.projectile[ParentProjectile].Center + projectile.velocity * SpeedMultiplier).X;
+            var yy = (Main.projectile[ParentProjectile].Center + projectile.velocity * SpeedMultiplier).Y;
+
+            projectile.Center = new Vector2(xx, yy) + new Vector2(x, y).RotatedBy(projectile.velocity.ToRotation());
         }
 
         public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)

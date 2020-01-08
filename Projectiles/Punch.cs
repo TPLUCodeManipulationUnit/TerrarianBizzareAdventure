@@ -22,7 +22,11 @@ namespace TerrarianBizzareAdventure.Projectiles
 
         public override void AI()
         {
-            projectile.netUpdate = true;
+            if (projectile.timeLeft >= 4)
+            {
+                projectile.netUpdate = true;
+                projectile.netUpdate2 = true;
+            }
 
             projectile.Center = ParentProjectile.Center + projectile.velocity;
         }

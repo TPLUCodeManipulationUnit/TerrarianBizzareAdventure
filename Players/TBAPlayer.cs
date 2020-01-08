@@ -10,6 +10,7 @@ using TerrarianBizzareAdventure.Helpers;
 using TerrarianBizzareAdventure.Items.Weapons.Rewards;
 using TerrarianBizzareAdventure.Projectiles.Misc;
 using TerrarianBizzareAdventure.Stands;
+using TerrarianBizzareAdventure.Stands.Aerosmith;
 using TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio;
 using TerrarianBizzareAdventure.TimeStop;
 
@@ -107,12 +108,30 @@ namespace TerrarianBizzareAdventure.Players
             CanTransform = false;
         }
 
+        public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
+        {
+            new StandPacket().Send();
+        }
+
+        public override void SendClientChanges(ModPlayer clientPlayer)
+        {
+            TBAPlayer tPlayer = clientPlayer as TBAPlayer;
+            if (tPlayer.Stand != Stand)
+            {
+                new StandPacket().Send();
+            }
+        }
+
         public override void UpdateBiomeVisuals()
         {
             bool shockWaveExist = Main.projectile.Count(x => x.active && x.modProjectile is TimeStopVFX) > 0;
             player.ManageSpecialBiomeVisuals("TBA:TimeStopInvert", shockWaveExist);
 
             GameShaders.Armor.Apply(GameShaders.Armor.GetShaderIdFromItemId(ItemID.TwilightDye), player);
+        }
+
+        public override void PlayerConnect(Player player)
+        {
         }
 
         public override void OnEnterWorld(Player player)
@@ -164,9 +183,25 @@ namespace TerrarianBizzareAdventure.Players
                 player.controlLeft = AttackDirection != 1;
                 player.controlRight = AttackDirection != -1;
             }
+
+            SetAerosmithControls();
         }
+
         public Stand Stand { get; set; }
-        public int ActiveStandProjectileId { get; set; }
+
+        private int _activeStandProjectileId;
+        public int ActiveStandProjectileId
+        {
+            get => _activeStandProjectileId;
+            set
+            {
+                if (_activeStandProjectileId == value) return;
+
+                _activeStandProjectileId = value;
+
+                new StandProjectileIDPacket().Send();
+            }
+        }
 
 
         public bool StandUser => Stand != null;

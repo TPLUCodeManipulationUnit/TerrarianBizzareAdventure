@@ -26,7 +26,6 @@ namespace TerrarianBizzareAdventure.Items.Tools
         {
             TBAPlayer tbaPlayer = TBAPlayer.Get(player);
 
-            tbaPlayer.ActiveStandProjectileId = TBAPlayer.ACTIVE_STAND_PROJECTILE_INACTIVE_ID;
             tbaPlayer.Stand = StandLoader.Instance.GetRandom(tbaPlayer);
             Main.NewText($"You got yourself a Stand{(Main.rand.Next(0, 100) > 98 ? "oda" : "")}!");
 
