@@ -15,12 +15,15 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
         public override void AddAnimations()
         {
             // kekW dis bad boi will use same animation for everything for now
-            var animation = new SpriteAnimation(mod.GetTexture("Stands/Aerosmith/Idle"), 18, 2);
-            var animation2 = new SpriteAnimation(mod.GetTexture("Stands/Aerosmith/Idle"), 18, 4, true);
-            var animation3 = new SpriteAnimation(mod.GetTexture("Stands/Aerosmith/Idle"), 18, 4);
-            Animations.Add(ANIMATION_SUMMON, animation);
-            Animations.Add(ANIMATION_IDLE, animation2);
-            Animations.Add(ANIMATION_DESPAWN, animation3);
+            var summon = new SpriteAnimation(mod.GetTexture("Stands/Aerosmith/Idle"), 18, 2);
+            var idle = new SpriteAnimation(mod.GetTexture("Stands/Aerosmith/Idle"), 18, 4, true);
+            var despawn = new SpriteAnimation(mod.GetTexture("Stands/Aerosmith/Idle"), 18, 4);
+            var turnAround = new SpriteAnimation(mod.GetTexture("Stands/Aerosmith/Turn"), 17, 4);
+
+            Animations.Add(ANIMATION_SUMMON, summon);
+            Animations.Add(ANIMATION_IDLE, idle);
+            Animations.Add(ANIMATION_DESPAWN, despawn);
+            Animations.Add("TURN", turnAround);
 
             Animations[ANIMATION_SUMMON].SetNextAnimation(Animations[ANIMATION_IDLE]);
         }
@@ -28,6 +31,7 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
         public override void AI()
         {
             base.AI();
+
 
             if (!SetVel)
             {
@@ -38,7 +42,14 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
                 SetVel = true;
             }
 
-            projectile.velocity = new Vector2(8, 0).RotatedBy(Angle);
+            var speed = 8.0f;
+
+            if (CurrentState == "TURN" && CurrentAnimation.CurrentFrame <= 8)
+                speed = 9 - MathHelper.Clamp(CurrentAnimation.CurrentFrame, 0, 8);
+            else if (CurrentState == "TURN" && CurrentAnimation.CurrentFrame >= 8)
+                speed = 0 - MathHelper.Clamp(8 - (CurrentAnimation.CurrentFrame - CurrentAnimation.FrameCount), 0, 8);
+
+            projectile.velocity = new Vector2(speed, 0).RotatedBy(Angle);
 
             TBAPlayer tPlayer = TBAPlayer.Get(Owner);
 
@@ -59,7 +70,7 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
                     CurrentState = ANIMATION_DESPAWN;
             }
 
-            if(CurrentState == ANIMATION_DESPAWN || CurrentState == ANIMATION_SUMMON)
+            if (CurrentState == ANIMATION_DESPAWN || CurrentState == ANIMATION_SUMMON)
             {
                 for (int i = 0; i < 5; i++)
                 {
@@ -80,25 +91,44 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
                 }
             }
 
-            if (tPlayer.ASAngleUp)
+            if (IsFlipped && Owner.controlLeft && CurrentState == ANIMATION_IDLE && !tPlayer.ASAngleUp && !tPlayer.ASAngleDown)
+            {
+                CurrentState = "TURN";
+            }
+
+            if (!IsFlipped && Owner.controlRight && CurrentState == ANIMATION_IDLE && !tPlayer.ASAngleUp && !tPlayer.ASAngleDown)
+            {
+                CurrentState = "TURN";
+            }
+
+            if (CurrentState == "TURN" && CurrentAnimation.Finished)
+            {
+                CurrentAnimation.ResetAnimation();
+                CurrentState = ANIMATION_IDLE;
+                Angle += (float)MathHelper.Pi;
+            }
+
+            if (tPlayer.ASAngleUp && CurrentState == ANIMATION_IDLE)
             {
                 Angle = projectile.velocity.RotatedBy(0.06f).ToRotation();
             }
 
-            if (tPlayer.ASAngleDown)
+            if (tPlayer.ASAngleDown && CurrentState == ANIMATION_IDLE)
             {
                 Angle = projectile.velocity.RotatedBy(-0.06f).ToRotation();
             }
 
-            if (tPlayer.ASAttack)
+            if (tPlayer.ASAttack && CurrentState == ANIMATION_IDLE)
             {
-                Projectile.NewProjectile(projectile.Center, new Vector2(16, 0).RotatedBy(Angle).RotatedByRandom(.12f),14, 60, 0, Owner.whoAmI);
+                Projectile.NewProjectile(projectile.Center, new Vector2(16, 0).RotatedBy(Angle).RotatedByRandom(.12f), 14, 60, 0, Owner.whoAmI);
             }
+            if (CurrentState != "TURN")
+            {
 
-            projectile.rotation = projectile.velocity.ToRotation() + (IsFlipped ? 0 : (float)MathHelper.Pi);
+                projectile.rotation = projectile.velocity.ToRotation() + (IsFlipped ? 0 : (float)MathHelper.Pi);
 
-            IsFlipped = projectile.velocity.X > 0;
-
+                IsFlipped = projectile.velocity.X > 0;
+            }
         }
 
         public bool SetVel { get; set; }

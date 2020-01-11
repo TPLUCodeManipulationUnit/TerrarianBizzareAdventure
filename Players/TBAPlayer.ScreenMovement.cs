@@ -12,7 +12,7 @@ namespace TerrarianBizzareAdventure.Players
             if(Stand is AerosmithStand && ActiveStandProjectileId != ACTIVE_STAND_PROJECTILE_INACTIVE_ID)
             {
                 AerosmithStand stando = Main.projectile[ActiveStandProjectileId].modProjectile as AerosmithStand;
-                if(stando.CurrentState == "IDLE")
+                if(stando.CurrentState != "SUMMON")
                 Main.screenPosition = Main.projectile[ActiveStandProjectileId].Center - new Vector2(Main.screenWidth, Main.screenHeight) * 0.5f;
             }
         }
