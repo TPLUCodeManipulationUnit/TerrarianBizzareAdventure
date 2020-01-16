@@ -15,6 +15,8 @@ namespace TerrarianBizzareAdventure
 
             if(VoiceRecognitionSystem.SuccesfulBoot)
                 VoiceRec = mod.RegisterHotKey("Voice controls", "V");
+
+            OpenCollection = mod.RegisterHotKey("Stand album", "[");
         }
 
         public static void Unload()
@@ -26,7 +28,7 @@ namespace TerrarianBizzareAdventure
             ExtraAction01 = null;
             ExtraAction02 = null;
 
-            VoiceRec = null;
+            OpenCollection = null;
         }
 
 
@@ -38,5 +40,7 @@ namespace TerrarianBizzareAdventure
         public static ModHotKey ExtraAction02 { get; private set; }
 
         public static ModHotKey VoiceRec { get; private set; }
+
+        public static ModHotKey OpenCollection { get; private set; }
     }
 }

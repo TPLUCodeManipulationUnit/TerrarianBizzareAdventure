@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria.UI;
 using TerrarianBizzareAdventure.UserInterfaces.Special.RATM;
+using TerrarianBizzareAdventure.UserInterfaces.StandCollection;
 
 namespace TerrarianBizzareAdventure.UserInterfaces
 {
@@ -17,6 +18,8 @@ namespace TerrarianBizzareAdventure.UserInterfaces
             TimeSkipLayer = new TimeSkipLayer(new TimeSkipVFX());
 
             ResourcesLayer = new ResourcesLayer(new ResourcesState());
+
+            SCLayer = new SCLayer(new SCUIState());
         }
 
         public static void Update(GameTime gameTime)
@@ -25,6 +28,9 @@ namespace TerrarianBizzareAdventure.UserInterfaces
                 RATMUserInterface?.Update(gameTime);
 
             TimeSkipLayer.State.Update(gameTime);
+
+            if(SCLayer.State.Visible)
+                SCLayer.UserInterface.Update(gameTime);
         }
 
         public static RATMState RATMState { get; private set; }
@@ -34,5 +40,7 @@ namespace TerrarianBizzareAdventure.UserInterfaces
         public static TimeSkipLayer TimeSkipLayer { get; private set; }
 
         public static ResourcesLayer ResourcesLayer { get; private set; }
+
+        public static SCLayer SCLayer { get; private set; }
     }
 }

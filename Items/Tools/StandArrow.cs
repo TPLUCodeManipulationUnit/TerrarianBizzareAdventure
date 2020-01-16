@@ -26,8 +26,13 @@ namespace TerrarianBizzareAdventure.Items.Tools
         {
             TBAPlayer tbaPlayer = TBAPlayer.Get(player);
 
-            tbaPlayer.Stand = StandLoader.Instance.GetRandom(tbaPlayer);
+            Stand stand = StandLoader.Instance.GetRandom(tbaPlayer);
+
+            tbaPlayer.Stand = stand;
             Main.NewText($"You got yourself a Stand{(Main.rand.Next(0, 100) > 98 ? "oda" : "")}!");
+
+            if(!tbaPlayer.UnlockedStands.Contains(stand.UnlocalizedName));
+                tbaPlayer.UnlockedStands.Add(stand.UnlocalizedName);
 
             return true;
         }

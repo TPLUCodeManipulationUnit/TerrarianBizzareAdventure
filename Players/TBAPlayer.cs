@@ -13,6 +13,7 @@ using TerrarianBizzareAdventure.Stands;
 using TerrarianBizzareAdventure.Stands.Aerosmith;
 using TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio;
 using TerrarianBizzareAdventure.TimeStop;
+using TerrarianBizzareAdventure.UserInterfaces;
 
 namespace TerrarianBizzareAdventure.Players
 {
@@ -39,6 +40,8 @@ namespace TerrarianBizzareAdventure.Players
         {
             MaxStamina = 100;
             Stamina = MaxStamina;
+
+            UnlockedStands = new List<string>();
         }
 
         public override bool CanSellItem(NPC vendor, Item[] shopInventory, Item item)
@@ -164,6 +167,9 @@ namespace TerrarianBizzareAdventure.Players
                 }
             }
 
+            if (TBAInputs.OpenCollection.JustPressed)
+                UIManager.SCLayer.State.Visible = !UIManager.SCLayer.State.Visible;
+
             if (ActiveStandProjectileId == ACTIVE_STAND_PROJECTILE_INACTIVE_ID)
                 return;
         }
@@ -222,5 +228,7 @@ namespace TerrarianBizzareAdventure.Players
         public int MouseTwoTimeReset { get; private set; }
 
         public bool KnifeGangMember => SteamHelper.KnifeGangMembers.Count(x => x.SteamId64 == SteamHelper.SteamId64) > 0;
+
+        public List<string> UnlockedStands { get; private set; }
     }
 }
