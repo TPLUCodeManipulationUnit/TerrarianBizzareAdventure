@@ -16,6 +16,7 @@ namespace TerrarianBizzareAdventure
             StandCard = ModContent.GetTexture("TerrarianBizzareAdventure/UserInterfaces/Elements/StandCollection/StandCard");
             SCLock = ModContent.GetTexture("TerrarianBizzareAdventure/UserInterfaces/Elements/StandCollection/Locked");
             SCUnknown = ModContent.GetTexture("TerrarianBizzareAdventure/UserInterfaces/Elements/StandCollection/Unknown");
+            SCCurrent = ModContent.GetTexture("TerrarianBizzareAdventure/UserInterfaces/Elements/StandCollection/Current");
         }
         public static void Unload()
         {
@@ -26,6 +27,7 @@ namespace TerrarianBizzareAdventure
             StandCard = null;
             SCLock = null;
             SCUnknown = null;
+            SCCurrent = null;
         }
 
         public static Texture2D StaminaBar { get; private set; }
@@ -33,6 +35,7 @@ namespace TerrarianBizzareAdventure
         public static Texture2D TimeSkipVFX { get; private set; }
 
         public static Texture2D StandCard { get; private set; }
+        public static Texture2D SCCurrent { get; private set; }
         public static Texture2D SCLock { get; private set; }
         public static Texture2D SCUnknown { get; private set; }
     }

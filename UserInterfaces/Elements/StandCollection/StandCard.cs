@@ -49,7 +49,9 @@ namespace TerrarianBizzareAdventure.UserInterfaces.Elements.StandCollection
                 Main.LocalPlayer.mouseInterface = true;
             }
 
-            spriteBatch.Draw(Textures.StandCard, dims.Position(), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
+            Texture2D texture = TBAPlayer.Get().Stand.StandName == StandDisplayName ? Textures.SCCurrent : Textures.StandCard;
+
+            spriteBatch.Draw(texture, dims.Position(), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
 
             if (!Unlocked)
             {

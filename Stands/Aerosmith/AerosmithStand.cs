@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
 using TerrarianBizzareAdventure.Drawing;
 using TerrarianBizzareAdventure.Players;
 
@@ -32,6 +34,19 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
         {
             base.AI();
 
+            Owner.heldProj = projectile.whoAmI;
+
+            if(Vector2.Distance(projectile.Center, Owner.Center) >= 16 * 300)
+            {
+                CurrentState = ANIMATION_DESPAWN;
+            }
+
+            if (CurrentAnimation != null)
+            {
+                projectile.width = (int)CurrentAnimation.FrameSize.X;
+
+                projectile.height = (int)CurrentAnimation.FrameSize.Y;
+            }
 
             if (!SetVel)
             {
@@ -91,12 +106,12 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
                 }
             }
 
-            if (IsFlipped && Owner.controlLeft && CurrentState == ANIMATION_IDLE && !tPlayer.ASAngleUp && !tPlayer.ASAngleDown)
+            if (IsFlipped && tPlayer.ASTurnLeft && CurrentState == ANIMATION_IDLE && !tPlayer.ASAngleUp && !tPlayer.ASAngleDown)
             {
                 CurrentState = "TURN";
             }
 
-            if (!IsFlipped && Owner.controlRight && CurrentState == ANIMATION_IDLE && !tPlayer.ASAngleUp && !tPlayer.ASAngleDown)
+            if (!IsFlipped && tPlayer.ASTurnRight && CurrentState == ANIMATION_IDLE && !tPlayer.ASAngleUp && !tPlayer.ASAngleDown)
             {
                 CurrentState = "TURN";
             }
@@ -120,8 +135,31 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
 
             if (tPlayer.ASAttack && CurrentState == ANIMATION_IDLE)
             {
-                Projectile.NewProjectile(projectile.Center, new Vector2(16, 0).RotatedBy(Angle).RotatedByRandom(.12f), 14, 60, 0, Owner.whoAmI);
+                tPlayer.Stamina -= 1;
+                Vector2 position = projectile.Center;
+                Vector2 velocity = new Vector2(16, 0).RotatedBy(Angle).RotatedByRandom(.12f);
+                int type = ModContent.ProjectileType<AerosmithBullet>();
+                int damage = 60;
+
+                Main.PlaySound(SoundID.Item31, projectile.position);
+
+                Projectile.NewProjectile(position, velocity, type, damage, 0, Owner.whoAmI);
             }
+
+            if (tPlayer.ASBomb && CurrentState == ANIMATION_IDLE && Owner.ownedProjectileCounts[ModContent.ProjectileType<AerosmithBomb>()] <= 0)
+            {
+                tPlayer.Stamina -= 15;
+
+                Vector2 position = projectile.Center + new Vector2(0, 6);
+                Vector2 velocity = new Vector2(9, 0).RotatedBy(Angle).RotatedByRandom(.12f);
+                int type = ModContent.ProjectileType<AerosmithBomb>();
+                int damage = 1;
+
+                Main.PlaySound(SoundID.Item1, projectile.position);
+
+                Projectile.NewProjectile(position, velocity, type, damage, 0, Owner.whoAmI);
+            }
+
             if (CurrentState != "TURN")
             {
 

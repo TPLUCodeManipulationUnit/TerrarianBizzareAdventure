@@ -5,9 +5,11 @@ using Terraria;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
+using TerrarianBizzareAdventure.Stands.Aerosmith;
 using TerrarianBizzareAdventure.States;
 using TerrarianBizzareAdventure.TimeSkip;
 using TerrarianBizzareAdventure.TimeStop;
+using System.Linq;
 
 namespace TerrarianBizzareAdventure.NPCs
 {
@@ -116,6 +118,21 @@ namespace TerrarianBizzareAdventure.NPCs
         {
             if (TimeSkipManager.IsTimeSkipped)
                 drawColor = Color.Red * 0.5f;
+        }
+
+        public override bool CheckActive(NPC npc)
+        {
+            List<Projectile> aerosmiths = Main.projectile.Where(x => x.modProjectile is AerosmithStand).ToList();
+
+            bool canDespawn = true;
+
+            foreach(Projectile p in aerosmiths)
+            {
+                if (Vector2.Distance(npc.Center, p.Center) <= 16 * 64)
+                    canDespawn = false;
+            }
+
+            return canDespawn ? base.CheckActive(npc) : false;
         }
 
         public List<TimeSkipState> TimeSkipStates { get; private set; }
