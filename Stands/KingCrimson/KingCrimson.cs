@@ -61,6 +61,14 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
             Animations["DONUT_MISS"].SetNextAnimation(Animations[ANIMATION_IDLE]);
             #endregion
 
+            Animations.Add("POSE_PREP", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCPoseTransition"), 8, 5));
+            Animations.Add("POSE_END", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCPoseTransition"), 8, 5, false, null, true));
+            Animations.Add("POSE_IDLE", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCPoseIdle"), 10, 22, true));
+
+            Animations["POSE_PREP"].SetNextAnimation(Animations["POSE_IDLE"]);
+            Animations["POSE_END"].SetNextAnimation(Animations[ANIMATION_IDLE]);
+            Animations["POSE_END"].ReversePlayback = true;
+
             #region Rush
             Animations.Add("RUSH_MID", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCRush"), 4, 4));
             Animations.Add("RUSH_UP", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCRushUp"), 4, 4));
@@ -88,7 +96,9 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
         public override void AI()
         {
             base.AI();
+
             AuraColor = new Color(189, 0, 85);
+
             if (Animations.Count <= 0)
                 return;
 
@@ -119,7 +129,12 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
 
             int xOffset = IsTaunting || CurrentState.Contains("PUNCH") || CurrentState.Contains("ATT") || CurrentState == "DONUT_UNDO" ||  CurrentState == "DONUT_MISS" ||RushTimer > 0? 34 : -16;
 
-            lerpPos = Owner.Center + new Vector2(xOffset * Owner.direction, -24 + Owner.gfxOffY);
+            int yOffset = CurrentState.Contains("POSE") ? 36 : 0;
+
+            xOffset = CurrentState.Contains("POSE") ? 24 : xOffset;
+
+
+            lerpPos = Owner.Center + new Vector2(xOffset * Owner.direction, -24 + Owner.gfxOffY + yOffset);
 
             projectile.Center = Vector2.Lerp(projectile.Center, lerpPos, 0.26f);
 
@@ -131,6 +146,11 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
             #region Punching
             if (CurrentState == ANIMATION_IDLE)
             {
+                if(TBAInputs.StandPose.JustPressed && Owner.whoAmI == Main.myPlayer)
+                {
+                    CurrentState = "POSE_PREP";
+                }
+
                 if (PunchCounter < 2)
                 {
                     if (TBAPlayer.Get(Owner).MouseOneTimeReset > 0)
@@ -285,6 +305,14 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
                 EraseTime();
             }
 
+
+            if (TBAInputs.StandPose.JustPressed && Owner.whoAmI == Main.myPlayer && CurrentState == "POSE_IDLE")
+            {
+                CurrentState = "POSE_END";
+            }
+
+            if(CurrentState.Contains("POSE"))
+            Owner.heldProj = projectile.whoAmI;
         }
 
         public override void SendExtraAI(BinaryWriter writer)

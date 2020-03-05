@@ -1,14 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
+using System.IO;
 using Terraria;
 using Terraria.ModLoader;
+using TerrarianBizzareAdventure.Drawing;
 using TerrarianBizzareAdventure.Helpers;
 using TerrarianBizzareAdventure.Players;
 using TerrarianBizzareAdventure.Projectiles;
 using TerrarianBizzareAdventure.Projectiles.Misc;
 using TerrarianBizzareAdventure.TimeStop;
-using System.Linq;
-using TerrarianBizzareAdventure.Drawing;
-using System.IO;
 
 namespace TerrarianBizzareAdventure.Stands.StarPlatinum
 {
@@ -67,19 +66,41 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
             Animations["BLOCK_IDLE"].SetNextAnimation(Animations["BLOCK_TRANSITION_REVERSE"], true);
 
             Animations.Add(ANIMATION_DESPAWN, new SpriteAnimation(mod.GetTexture(TEXPATH + "SPDespawn"), 6, 4));
+
+
+
+            Animations.Add("DONUT_IDLE", new SpriteAnimation(mod.GetTexture(TEXPATH + "SPDonutIdle"), 4, 6, true));
+            Animations.Add("DONUT_PREP", new SpriteAnimation(mod.GetTexture(TEXPATH + "SPDonutTransition"), 13, 5));
+            Animations.Add("DONUT_PUNCH", new SpriteAnimation(mod.GetTexture(TEXPATH + "SPDonutPunch"), 15, 3));
+            Animations.Add("DONUT_PULL", new SpriteAnimation(mod.GetTexture(TEXPATH + "SPDonutRetract"), 8, 5));
+
+            Animations["DONUT_PULL"].SetNextAnimation(Animations[ANIMATION_IDLE]);
+            Animations["DONUT_PREP"].SetNextAnimation(Animations["DONUT_IDLE"]);
+            Animations["DONUT_PUNCH"].SetNextAnimation(Animations["DONUT_PULL"]);
         }
 
+        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        {
+            target.immune[projectile.owner] = 20;
+            target.velocity = new Vector2(0, -12);
+        }
+
+        public override void ModifyHitPvp(Player target, ref int damage, ref bool crit)
+        {
+            target.velocity = new Vector2(0, -16);
+        }
 
         public override void AI()
         {
             base.AI();
 
-            AuraColor = new Color(1f, 0f, 1f);
+            projectile.penetrate = -1;
+            projectile.friendly = true;
 
             if (Animations.Count <= 0)
                 return;
 
-            if(CurrentState == ANIMATION_SUMMON && CurrentAnimation.CurrentFrame < 3)
+            if (CurrentState == ANIMATION_SUMMON && CurrentAnimation.CurrentFrame < 3)
                 Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/SP_Spawn"));
 
             #region Rush
@@ -153,7 +174,19 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
 
             Vector2 lerpPos = Vector2.Zero;
 
-            int xOffset = IsPunching || RushTimer > 0 || CurrentState.Contains("POSE") ? 34 : -16;
+            int xOffset = IsPunching ||
+                RushTimer > 0 || 
+                CurrentState.Contains("POSE") || 
+                CurrentState == "DONUT_PUNCH" ||
+                CurrentState == "DONUT_PULL" ? 34 : -16;
+
+            if(CurrentState == "DONUT_PUNCH" || CurrentState == "DONUT_PULL")
+                Owner.heldProj = projectile.whoAmI;
+
+            if (CurrentState == "DONUT_PUNCH" && CurrentAnimation.CurrentFrame > 4)
+                projectile.damage = 350;
+            else
+                projectile.damage = 0;
 
             if (CurrentState.Contains("BLOCK"))
             {
@@ -184,13 +217,13 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                 Opacity = CurrentAnimation.FrameRect.Y / CurrentAnimation.FrameRect.Height * 0.25f;
             }
 
-            if(!CurrentState.Contains("PUNCH"))
+            if (!CurrentState.Contains("PUNCH"))
             {
                 IsPunching = false;
             }
 
             #region Punch
-            if (CurrentState == ANIMATION_IDLE && Owner.controlUseItem && !_leftMouseButtonLastState && !IsPunching && !IsTaunting && RushTimer <= 0)
+            if (CurrentState == ANIMATION_IDLE && TBAPlayer.Get(Owner).MouseOneTimeReset > 0 && TBAPlayer.Get(Owner).MouseOneTime < 15 && !Owner.controlUseItem)
             {
                 Punching(Main.rand.Next(2) == 0);
             }
@@ -204,7 +237,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                     KillStand();
             }
 
-            if(CurrentState == ANIMATION_IDLE && Owner.controlDown)
+            if (CurrentState == ANIMATION_IDLE && Owner.controlDown)
             {
                 CurrentState = "BLOCK_TRANSITION";
                 CurrentAnimation.ResetAnimation();
@@ -242,6 +275,18 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
             if (CurrentState == "POSE_IDLE" && !IsTaunting)
             {
                 CurrentState = ANIMATION_IDLE;
+            }
+
+            if (TBAPlayer.Get(Owner).MouseOneTime >= 15 && CurrentState == ANIMATION_IDLE)
+            {
+                TBAPlayer.Get(Owner).Stamina -= 10;
+                CurrentState = "DONUT_PREP";
+            }
+
+            if (CurrentState == "DONUT_IDLE" && !Owner.controlUseItem)
+            {
+                CurrentAnimation.ResetAnimation();
+                CurrentState = "DONUT_PUNCH";
             }
         }
 
@@ -302,13 +347,17 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
             }
         }
 
+        private const int TIME_STOP_COST = 40;
+
         public void TimeStop()
         {
-            if (TBAPlayer.Get(Owner).Stamina >= 75)
+            if (TBAPlayer.Get(Owner).Stamina >= TIME_STOP_COST)
             {
-                TBAPlayer.Get(Owner).Stamina -= 75;
+                TBAPlayer.Get(Owner).Stamina -= TIME_STOP_COST;
+
                 if (!TimeStopManagement.TimeStopped)
                     Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/SP_TimeStopCall"));
+
                 CurrentState = ANIMATION_IDLE;
                 IsTaunting = false;
                 TimeStopDelay = 25;
