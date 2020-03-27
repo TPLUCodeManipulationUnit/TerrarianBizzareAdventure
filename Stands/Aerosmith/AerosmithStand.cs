@@ -133,17 +133,37 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
                 Angle = projectile.velocity.RotatedBy(-0.06f).ToRotation();
             }
 
-            if (tPlayer.ASAttack && CurrentState == ANIMATION_IDLE)
+            if (tPlayer.ASAttack && CurrentState == ANIMATION_IDLE && BarrageTime <= 0)
             {
-                tPlayer.Stamina -= 1;
-                Vector2 position = projectile.Center;
-                Vector2 velocity = new Vector2(16, 0).RotatedBy(Angle).RotatedByRandom(.12f);
-                int type = ModContent.ProjectileType<AerosmithBullet>();
-                int damage = 60;
+                tPlayer.Stamina -= 2;
+                BarrageTime = 32;
+            }
 
-                Main.PlaySound(SoundID.Item31, projectile.position);
+            if (BarrageTime > 0)
+            {
+                BarrageTime--;
 
-                Projectile.NewProjectile(position, velocity, type, damage, 0, Owner.whoAmI);
+                if (BarrageTime % 4 == 0)
+                {
+                    Vector2 position = projectile.Center;
+                    Vector2 velocity = new Vector2(16, 0).RotatedBy(Angle);
+                    int type = ModContent.ProjectileType<AerosmithBullet>();
+                    int damage = 60;
+
+                    float offX = -24;
+                    float offY = 12;
+
+                    int multiplier = (IsFlipped ? 1 : -1);
+
+                    Vector2 offset1 = new Vector2(offX, offY * multiplier).RotatedBy(Angle);
+                    Vector2 offset2 = new Vector2(offX, (offY + 2) * multiplier).RotatedBy(Angle);
+
+                    Main.PlaySound(SoundID.Item31, projectile.position);
+
+                    Projectile.NewProjectile(position + offset1, velocity.RotatedByRandom(.035f), type, damage, 0, Owner.whoAmI);
+
+                    Projectile.NewProjectile(position + offset2, velocity.RotatedByRandom(.035f), type, damage, 0, Owner.whoAmI);
+                }
             }
 
             if (tPlayer.ASBomb && CurrentState == ANIMATION_IDLE && Owner.ownedProjectileCounts[ModContent.ProjectileType<AerosmithBomb>()] <= 0)
@@ -168,6 +188,8 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
                 IsFlipped = projectile.velocity.X > 0;
             }
         }
+
+        public int BarrageTime { get; set; }
 
         public bool SetVel { get; set; }
 

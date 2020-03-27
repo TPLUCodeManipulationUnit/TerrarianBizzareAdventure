@@ -16,6 +16,7 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
         {
             CallSoundPath = "Sounds/KC_Call";
             AuraColor = new Color(189, 0, 85);
+            KingRush = new StandPunchRush(ModContent.ProjectileType<KCRush>(), ModContent.ProjectileType<KCRushBack>());
         }
 
         private Vector2 _punchRushDirection;
@@ -208,32 +209,7 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
             #region Rush
             if (RushTimer > 0)
             {
-                if (RushTimer % 2 == 0)
-                {
-                    if (RushTimer > 12)
-                    {
-                        for (int i = 0; i < 2; i++)
-                        {
-                            int projBack = Projectile.NewProjectile(projectile.Center, _punchRushDirection, ModContent.ProjectileType<KCRushBack>(), 80, 3.5f, Owner.whoAmI);
-
-                            RushPunch rushBack = Main.projectile[projBack].modProjectile as RushPunch;
-                            rushBack.ParentProjectile = projectile.whoAmI;
-                        }
-
-                        int projFront = Projectile.NewProjectile(projectile.Center, _punchRushDirection, ModContent.ProjectileType<KCRush>(), 80, 3.5f, Owner.whoAmI);
-
-                        RushPunch rushFront = Main.projectile[projFront].modProjectile as RushPunch;
-                        rushFront.ParentProjectile = projectile.whoAmI;
-                    }
-                    else
-                    {
-                        int projFront = Projectile.NewProjectile(projectile.Center, _punchRushDirection, ModContent.ProjectileType<KCRush>(), 80, 3.5f, Owner.whoAmI);
-
-                        RushPunch rushFront = Main.projectile[projFront].modProjectile as RushPunch;
-                        rushFront.ParentProjectile = projectile.whoAmI;
-                        rushFront.IsFinalPunch = true;
-                    }
-                }
+                KingRush.DoRush(projectile, _punchRushDirection, 60, RushTimer, new Vector2(-14, 0), new Vector2(2, 6));
 
                 RushTimer--;
             }
@@ -345,5 +321,7 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
         public int RushTimer { get; private set; }
 
         public bool OwnerCtrlUse { get; set; }
+
+        public StandPunchRush KingRush { get; private set; }
     }
 }

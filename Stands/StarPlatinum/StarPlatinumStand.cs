@@ -28,6 +28,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
         {
             CallSoundPath = "Sounds/SP_Call";
             AuraColor = new Color(1f, 0f, 1f);//new Color(210, 101, 198);//new Color(203, 85, 195);
+            StarRush = new StandPunchRush(ModContent.ProjectileType<StarPlatinumRush>(), ModContent.ProjectileType<StarPlatinumRushBack>());
         }
 
 
@@ -114,32 +115,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                 if (CurrentAnimation.Finished)
                     CurrentAnimation.ResetAnimation();
 
-                if (RushTimer % 2 == 0)
-                {
-                    if (RushTimer > 12)
-                    {
-                        for (int i = 0; i < 2; i++)
-                        {
-                            int projBack = Projectile.NewProjectile(projectile.Center, _punchRushDirection, ModContent.ProjectileType<StarPlatinumRushBack>(), 80, 3.5f, Owner.whoAmI);
-
-                            RushPunch rushBack = Main.projectile[projBack].modProjectile as RushPunch;
-                            rushBack.ParentProjectile = projectile.whoAmI;
-                        }
-
-                        int projFront = Projectile.NewProjectile(projectile.Center, _punchRushDirection, ModContent.ProjectileType<StarPlatinumRush>(), 80, 3.5f, Owner.whoAmI);
-
-                        RushPunch rushFront = Main.projectile[projFront].modProjectile as RushPunch;
-                        rushFront.ParentProjectile = projectile.whoAmI;
-                    }
-                    else
-                    {
-                        int projFront = Projectile.NewProjectile(projectile.Center, _punchRushDirection, ModContent.ProjectileType<StarPlatinumRush>(), 80, 3.5f, Owner.whoAmI);
-
-                        RushPunch rushFront = Main.projectile[projFront].modProjectile as RushPunch;
-                        rushFront.ParentProjectile = projectile.whoAmI;
-                        rushFront.IsFinalPunch = true;
-                    }
-                }
+                StarRush.DoRush(projectile, _punchRushDirection, 80, RushTimer, new Vector2(-14, 0));
                 RushTimer--;
             }
             else
@@ -398,5 +374,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
         public int RushTimer { get; private set; }
 
         public int TimeStopDelay { get; private set; }
+
+        public StandPunchRush StarRush { get; private set; }
     }
 }

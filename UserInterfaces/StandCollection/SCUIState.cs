@@ -58,7 +58,7 @@ namespace TerrarianBizzareAdventure.UserInterfaces.StandCollection
             if(!HasLoaded && StandLoader.Instance.Loaded)
             {
                 HasLoaded = true;
-                foreach (var stand in StandLoader.Instance.GenericEnumerable)
+                foreach (var stand in StandLoader.Instance.Generics)
                 {
                     int projToKill = Projectile.NewProjectile(Vector2.Zero, Vector2.Zero, TBAMod.Instance.ProjectileType(stand.GetType().Name), 0, 0, Main.myPlayer);
 

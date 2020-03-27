@@ -50,7 +50,7 @@ namespace TerrarianBizzareAdventure.Players
 
             if (ActiveStandProjectileId != ACTIVE_STAND_PROJECTILE_INACTIVE_ID)
             {
-                if (Opacity < 1)
+                if (Opacity < 0.7f)
                     Opacity += 0.035f;
 
             }
@@ -128,6 +128,20 @@ namespace TerrarianBizzareAdventure.Players
                 1
                 );
 
+            DrawData auraData2ElectricBoogaloo = new DrawData
+            (
+                TBAMod.Instance.GetTexture(tPlayer.AuraAnimation.SpritePath),
+                new Vector2((int)drawPlayer.MountedCenter.X, (int)drawPlayer.MountedCenter.Y + ((drawPlayer.gfxOffY - 6) * 1.2f)) - Main.screenPosition,
+                tPlayer.AuraAnimation.FrameRect,
+                drawColor * tPlayer.Opacity * 0.5f,
+                0,
+                tPlayer.AuraAnimation.DrawOrigin,
+                1.1f,
+                drawPlayer.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally,
+                1
+                );
+
+            Main.playerDrawData.Add(auraData2ElectricBoogaloo);
             Main.playerDrawData.Add(auraData);
         });
 

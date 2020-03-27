@@ -26,7 +26,7 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
         {
             if (!HasHitGround) // We only want to rotate the bomb up to the point of where it hits the ground.
             {
-                Rotation = projectile.velocity.ToRotation() + MathHelper.Pi / 2;
+                Rotation = projectile.velocity.ToRotation();
 
                 int dustIndex = Dust.NewDust(projectile.Center, 0, 0, 31, 0f, 0f, 100, default(Color), 2f);
                 Main.dust[dustIndex].position = projectile.Center;
@@ -164,7 +164,7 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
             Texture2D texture = Main.projectileTexture[projectile.type];
             Vector2 position = projectile.Center - Main.screenPosition;
 
-            spriteBatch.Draw(texture, position, null, Color.White, Rotation, new Vector2(9, 11), 1f, SpriteEffects.None, 1f);
+            spriteBatch.Draw(texture, position, null, Color.White, Rotation, new Vector2(9, 11), 0.75f, SpriteEffects.None, 1f);
         }
 
         public bool HasHitGround { get; private set; }

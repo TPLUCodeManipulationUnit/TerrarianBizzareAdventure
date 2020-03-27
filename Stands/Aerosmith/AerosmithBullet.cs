@@ -35,7 +35,7 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
             float rotation = projectile.velocity.ToRotation() + MathHelper.Pi / 2;
             float opacity = projectile.timeLeft > 116 ? 0f : 1f;
 
-            spriteBatch.Draw(texture, position, null, Color.White * opacity, rotation, new Vector2(2), 1f, SpriteEffects.None, 1f);
+            spriteBatch.Draw(texture, position, null, Color.White * opacity, rotation, new Vector2(1), 1f, SpriteEffects.None, 1f);
         }
 
         public override string Texture => "TerrarianBizzareAdventure/Stands/Aerosmith/Bullet";

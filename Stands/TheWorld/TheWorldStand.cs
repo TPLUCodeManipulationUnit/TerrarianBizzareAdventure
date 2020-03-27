@@ -13,7 +13,7 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
     {
         public TheWorldStand() : base("theWorld", "The World")
         {
-            AuraColor = new Color(1.0f, 0.8f, 0.0f);
+            AuraColor = new Color(1.0f, 0.7f, 0.0f);
         }
 
         public override void AddAnimations()
