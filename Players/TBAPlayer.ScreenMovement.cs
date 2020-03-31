@@ -15,6 +15,13 @@ namespace TerrarianBizzareAdventure.Players
                 if(stando.CurrentState != "SUMMON")
                 Main.screenPosition = Main.projectile[ActiveStandProjectileId].Center - new Vector2(Main.screenWidth, Main.screenHeight) * 0.5f;
             }
+
+            if(PointOfInterest != Vector2.Zero)
+            {
+                Main.screenPosition = PointOfInterest - new Vector2(Main.screenWidth, Main.screenHeight) * 0.5f;
+            }
         }
+
+        public Vector2 PointOfInterest { get; set; }
     }
 }

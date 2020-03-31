@@ -128,6 +128,7 @@ namespace TerrarianBizzareAdventure.Players
         public override void UpdateBiomeVisuals()
         {
             bool shockWaveExist = Main.projectile.Count(x => x.active && x.modProjectile is TimeStopVFX) > 0;
+            player.ManageSpecialBiomeVisuals("TBA:FreezeSky", TimeStopManagement.TimeStoppedFor > 0 && !shockWaveExist);
             player.ManageSpecialBiomeVisuals("TBA:TimeStopInvert", shockWaveExist);
 
             GameShaders.Armor.Apply(GameShaders.Armor.GetShaderIdFromItemId(ItemID.TwilightDye), player);

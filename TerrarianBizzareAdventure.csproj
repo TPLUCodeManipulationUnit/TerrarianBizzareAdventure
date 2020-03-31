@@ -11,6 +11,16 @@
     <Exec Command="&quot;$(tMLBuildServerPath)&quot; -build $(ProjectDir) -eac $(TargetPath) -define $(DefineConstants) -unsafe $(AllowUnsafeBlocks)" />
   </Target>
   <ItemGroup>
+    <None Remove="Stands\TheWorld\Idle.png" />
+    <None Remove="Stands\TheWorld\PunchDown.png" />
+    <None Remove="Stands\TheWorld\PunchDownAlt.png" />
+    <None Remove="Stands\TheWorld\PunchMiddle.png" />
+    <None Remove="Stands\TheWorld\PunchMiddleAlt.png" />
+    <None Remove="Stands\TheWorld\PunchUp.png" />
+    <None Remove="Stands\TheWorld\PunchUpAlt.png" />
+    <None Remove="Stands\TheWorld\Spawn.png" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="Microsoft.Speech">
       <HintPath>lib\Microsoft.Speech.dll</HintPath>
     </Reference>

@@ -50,8 +50,13 @@ namespace TerrarianBizzareAdventure.Stands
 
         public override bool PreAI()
         {
-            projectile.netUpdate = true;
-            projectile.netUpdate2 = true;
+            if(CurrentState != LastState)
+            {
+                projectile.netUpdate = true;
+                projectile.netUpdate2 = true;
+            }
+
+            LastState = CurrentState;
 
             if (Main.dedServ)
                 return false;
@@ -174,5 +179,7 @@ namespace TerrarianBizzareAdventure.Stands
         public float Opacity { get; set; }
 
         public string CallSoundPath { get; set; }
+
+        public string LastState { get; private set; }
     }
 }

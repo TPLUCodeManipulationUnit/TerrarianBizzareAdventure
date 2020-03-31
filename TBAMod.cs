@@ -51,6 +51,9 @@ namespace TerrarianBizzareAdventure
 
                 UIManager.Load();
 
+                Filters.Scene["TBA:FreezeSky"] = new Filter(new ScreenShaderData("FilterMiniTower").UseColor(.7f, .7f, .7f), EffectPriority.VeryHigh);
+                SkyManager.Instance["TBA:FreezeSky"] = new FreezeSky();
+
                 AddEquipTexture(null, EquipType.Head, "DiavoloHead", "TerrarianBizzareAdventure/Items/Armor/Vanity/Vinegar/DiavoloHead_Head");
                 AddEquipTexture(null, EquipType.Body, "DiavoloBody", "TerrarianBizzareAdventure/Items/Armor/Vanity/Vinegar/DiavoloChest_Body", "TerrarianBizzareAdventure/Items/Armor/Vanity/Vinegar/DiavoloChest_Arms");
             }

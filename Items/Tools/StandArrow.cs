@@ -31,7 +31,7 @@ namespace TerrarianBizzareAdventure.Items.Tools
             tbaPlayer.Stand = stand;
             Main.NewText($"You got yourself a Stand{(Main.rand.Next(0, 100) > 98 ? "oda" : "")}!");
 
-            if(!tbaPlayer.UnlockedStands.Contains(stand.UnlocalizedName));
+            if(!tbaPlayer.UnlockedStands.Contains(stand.UnlocalizedName))
                 tbaPlayer.UnlockedStands.Add(stand.UnlocalizedName);
 
             return true;
@@ -45,8 +45,9 @@ namespace TerrarianBizzareAdventure.Items.Tools
         {
             ModRecipe recipe = new ModRecipe(mod);
 
-            recipe.AddIngredient(ItemID.MeteoriteBar, 100);
+            recipe.AddIngredient(ItemID.MeteoriteBar, 15);
             recipe.AddIngredient(ItemID.WoodenArrow);
+            recipe.AddIngredient(ItemID.FallenStar, 30);
 
             recipe.AddTile(TileID.Anvils);
             recipe.SetResult(this);

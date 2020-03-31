@@ -3,6 +3,8 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using TerrarianBizzareAdventure.Players;
+using TerrarianBizzareAdventure.Stands.StarPlatinum;
+using TerrarianBizzareAdventure.Stands.TheWorld;
 using TerrarianBizzareAdventure.TimeSkip;
 using TerrarianBizzareAdventure.TimeStop;
 
@@ -26,6 +28,25 @@ namespace TerrarianBizzareAdventure.World
             {
                 TimeSkipManager.UpdateTimeSkip();
                 TimeStopManagement.MainOnOnTick();
+            }
+
+            TBAPlayer plr = TimeStopManagement.TimeStopper as TBAPlayer;
+
+            if (TimeStopManagement.TimeStoppedFor <= 78 && TimeStopManagement.TimeStoppedFor > 76)
+            {
+                if (plr.Stand != null)
+                {
+
+                    if (plr.Stand is TheWorldStand)
+                    {
+                        Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/TheWorld_ZaWarudoReleaseSFX"));
+                    }
+
+                    if (plr.Stand is StarPlatinumStand)
+                    {
+                        Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/SP_TimeRestore"));
+                    }
+                }
             }
             base.PreUpdate();
         }

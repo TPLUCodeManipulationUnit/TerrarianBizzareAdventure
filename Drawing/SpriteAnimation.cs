@@ -84,16 +84,16 @@ namespace TerrarianBizzareAdventure.Drawing
 
         public bool ReversePlayback { get; set; }
 
-        public Rectangle FrameRect => new Rectangle(0, (int)FrameSize.Y * CurrentFrame, (int)FrameSize.X, (int)FrameSize.Y);
+        public Rectangle FrameRect => new Rectangle(0, (int)(FrameSize.Y * CurrentFrame), (int)FrameSize.X, (int)FrameSize.Y);
 
-        public Vector2 DrawOrigin => new Vector2(FrameSize.X * 0.5f, FrameSize.Y * 0.5f); 
+        public Vector2 DrawOrigin => new Vector2((int)(FrameSize.X * 0.5f), (int)(FrameSize.Y * 0.5f)); 
         // Animation's texture
         public Texture2D SpriteSheet { get; }
         
         public int CurrentFrame { get; private set; }
 
         ///<summary>Determines the dimensions of a single frame.</summary>
-        public Vector2 FrameSize => new Vector2(SpriteSheet.Width, SpriteSheet.Height / FrameCount);
+        public Vector2 FrameSize => new Vector2((int)SpriteSheet.Width, (int)(SpriteSheet.Height / FrameCount));
 
         ///<summary>Determines how many ticks to spend on one frame.</summary>
         public int FrameSpeed { get; set; }

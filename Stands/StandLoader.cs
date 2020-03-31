@@ -15,7 +15,7 @@ namespace TerrarianBizzareAdventure.Stands
         {
             Stand stand = null;
 
-            while (stand == null || !stand.CanAcquire(tbaPlayer))
+            while (stand == null || !stand.CanAcquire(tbaPlayer) || tbaPlayer.Stand == stand)
                 stand = GetRandom();
 
             return stand;
