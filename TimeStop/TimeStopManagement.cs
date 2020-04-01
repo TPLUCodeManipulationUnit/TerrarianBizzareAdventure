@@ -88,7 +88,6 @@ namespace TerrarianBizzareAdventure.TimeStop
             MainTime = Main.time;
             MainRainTimer = Main.rainTime;
 
-
             for (int i = 0; i < Main.npc.Length; i++)
             {
                 NPC npc = Main.npc[i];
@@ -100,7 +99,7 @@ namespace TerrarianBizzareAdventure.TimeStop
             }
 
 
-            for (int i = 0; i < Main.projectile.Length; i++)
+            for (int i = 0; i < Main.projectile.Length - 1; i++)
             {
                 Projectile projectile = Main.projectile[i];
 
@@ -156,7 +155,7 @@ namespace TerrarianBizzareAdventure.TimeStop
             foreach (KeyValuePair<Projectile, ProjectileInstantState> state in projectileStates)
                 state.Value.Restore();
 
-            projectileStates.Clear(); ;
+            projectileStates.Clear();
 
 
             foreach (KeyValuePair<Item, ItemInstantState> state in itemStates)

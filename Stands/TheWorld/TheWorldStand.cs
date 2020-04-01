@@ -12,6 +12,7 @@ using Terraria.ModLoader;
 using TerrarianBizzareAdventure.Projectiles;
 using TerrarianBizzareAdventure.TimeStop;
 using TerrarianBizzareAdventure.Projectiles.Misc;
+using System.IO;
 
 namespace TerrarianBizzareAdventure.Stands.TheWorld
 {
@@ -91,31 +92,33 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
             projectile.Center = Vector2.Lerp(projectile.Center, lerpPos, 0.26f);
 
 
-            if (Owner.whoAmI == Main.myPlayer)
-            {
-                if (TBAInputs.StandPose.JustPressed)
-                    if (CurrentState == ANIMATION_IDLE)
-                        IsTaunting = true;
-                    else
-                        IsTaunting = false;
-
-                if (TBAInputs.SummonStand.JustPressed && CurrentState == ANIMATION_IDLE)
-                    CurrentState = ANIMATION_DESPAWN;
-            }
 
             if (CurrentState == ANIMATION_DESPAWN && CurrentAnimation.Finished && TimeStopDelay <= 0)
                 KillStand();
 
             if (CurrentState == ANIMATION_IDLE)
             {
-                if (Owner.velocity.Y < 0 && TBAInputs.ContextAction.JustPressed && !BeganAscending)
+                if (Owner.whoAmI == Main.myPlayer)
                 {
-                    TBAPlayer.Get(Owner).PointOfInterest = Main.screenPosition + new Vector2(Main.screenWidth, Main.screenHeight) * 0.5f;
-                    BeganAscending = true;
-                }
+                    if (TBAInputs.StandPose.JustPressed)
+                        if (CurrentState == ANIMATION_IDLE)
+                            IsTaunting = true;
+                        else
+                            IsTaunting = false;
 
-                if (TBAInputs.ContextAction.JustPressed)
-                    TimeStop();
+                    if (TBAInputs.SummonStand.JustPressed && CurrentState == ANIMATION_IDLE)
+                        CurrentState = ANIMATION_DESPAWN;
+
+                    if (Owner.velocity.Y < 0 && TBAInputs.ContextAction.JustPressed && !BeganAscending)
+                    {
+                        projectile.netUpdate = true;
+                        TBAPlayer.Get(Owner).PointOfInterest = Main.screenPosition + new Vector2(Main.screenWidth, Main.screenHeight) * 0.5f;
+                        BeganAscending = true;
+                    }
+
+                    if (TBAInputs.ContextAction.JustPressed)
+                        TimeStop();
+                }
 
                 if (PunchCounter < 2)
                 {
@@ -277,6 +280,22 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
                 IsTaunting = false;
                 TimeStopDelay = 25;
             }
+        }
+
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            base.SendExtraAI(writer);
+
+            writer.Write(RoadRollerID);
+            writer.Write(BeganAscending);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            base.ReceiveExtraAI(reader);
+
+            RoadRollerID = reader.ReadInt32();
+            BeganAscending = reader.ReadBoolean();
         }
 
 

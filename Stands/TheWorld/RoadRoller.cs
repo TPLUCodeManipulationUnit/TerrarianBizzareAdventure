@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 using Terraria;
 using Terraria.ModLoader;
 using TerrarianBizzareAdventure.TimeStop;
+using TerrarianBizzareAdventure.Helpers;
+using Terraria.ID;
+
 
 namespace TerrarianBizzareAdventure.Stands.TheWorld
 {
@@ -59,8 +62,10 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
             if (projectile.velocity.Y == 0)
             {
                 if (!HasTouchedGround)
+                {
+                    projectile.netUpdate = true;
                     projectile.damage = 0;
-
+                }
                 HasTouchedGround = true;
             }
 
@@ -70,6 +75,46 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
                     projectile.Kill();
             }
         }
+		
+		public override bool PreKill(int timeLeft)
+		{
+			/// For now, copy pasted VFX for road roller. Will make it prettier in the next build
+			DrawHelpers.CircleDust(projectile.Center, Vector2.Zero, DustID.Fire, 90, 90, 2.5f, 60);
+			
+            Main.PlaySound(SoundID.Item14, projectile.position);
+            for (int i = 0; i < 60; i++)
+            {
+                int dust = Dust.NewDust(projectile.Center, 0, 0, DustID.Fire, 0, 0);
+                Main.dust[dust].velocity *= 16.5f;
+                Main.dust[dust].noGravity = true;
+                Main.dust[dust].scale = 3.5f;
+            }
+            // Large Smoke Gore spawn
+            for (int g = 0; g < 2; g++)
+            {
+                int goreIndex = Gore.NewGore(new Vector2(projectile.position.X + (float)(projectile.width / 2) - 24f, projectile.position.Y + (float)(projectile.height / 2) - 24f), Vector2.Zero, Main.rand.Next(61, 64), 1f);
+                Main.gore[goreIndex].scale = 1.5f;
+                Main.gore[goreIndex].velocity.X = Main.gore[goreIndex].velocity.X + 1.5f;
+                Main.gore[goreIndex].velocity.Y = Main.gore[goreIndex].velocity.Y + 1.5f;
+
+                goreIndex = Gore.NewGore(new Vector2(projectile.position.X + (float)(projectile.width / 2) - 24f, projectile.position.Y + (float)(projectile.height / 2) - 24f), Vector2.Zero, Main.rand.Next(61, 64), 1f);
+                Main.gore[goreIndex].scale = 1.5f;
+                Main.gore[goreIndex].velocity.X = Main.gore[goreIndex].velocity.X - 3.5f;
+                Main.gore[goreIndex].velocity.Y = Main.gore[goreIndex].velocity.Y + 3.5f;
+
+                goreIndex = Gore.NewGore(new Vector2(projectile.position.X + (float)(projectile.width / 2) - 24f, projectile.position.Y + (float)(projectile.height / 2) - 24f), Vector2.Zero, Main.rand.Next(61, 64), 1f);
+                Main.gore[goreIndex].scale = 1.5f;
+                Main.gore[goreIndex].velocity.X = Main.gore[goreIndex].velocity.X + 1.5f;
+                Main.gore[goreIndex].velocity.Y = Main.gore[goreIndex].velocity.Y - 1.5f;
+
+                goreIndex = Gore.NewGore(new Vector2(projectile.position.X + (float)(projectile.width / 2) - 24f, projectile.position.Y + (float)(projectile.height / 2) - 24f), Vector2.Zero, Main.rand.Next(61, 64), 1f);
+                Main.gore[goreIndex].scale = 1.5f;
+                Main.gore[goreIndex].velocity.X = Main.gore[goreIndex].velocity.X - 1.5f;
+                Main.gore[goreIndex].velocity.Y = Main.gore[goreIndex].velocity.Y - 1.5f;
+            }
+
+			return true;
+		}
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
@@ -99,8 +144,11 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
 
         public override void SendExtraAI(BinaryWriter writer)
         {
-            writer.Write(TargetType);
-            writer.Write(Target.whoAmI);
+            if (Target != null)
+            {
+                writer.Write(TargetType);
+                writer.Write(Target.whoAmI);
+            }
         }
 
         public override void ReceiveExtraAI(BinaryReader reader)

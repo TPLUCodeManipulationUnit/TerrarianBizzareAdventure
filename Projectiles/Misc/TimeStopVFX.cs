@@ -46,6 +46,9 @@ namespace TerrarianBizzareAdventure.Projectiles.Misc
 
         public override void Kill(int timeLeft)
         {
+            if (Main.dedServ)
+                return;
+
             Filters.Scene["Shockwave"].Deactivate();
         }
 
