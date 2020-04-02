@@ -12,6 +12,7 @@ using TerrarianBizzareAdventure.Projectiles.Misc;
 using TerrarianBizzareAdventure.Stands;
 using TerrarianBizzareAdventure.Stands.Aerosmith;
 using TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio;
+using TerrarianBizzareAdventure.Stands.TheWorld;
 using TerrarianBizzareAdventure.TimeStop;
 using TerrarianBizzareAdventure.UserInterfaces;
 
@@ -109,6 +110,16 @@ namespace TerrarianBizzareAdventure.Players
                 MouseTwoTime = 0;
 
             CanTransform = false;
+
+            if(Stand is TheWorldStand)
+            {
+                TheWorldStand ZaWarudo = Stand as TheWorldStand;
+
+                if(ZaWarudo != null)
+                {
+                    player.noFallDmg = true;
+                }
+            }
         }
 
         public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)

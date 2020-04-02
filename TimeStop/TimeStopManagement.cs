@@ -217,6 +217,18 @@ namespace TerrarianBizzareAdventure.TimeStop
 
                 Main.rainTime = TimeStopManagement.MainRainTimer;
             }
+
+            if(!TimeStopped)
+            {
+                if (itemStates.Count > 0)
+                    itemStates.Clear();
+
+                if (npcStates.Count > 0)
+                    npcStates.Clear();
+
+                if (projectileStates.Count > 0)
+                    projectileStates.Clear();
+            }
         }
 
 

@@ -40,6 +40,7 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
             Animations.Add(ANIMATION_SUMMON, new SpriteAnimation(mod.GetTexture(path + "Spawn"), 7, 5));
 
             Animations.Add(ANIMATION_IDLE, new SpriteAnimation(mod.GetTexture(path + "Idle"), 8, 8, true));
+            Animations.Add("FLY_UP", new SpriteAnimation(mod.GetTexture(path + "Idle"), 8, 8, true));
 
             Animations.Add(ANIMATION_DESPAWN, new SpriteAnimation(mod.GetTexture(path + "Spawn"), 7, 5, false, null, true));
             Animations[ANIMATION_DESPAWN].ReversePlayback = true;
@@ -111,6 +112,7 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
 
                     if (Owner.velocity.Y < 0 && TBAInputs.ContextAction.JustPressed && !BeganAscending)
                     {
+                        CurrentState = "FLY_UP";
                         projectile.netUpdate = true;
                         TBAPlayer.Get(Owner).PointOfInterest = Main.screenPosition + new Vector2(Main.screenWidth, Main.screenHeight) * 0.5f;
                         BeganAscending = true;
@@ -276,7 +278,6 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
                 if (!TimeStopManagement.TimeStopped)
                     Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/TheWorld_Deploy"));
 
-                CurrentState = ANIMATION_IDLE;
                 IsTaunting = false;
                 TimeStopDelay = 25;
             }
