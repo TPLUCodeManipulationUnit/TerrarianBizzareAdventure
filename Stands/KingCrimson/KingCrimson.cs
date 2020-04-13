@@ -14,7 +14,7 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
     {
         public KingCrimson() : base("howDoesItWork", "King Crimson")
         {
-            CallSoundPath = "Sounds/KC_Call";
+            CallSoundPath = "Sounds/KingCrimson/KC_Call";
             AuraColor = new Color(189, 0, 85);
             KingRush = new StandPunchRush(ModContent.ProjectileType<KCRush>(), ModContent.ProjectileType<KCRushBack>());
         }

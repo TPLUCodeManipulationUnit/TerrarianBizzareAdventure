@@ -39,12 +39,13 @@ namespace TerrarianBizzareAdventure.World
 
                     if (plr.Stand is TheWorldStand)
                     {
-                        Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/TheWorld_ZaWarudoReleaseSFX"));
+                        Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/TheWorld/TimeResume"));
+                        Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/TheWorld/TheWorld_ZaWarudoReleaseSFX"));
                     }
 
                     if (plr.Stand is StarPlatinumStand)
                     {
-                        Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/SP_TimeRestore"));
+                        Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/StarPlatinum/SP_TimeRestore"));
                     }
                 }
             }

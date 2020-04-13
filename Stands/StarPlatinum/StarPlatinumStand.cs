@@ -26,7 +26,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
 
         public StarPlatinumStand() : base("starPlatinum", "Star Platinum")
         {
-            CallSoundPath = "Sounds/SP_Call";
+            CallSoundPath = "Sounds/StarPlatinum/SP_Call";
             AuraColor = new Color(1f, 0f, 1f);//new Color(210, 101, 198);//new Color(203, 85, 195);
             StarRush = new StandPunchRush(ModContent.ProjectileType<StarPlatinumRush>(), ModContent.ProjectileType<StarPlatinumRushBack>());
         }
@@ -102,7 +102,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                 return;
 
             if (CurrentState == ANIMATION_SUMMON && CurrentAnimation.CurrentFrame < 3)
-                Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/SP_Spawn"));
+                Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/StarPlatinum/SP_Spawn"));
 
             #region Rush
             if (PunchCounterReset > 0)
@@ -158,6 +158,9 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
 
             if(CurrentState == "DONUT_PUNCH" || CurrentState == "DONUT_PULL")
                 Owner.heldProj = projectile.whoAmI;
+
+            if(CurrentState == "DONUT_PUNCH" && CurrentAnimation.CurrentFrame == 4)
+                Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/StarPlatinum/Donut"));
 
             if (CurrentState == "DONUT_PUNCH" && CurrentAnimation.CurrentFrame > 4)
                 projectile.damage = 350;
@@ -239,7 +242,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                 {
                     Projectile.NewProjectile(Owner.Center, Vector2.Zero, ModContent.ProjectileType<TimeStopVFX>(), 0, 0, Owner.whoAmI);
 
-                    Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/SP_TimeStopSignal"));
+                    Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/StarPlatinum/SP_TimeStopSignal"));
                 }
 
                 TimeStopManagement.ToggleTimeStopIfStopper(TBAPlayer.Get(Owner), 5 * Constants.TICKS_PER_SECOND);
@@ -332,7 +335,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                 TBAPlayer.Get(Owner).Stamina -= TIME_STOP_COST;
 
                 if (!TimeStopManagement.TimeStopped)
-                    Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/SP_TimeStopCall"));
+                    Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/StarPlatinum/SP_TimeStopCall"));
 
                 CurrentState = ANIMATION_IDLE;
                 IsTaunting = false;

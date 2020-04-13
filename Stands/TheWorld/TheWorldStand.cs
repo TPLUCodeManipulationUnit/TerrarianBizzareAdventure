@@ -21,7 +21,7 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
         public TheWorldStand() : base("theWorld", "The World")
         {
             AuraColor = new Color(1.0f, 0.7f, 0.0f);
-            CallSoundPath = "Sounds/TheWorld_Deploy";
+            CallSoundPath = "Sounds/TheWorld/Call";
             TWRush = new StandPunchRush(ModContent.ProjectileType<TWRush>(), ModContent.ProjectileType<TWRushBack>());
         }
 
@@ -149,6 +149,7 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
                 }
                 else if (Owner.controlUseItem)
                 {
+                    Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/TheWorld/MudaRush"));
                     TBAPlayer.Get(Owner).Stamina -= 16;
                     if (Main.MouseWorld.Y > Owner.Center.Y + 60)
                         CurrentState = "RUSH_DOWN";
@@ -181,7 +182,7 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
                 {
                     Projectile.NewProjectile(Owner.Center, Vector2.Zero, ModContent.ProjectileType<TimeStopVFX>(), 0, 0, Owner.whoAmI);
 
-                    Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/TheWorld_ZaWarudoSFX"));
+                    Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/TheWorld/TheWorld_ZaWarudoSFX"));
                 }
 
                 TimeStopManagement.ToggleTimeStopIfStopper(TBAPlayer.Get(Owner), 9 * Constants.TICKS_PER_SECOND);
@@ -220,6 +221,7 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
 
                 if(++AscensionTimer >= (int)(2.5 * Constants.TICKS_PER_SECOND))
                 {
+                    Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/TheWorld/RoadRoller"));
                     BeganAscending = false;
                     AscensionTimer = 0;
                     CurrentState = "SLAM";
@@ -244,6 +246,7 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
 
                 if (roller.HasTouchedGround && !HasResetRoadRollerDrop)
                 {
+                    Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/TheWorld/MudaRush"));
                     CurrentState = "RUSH_DOWN";
 
                     RushTimer = 180;
@@ -276,7 +279,7 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
                 TBAPlayer.Get(Owner).Stamina -= TIME_STOP_COST;
 
                 if (!TimeStopManagement.TimeStopped)
-                    Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/TheWorld_Deploy"));
+                    Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/TheWorld/TimeStop"));
 
                 IsTaunting = false;
                 TimeStopDelay = 25;
