@@ -1,8 +1,10 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
 using TerrarianBizzareAdventure.Drawing;
+using TerrarianBizzareAdventure.Enums;
 using TerrarianBizzareAdventure.Helpers;
 using TerrarianBizzareAdventure.Players;
 using TerrarianBizzareAdventure.Projectiles;
@@ -20,6 +22,15 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
         }
 
         private Vector2 _punchRushDirection;
+
+        public override void AddCombos(List<StandCombo> combos)
+        {
+            combos.Add(new StandCombo("Punch", MouseClick.LeftClick.ToString()));
+            combos.Add(new StandCombo("Heart Ripper", MouseClick.LeftHold.ToString()));
+            combos.Add(new StandCombo("Slicer", MouseClick.RightHold.ToString()));
+            combos.Add(new StandCombo("Punch Barrage", MouseClick.LeftClick.ToString(), MouseClick.LeftClick.ToString(), MouseClick.LeftClick.ToString()));
+            combos.Add(new StandCombo("Time Obliteration", TBAInputs.ContextAction.GetAssignedKeys()[0].ToString()));
+        }
 
         public override void AddAnimations()
         {

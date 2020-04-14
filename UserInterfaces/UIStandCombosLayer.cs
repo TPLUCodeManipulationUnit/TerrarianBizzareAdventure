@@ -5,9 +5,9 @@ using TerrarianBizzareAdventure.UserInterfaces.Special.RATM;
 
 namespace TerrarianBizzareAdventure.UserInterfaces.StandCollection
 {
-    public class SCLayer : GameInterfaceLayer
+    public class UIStandCombosLayer : GameInterfaceLayer
     {
-        public SCLayer(SCUIState state) : base("standAlbumLayer", InterfaceScaleType.UI)
+        public UIStandCombosLayer(UIStandCombos state) : base("standComboLayer", InterfaceScaleType.UI)
         {
             State = state;
             State.Activate();
@@ -25,7 +25,7 @@ namespace TerrarianBizzareAdventure.UserInterfaces.StandCollection
             if (State == null) // shouldn't really be ever equal to null, but just in case...
                 return false;
 
-            if(State.Visible)
+            if (State.Visible)
                 State.Draw(Main.spriteBatch);
 
             return true;
@@ -33,6 +33,6 @@ namespace TerrarianBizzareAdventure.UserInterfaces.StandCollection
 
         public UserInterface UserInterface { get; }
 
-        public SCUIState State { get; }
+        public UIStandCombos State { get; }
     }
 }

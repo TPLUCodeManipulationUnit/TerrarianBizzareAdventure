@@ -16,8 +16,21 @@ namespace TerrarianBizzareAdventure.Helpers
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
         }
-		
-		public static void CircleDust(Vector2 pos, Vector2 vel, int dustID, float width = 2, float height = 8, float scale = 1.55f, float count = 25.0f)
+
+        public static void DrawInputButtonKeyboard(string buttonName, SpriteBatch spriteBatch, Vector2 position, string description = "")
+        {
+            spriteBatch.Draw(Textures.KeyboardInput, position, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
+            Utils.DrawBorderString(spriteBatch, buttonName, position + new Vector2(16, 6), Color.Yellow, 1.5f);
+            Utils.DrawBorderString(spriteBatch, description, position + new Vector2(50, 10), Color.Yellow);
+        }
+
+        public static void DrawInputButtonMouse(SpriteBatch spriteBatch, Vector2 position, int frame = 0, string description = "")
+        {
+            spriteBatch.Draw(Textures.MouseInput, position, new Rectangle(0, 72 * frame, 48, 72), Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
+            Utils.DrawBorderString(spriteBatch, description, position + new Vector2(50, 36), Color.Yellow);
+        }
+
+        public static void CircleDust(Vector2 pos, Vector2 vel, int dustID, float width = 2, float height = 8, float scale = 1.55f, float count = 25.0f)
         {
             for (int k = 0; (double)k < (double)count; k++)
             {

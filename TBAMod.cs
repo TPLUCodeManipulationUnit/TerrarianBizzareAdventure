@@ -40,6 +40,7 @@ namespace TerrarianBizzareAdventure
 
             if (!Main.dedServ)
             {
+
                 Textures.Load(this);
 
                 Ref<Effect> screenRef = new Ref<Effect>(GetEffect("Effects/ShockwaveEffect")); // The path to the compiled shader file.
@@ -145,12 +146,14 @@ namespace TerrarianBizzareAdventure
             layers.Add(UIManager.TimeSkipLayer);
             layers.Insert(layers.FindIndex(x => x.Name == "Vanilla: Mouse Text"), UIManager.ResourcesLayer);
             layers.Insert(layers.FindIndex(x => x.Name == "Vanilla: Mouse Text"), UIManager.SCLayer);
+            layers.Insert(layers.FindIndex(x => x.Name == "Vanilla: Mouse Text"), UIManager.StandComboLayer);
         }
 
         public override void UpdateUI(GameTime gameTime)
         {
             if (Main.gameMenu)
                 TimeSkipManager.Init = false;
+
 
             UIManager.Update(gameTime);
         }

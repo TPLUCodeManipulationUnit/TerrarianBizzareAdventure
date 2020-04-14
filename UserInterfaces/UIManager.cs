@@ -20,6 +20,8 @@ namespace TerrarianBizzareAdventure.UserInterfaces
             ResourcesLayer = new ResourcesLayer(new ResourcesState());
 
             SCLayer = new SCLayer(new SCUIState());
+
+            StandComboLayer = new UIStandCombosLayer(new UIStandCombos());
         }
 
         public static void Update(GameTime gameTime)
@@ -31,6 +33,9 @@ namespace TerrarianBizzareAdventure.UserInterfaces
 
             if(SCLayer.State.Visible)
                 SCLayer.UserInterface.Update(gameTime);
+
+            if (StandComboLayer.State.Visible)
+                StandComboLayer.UserInterface.Update(gameTime);
         }
 
         public static RATMState RATMState { get; private set; }
@@ -42,5 +47,7 @@ namespace TerrarianBizzareAdventure.UserInterfaces
         public static ResourcesLayer ResourcesLayer { get; private set; }
 
         public static SCLayer SCLayer { get; private set; }
+
+        public static UIStandCombosLayer StandComboLayer { get; private set; }
     }
 }

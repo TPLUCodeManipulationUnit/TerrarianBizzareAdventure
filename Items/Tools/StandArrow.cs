@@ -31,7 +31,15 @@ namespace TerrarianBizzareAdventure.Items.Tools
             tbaPlayer.Stand = stand;
             Main.NewText($"You got yourself a Stand{(Main.rand.Next(0, 100) > 98 ? "oda" : "")}!");
 
-            if(!tbaPlayer.UnlockedStands.Contains(stand.UnlocalizedName))
+            if (TBAInputs.StandPose.GetAssignedKeys().Count <= 0
+                || TBAInputs.ContextAction.GetAssignedKeys().Count <= 0
+                || TBAInputs.ExtraAction01.GetAssignedKeys().Count <= 0
+                || TBAInputs.ExtraAction02.GetAssignedKeys().Count <= 0)
+            {
+                Main.NewText("Whoops! It looks like you forgot to setup your hotkeys! Go to Settings -> Controls and scroll down. Bind all hotkeys from this mod & try again");
+            }
+
+                if (!tbaPlayer.UnlockedStands.Contains(stand.UnlocalizedName))
                 tbaPlayer.UnlockedStands.Add(stand.UnlocalizedName);
 
             return true;

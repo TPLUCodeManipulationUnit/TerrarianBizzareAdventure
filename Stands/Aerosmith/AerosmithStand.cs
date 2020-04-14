@@ -1,8 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using TerrarianBizzareAdventure.Drawing;
+using TerrarianBizzareAdventure.Enums;
 using TerrarianBizzareAdventure.Players;
 
 namespace TerrarianBizzareAdventure.Stands.Aerosmith
@@ -28,6 +30,12 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
             Animations.Add("TURN", turnAround);
 
             Animations[ANIMATION_SUMMON].SetNextAnimation(Animations[ANIMATION_IDLE]);
+        }
+
+        public override void AddCombos(List<StandCombo> combos)
+        {
+            combos.Add(new StandCombo("Bullet Hell", MouseClick.LeftClick.ToString()));
+            combos.Add(new StandCombo("500lb 'Gift'", MouseClick.RightClick.ToString()));
         }
 
         public override void AI()

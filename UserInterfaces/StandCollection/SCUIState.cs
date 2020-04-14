@@ -3,6 +3,7 @@ using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader.UI.Elements;
 using Terraria.UI;
+using TerrarianBizzareAdventure.Players;
 using TerrarianBizzareAdventure.Stands;
 using TerrarianBizzareAdventure.UserInterfaces.Elements.StandCollection;
 
@@ -29,11 +30,16 @@ namespace TerrarianBizzareAdventure.UserInterfaces.StandCollection
             SCGridScrollBar.VAlign = 0.5f;
             SCGridScrollBar.Left.Set(5, 0);
 
+            UIText bottomText = new UIText("Stand Album", 1, true);
+            bottomText.VAlign = 0.05f;
+            bottomText.HAlign = 0.5f;
+            MainPanel.Append(bottomText);
+
             var bgPanel = new UIPanel();
             bgPanel.Width.Set(585, 0);
             bgPanel.Height.Set(500, 0);
             bgPanel.SetPadding(0);
-            bgPanel.VAlign = 0.5f;
+            bgPanel.VAlign = 0.7f;
             bgPanel.Left.Set(30f, 0);
 
             StandCardGrid = new UIGrid();
@@ -60,11 +66,14 @@ namespace TerrarianBizzareAdventure.UserInterfaces.StandCollection
                 HasLoaded = true;
                 foreach (var stand in StandLoader.Instance.Generics)
                 {
+                    if (!stand.CanAcquire(TBAPlayer.Get(Main.LocalPlayer)))
+                        continue;
                     int projToKill = Projectile.NewProjectile(Vector2.Zero, Vector2.Zero, TBAMod.Instance.ProjectileType(stand.GetType().Name), 0, 0, Main.myPlayer);
 
                     StandCard standCard = new StandCard(Main.projectile[projToKill].modProjectile as Stand);
 
                     standCard.Left.Set(5, 0);
+                    standCard.OnClick += SetStand;
 
                     StandCardGrid.Add(standCard);
 
@@ -73,6 +82,19 @@ namespace TerrarianBizzareAdventure.UserInterfaces.StandCollection
             }
 
             Recalculate();
+        }
+
+        private void SetStand(UIMouseEvent evt, UIElement listeningElement)
+        {
+            StandCard card = listeningElement as StandCard;
+            if (card != null)
+            {
+                if (!TBAPlayer.Get(Main.LocalPlayer).UnlockedStands.Contains(card.StandUnlocalizedName))
+                    return;
+
+                UIManager.StandComboLayer.State.Visible = true;
+                UIManager.StandComboLayer.State.CurrentStand = StandLoader.Instance.FindGeneric(x => x.StandName.ToString() == card.StandDisplayName);
+            }
         }
 
         public bool HasLoaded { get; private set; }

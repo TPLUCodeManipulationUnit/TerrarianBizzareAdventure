@@ -29,6 +29,13 @@ namespace TerrarianBizzareAdventure.Stands
             CurrentState = ANIMATION_SUMMON; // first animation *must* be have a key of "SUMMMON"
 
             Animations = new Dictionary<string, SpriteAnimation>();
+
+            StandCombos = new List<StandCombo>();
+        }
+
+        public virtual void AddCombos(List<StandCombo> combos)
+        {
+
         }
 
 
@@ -181,5 +188,7 @@ namespace TerrarianBizzareAdventure.Stands
         public string CallSoundPath { get; set; }
 
         public string LastState { get; private set; }
+
+        public List<StandCombo> StandCombos { get; private set; }
     }
 }

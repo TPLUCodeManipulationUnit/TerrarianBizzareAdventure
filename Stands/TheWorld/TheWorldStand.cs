@@ -13,6 +13,7 @@ using TerrarianBizzareAdventure.Projectiles;
 using TerrarianBizzareAdventure.TimeStop;
 using TerrarianBizzareAdventure.Projectiles.Misc;
 using System.IO;
+using TerrarianBizzareAdventure.Enums;
 
 namespace TerrarianBizzareAdventure.Stands.TheWorld
 {
@@ -71,6 +72,14 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
             Animations[ANIMATION_SUMMON].SetNextAnimation(Animations[ANIMATION_IDLE]);
         }
 
+        public override void AddCombos(List<StandCombo> combos)
+        {
+            combos.Add(new StandCombo("Punch", MouseClick.LeftClick.ToString()));
+            combos.Add(new StandCombo("Punch Barrage", MouseClick.LeftClick.ToString(), MouseClick.LeftClick.ToString(), MouseClick.LeftClick.ToString()));
+            combos.Add(new StandCombo("ZA WARUDO", TBAInputs.ContextAction.GetAssignedKeys()[0].ToString()));
+            combos.Add(new StandCombo("Earth Flattener", TBAInputs.ExtraAction01.GetAssignedKeys()[0].ToString()));
+        }
+
         public override void AI()
         {
             base.AI();
@@ -110,8 +119,10 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
                     if (TBAInputs.SummonStand.JustPressed && CurrentState == ANIMATION_IDLE)
                         CurrentState = ANIMATION_DESPAWN;
 
-                    if (Owner.velocity.Y < 0 && TBAInputs.ContextAction.JustPressed && !BeganAscending)
+                    if (TBAInputs.ExtraAction01.JustPressed && !BeganAscending)
                     {
+                        Owner.Center -= new Vector2(0, 16);
+                        Owner.velocity.Y = -16;
                         CurrentState = "FLY_UP";
                         projectile.netUpdate = true;
                         TBAPlayer.Get(Owner).PointOfInterest = Main.screenPosition + new Vector2(Main.screenWidth, Main.screenHeight) * 0.5f;
@@ -208,8 +219,6 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
 
             if(BeganAscending)
             {
-                Owner.Center -= new Vector2(0f, 10f);
-                Owner.velocity = Vector2.Zero;
 
                 if (AscensionTimer >= (int)(2 * Constants.TICKS_PER_SECOND))
                 {
@@ -230,6 +239,11 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
                     RoadaRollaDa.spriteDirection = Owner.direction * -1;
                     RoadaRollaDa.Center = new Vector2(RoadRollerXAxis, Owner.Center.Y);
                     RoadRollerXAxis = -1.0f;
+                }
+                else
+                {
+                    Owner.velocity = Vector2.Zero;
+                    Owner.Center -= new Vector2(0f, 10f);
                 }
             }
 

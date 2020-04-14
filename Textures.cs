@@ -17,6 +17,9 @@ namespace TerrarianBizzareAdventure
             SCLock = ModContent.GetTexture("TerrarianBizzareAdventure/UserInterfaces/Elements/StandCollection/Locked");
             SCUnknown = ModContent.GetTexture("TerrarianBizzareAdventure/UserInterfaces/Elements/StandCollection/Unknown");
             SCCurrent = ModContent.GetTexture("TerrarianBizzareAdventure/UserInterfaces/Elements/StandCollection/Current");
+
+            MouseInput = ModContent.GetTexture("TerrarianBizzareAdventure/Textures/Interface/MouseInput");
+            KeyboardInput = ModContent.GetTexture("TerrarianBizzareAdventure/Textures/Interface/KeyboardInput");
         }
         public static void Unload()
         {
@@ -28,6 +31,9 @@ namespace TerrarianBizzareAdventure
             SCLock = null;
             SCUnknown = null;
             SCCurrent = null;
+
+            MouseInput = null;
+            KeyboardInput = null;
         }
 
         public static Texture2D StaminaBar { get; private set; }
@@ -38,5 +44,8 @@ namespace TerrarianBizzareAdventure
         public static Texture2D SCCurrent { get; private set; }
         public static Texture2D SCLock { get; private set; }
         public static Texture2D SCUnknown { get; private set; }
+
+        public static Texture2D MouseInput { get; private set; }
+        public static Texture2D KeyboardInput { get; private set; }
     }
 }

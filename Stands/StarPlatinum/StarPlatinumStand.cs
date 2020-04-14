@@ -1,8 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.ModLoader;
 using TerrarianBizzareAdventure.Drawing;
+using TerrarianBizzareAdventure.Enums;
 using TerrarianBizzareAdventure.Helpers;
 using TerrarianBizzareAdventure.Players;
 using TerrarianBizzareAdventure.Projectiles;
@@ -31,9 +33,17 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
             StarRush = new StandPunchRush(ModContent.ProjectileType<StarPlatinumRush>(), ModContent.ProjectileType<StarPlatinumRushBack>());
         }
 
+        public override void AddCombos(List<StandCombo> combos)
+        {
+            combos.Add(new StandCombo("Punch", MouseClick.LeftClick.ToString()));
+            combos.Add(new StandCombo("Jaw Breaker", MouseClick.LeftHold.ToString()));
+            combos.Add(new StandCombo("Punch Barrage", MouseClick.LeftClick.ToString(), MouseClick.LeftClick.ToString(), MouseClick.LeftClick.ToString()));
+            combos.Add(new StandCombo("Star Platinum: The World", TBAInputs.StandPose.GetAssignedKeys()[0].ToString(), TBAInputs.ContextAction.GetAssignedKeys()[0].ToString()));
+        }
 
         public override void AddAnimations()
         {
+
             Animations.Add(ANIMATION_SUMMON, new SpriteAnimation(mod.GetTexture(TEXPATH + "SPSummon"), 10, 4));
             Animations.Add(ANIMATION_IDLE, new SpriteAnimation(mod.GetTexture(TEXPATH + "SPIdle"), 14, 4, true));
 
@@ -301,7 +311,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
             {
                 TBAPlayer.Get(Owner).Stamina -= 16;
 
-                Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Ora"));
+                Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/StarPlatinum/Ora"));
 
                 if (Main.MouseWorld.Y > Owner.Center.Y + 60)
                     CurrentState = "RUSH_DOWN";
