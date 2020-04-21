@@ -1,4 +1,4 @@
-﻿using Microsoft.Speech.Recognition;
+﻿/*using Microsoft.Speech.Recognition;
 using System;
 using System.Globalization;
 using TerrarianBizzareAdventure.Stands;
@@ -57,3 +57,4 @@ namespace TerrarianBizzareAdventure
         public static string FailReason { get; set; }
     }
 }
+*/

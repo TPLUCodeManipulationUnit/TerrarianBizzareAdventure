@@ -27,7 +27,9 @@ namespace TerrarianBizzareAdventure.States
                 float oldKBR = Entity.knockBackResist;
 
                 Entity.knockBackResist = 1;
-                Entity.StrikeNPC(AccumulatedDamage, AccumulatedKnockback, AccumulatedHitDirection);
+
+                Main.LocalPlayer.ApplyDamageToNPC(Entity, AccumulatedDamage, AccumulatedKnockback, AccumulatedHitDirection, false);
+                //Entity.StrikeNPC(AccumulatedDamage, AccumulatedKnockback, AccumulatedHitDirection);
 
                 Entity.knockBackResist = oldKBR;
             }

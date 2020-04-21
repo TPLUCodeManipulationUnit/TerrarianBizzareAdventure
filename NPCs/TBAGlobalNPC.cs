@@ -65,10 +65,12 @@ namespace TerrarianBizzareAdventure.NPCs
 
             if (IsTimeSkipped && TimeSkipDuration <= 2 && TimeSkipStates.Count > 0)
             {
+                /*
                 npc.ai = TimeSkipStates[0].AI;
                 npc.Center = TimeSkipStates[0].Position;
                 npc.scale = TimeSkipStates[0].Scale;
                 npc.direction = TimeSkipStates[0].Direction;
+                */
                 TimeSkipStates.Clear();
             }
             return true;

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -191,10 +192,21 @@ namespace TerrarianBizzareAdventure.TimeStop
         }
 
 
-        public static void RegisterStoppedNPC(NPC npc) => npcStates.Add(npc, new NPCInstantState(npc));
-        public static void RegisterStoppedProjectile(Projectile projectile) => projectileStates.Add(projectile, new ProjectileInstantState(projectile));
-        public static void RegisterStoppedItem(Item item) => itemStates.Add(item, new ItemInstantState(item));
-
+        public static void RegisterStoppedNPC(NPC npc)
+        { 
+            if (!npcStates.ContainsKey(npc))
+                npcStates.Add(npc, new NPCInstantState(npc));
+        }
+        public static void RegisterStoppedProjectile(Projectile projectile)
+        {
+            if (!projectileStates.ContainsKey(projectile))
+                projectileStates.Add(projectile, new ProjectileInstantState(projectile));
+        }
+        public static void RegisterStoppedItem(Item item)
+        {
+            if(!itemStates.ContainsKey(item))
+                itemStates.Add(item, new ItemInstantState(item));
+        }
 
         internal static void MainOnOnTick()
         {

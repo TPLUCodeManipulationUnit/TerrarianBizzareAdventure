@@ -13,9 +13,9 @@ namespace TerrarianBizzareAdventure
             ExtraAction01 = mod.RegisterHotKey("Extra Action 01", null);
             ExtraAction02 = mod.RegisterHotKey("Extra Action 02", null);
 
-            if(VoiceRecognitionSystem.SuccesfulBoot)
+            /*if(VoiceRecognitionSystem.SuccesfulBoot)
                 VoiceRec = mod.RegisterHotKey("Voice controls", "V");
-
+                */
             OpenCollection = mod.RegisterHotKey("Stand album", "[");
         }
 

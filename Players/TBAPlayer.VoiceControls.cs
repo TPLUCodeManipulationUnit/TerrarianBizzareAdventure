@@ -1,4 +1,4 @@
-﻿using Microsoft.Speech.Recognition;
+﻿/*using Microsoft.Speech.Recognition;
 using Microsoft.Xna.Framework;
 using System;
 using Terraria;
@@ -82,3 +82,4 @@ namespace TerrarianBizzareAdventure.Players
         }
     }
 }
+*/

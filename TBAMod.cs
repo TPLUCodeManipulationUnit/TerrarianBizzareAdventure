@@ -33,7 +33,7 @@ namespace TerrarianBizzareAdventure
             SteamHelper.Initialize();
 
 
-            VoiceRecognitionSystem.Load();
+            //VoiceRecognitionSystem.Load();
             TBAInputs.Load(this);
             TimeStopManagement.Load(this);
             TimeSkipManager.Load();

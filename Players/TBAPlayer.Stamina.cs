@@ -36,6 +36,17 @@ namespace TerrarianBizzareAdventure.Players
                 Stamina = MaxStamina;
         }
 
+        public bool CheckStaminaCost(int cost)
+        {
+            if (Stamina >= cost)
+            {
+                Stamina -= cost;
+                return true;
+            }
+
+            return false;
+        }
+
         private int _stamina;
         public int Stamina
         {
