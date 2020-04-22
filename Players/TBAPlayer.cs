@@ -46,8 +46,6 @@ namespace TerrarianBizzareAdventure.Players
             MaxStamina = 100;
             Stamina = MaxStamina;
 
-            AuraAnimationKey = (int)AuraAnimationType.None;
-
             UnlockedStands = new List<string>();
         }
 

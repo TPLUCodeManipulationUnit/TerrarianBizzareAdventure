@@ -142,6 +142,19 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
             }
         }
 
+        public override void OnHitPvp(Player target, int damage, bool crit)
+        {
+            if (HasNoTarget)
+            {
+                projectile.penetrate += 1;
+                projectile.friendly = false;
+                projectile.damage = 0;
+                Target = target;
+                TargetType = 1;
+                projectile.netUpdate = true;
+            }
+        }
+
         public override void SendExtraAI(BinaryWriter writer)
         {
             if (Target != null)

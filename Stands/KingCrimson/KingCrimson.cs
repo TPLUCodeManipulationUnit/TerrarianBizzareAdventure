@@ -26,8 +26,8 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
         public override void AddCombos(List<StandCombo> combos)
         {
             combos.Add(new StandCombo("Punch", MouseClick.LeftClick.ToString()));
-            combos.Add(new StandCombo("Heart Ripper", MouseClick.LeftHold.ToString()));
-            combos.Add(new StandCombo("Slicer", MouseClick.RightHold.ToString()));
+            combos.Add(new StandCombo("Slicer", MouseClick.LeftHold.ToString()));
+            combos.Add(new StandCombo("Heart Ripper", MouseClick.RightHold.ToString()));
             combos.Add(new StandCombo("Punch Barrage", MouseClick.LeftClick.ToString(), MouseClick.LeftClick.ToString(), MouseClick.LeftClick.ToString()));
             combos.Add(new StandCombo("Time Obliteration", TBAInputs.ContextAction.GetAssignedKeys()[0].ToString()));
         }

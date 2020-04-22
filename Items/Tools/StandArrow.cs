@@ -45,9 +45,7 @@ namespace TerrarianBizzareAdventure.Items.Tools
             return true;
         }
 
-        //public override bool CanUseItem(Player player) => !TBAPlayer.Get(player).StandUser;
-        public override bool CanUseItem(Player player) => true;
-
+        public override bool CanUseItem(Player player) => TBAPlayer.Get(player).ActiveStandProjectileId == TBAPlayer.ACTIVE_STAND_PROJECTILE_INACTIVE_ID;
 
         public override void AddRecipes()
         {

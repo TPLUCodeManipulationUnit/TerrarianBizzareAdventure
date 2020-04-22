@@ -119,8 +119,19 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
                     if (TBAInputs.SummonStand.JustPressed && CurrentState == ANIMATION_IDLE)
                         CurrentState = ANIMATION_DESPAWN;
 
-                    if (TBAInputs.ExtraAction01.JustPressed && !BeganAscending)
+                    int roadRollerCost = TimeStopManagement.TimeStopped ? 10 : 50;
+
+                    if (TBAInputs.ExtraAction01.JustPressed && !BeganAscending && TBAPlayer.Get(Owner).CheckStaminaCost(roadRollerCost))
                     {
+                        if(!TimeStopManagement.TimeStopped)
+                        {
+                            if (!TimeStopManagement.TimeStopped)
+                                Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/TheWorld/TimeStop"));
+
+                            IsTaunting = false;
+                            TimeStopDelay = 25;
+                        }
+
                         Owner.Center -= new Vector2(0, 16);
                         Owner.velocity.Y = -16;
                         CurrentState = "FLY_UP";
@@ -139,7 +150,7 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
                     {
                         if (TBAPlayer.Get(Owner).MouseOneTime < 15 && !Owner.controlUseItem)
                         {
-                            TBAPlayer.Get(Owner).Stamina -= 2;
+                            TBAPlayer.Get(Owner).CheckStaminaCost(2);
                             Owner.direction = Main.MouseWorld.X < Owner.Center.X ? -1 : 1;
 
                             if (Main.MouseWorld.Y > Owner.Center.Y + 60)
@@ -161,7 +172,8 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
                 else if (Owner.controlUseItem)
                 {
                     Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/TheWorld/MudaRush"));
-                    TBAPlayer.Get(Owner).Stamina -= 16;
+
+                    TBAPlayer.Get(Owner).CheckStaminaCost(16);
                     if (Main.MouseWorld.Y > Owner.Center.Y + 60)
                         CurrentState = "RUSH_DOWN";
 
@@ -288,9 +300,8 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
 
         public void TimeStop()
         {
-            if (TBAPlayer.Get(Owner).Stamina >= TIME_STOP_COST)
+            if (TBAPlayer.Get(Owner).CheckStaminaCost(TIME_STOP_COST))
             {
-                TBAPlayer.Get(Owner).Stamina -= TIME_STOP_COST;
 
                 if (!TimeStopManagement.TimeStopped)
                     Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/TheWorld/TimeStop"));

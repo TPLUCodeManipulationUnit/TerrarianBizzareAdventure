@@ -143,7 +143,7 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
 
             if (tPlayer.ASAttack && CurrentState == ANIMATION_IDLE && BarrageTime <= 0)
             {
-                tPlayer.Stamina -= 2;
+                tPlayer.CheckStaminaCost(2);
                 BarrageTime = 32;
             }
 
@@ -176,7 +176,7 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
 
             if (tPlayer.ASBomb && CurrentState == ANIMATION_IDLE && Owner.ownedProjectileCounts[ModContent.ProjectileType<AerosmithBomb>()] <= 0)
             {
-                tPlayer.Stamina -= 15;
+                tPlayer.CheckStaminaCost(15);
 
                 Vector2 position = projectile.Center + new Vector2(0, 6);
                 Vector2 velocity = new Vector2(9, 0).RotatedBy(Angle).RotatedByRandom(.12f);

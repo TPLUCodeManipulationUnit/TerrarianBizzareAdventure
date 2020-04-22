@@ -268,7 +268,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
 
             if (TBAPlayer.Get(Owner).MouseOneTime >= 15 && CurrentState == ANIMATION_IDLE)
             {
-                TBAPlayer.Get(Owner).Stamina -= 10;
+                TBAPlayer.Get(Owner).CheckStaminaCost(15);
                 CurrentState = "DONUT_PREP";
             }
 
@@ -283,7 +283,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
         {
             if (PunchCounter < 2)
             {
-                TBAPlayer.Get(Owner).Stamina -= 2;
+                 TBAPlayer.Get(Owner).CheckStaminaCost(2);
 
                 if (Main.MouseWorld.Y > Owner.Center.Y + 60)
                     CurrentState = left ? "DOWNPUNCH_LEFTHAND" : "DOWNPUNCH_RIGHTHAND";
@@ -309,7 +309,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
 
             else
             {
-                TBAPlayer.Get(Owner).Stamina -= 16;
+                TBAPlayer.Get(Owner).CheckStaminaCost(16);
 
                 Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/StarPlatinum/Ora"));
 
@@ -340,10 +340,8 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
 
         public void TimeStop()
         {
-            if (TBAPlayer.Get(Owner).Stamina >= TIME_STOP_COST)
+            if (TBAPlayer.Get(Owner).CheckStaminaCost(TIME_STOP_COST))
             {
-                TBAPlayer.Get(Owner).Stamina -= TIME_STOP_COST;
-
                 if (!TimeStopManagement.TimeStopped)
                     Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/StarPlatinum/SP_TimeStopCall"));
 
