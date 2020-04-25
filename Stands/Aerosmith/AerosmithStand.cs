@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -42,6 +43,9 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
         {
             base.AI();
 
+            if (_previousAngle != Angle)
+                projectile.netUpdate = true;
+
             Owner.heldProj = projectile.whoAmI;
 
             if(Vector2.Distance(projectile.Center, Owner.Center) >= 16 * 300)
@@ -64,34 +68,22 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
                 projectile.Center = Owner.Center - new Vector2(120 * Owner.direction, 24);
                 SetVel = true;
             }
-
-            var speed = 8.0f;
+            
+            Speed = 8.0f;
 
             if (CurrentState == "TURN" && CurrentAnimation.CurrentFrame <= 8)
-                speed = 9 - MathHelper.Clamp(CurrentAnimation.CurrentFrame, 0, 8);
+                Speed = 9 - MathHelper.Clamp(CurrentAnimation.CurrentFrame, 0, 8);
             else if (CurrentState == "TURN" && CurrentAnimation.CurrentFrame >= 8)
-                speed = 0 - MathHelper.Clamp(8 - (CurrentAnimation.CurrentFrame - CurrentAnimation.FrameCount), 0, 8);
+                Speed = 0 - MathHelper.Clamp(8 - (CurrentAnimation.CurrentFrame - CurrentAnimation.FrameCount), 0, 8);
 
-            projectile.velocity = new Vector2(speed, 0).RotatedBy(Angle);
 
             TBAPlayer tPlayer = TBAPlayer.Get(Owner);
-
-            if (tPlayer.ASHover)
-            {
-                projectile.velocity = new Vector2(.000000001f, 0).RotatedBy(Angle);
-            }
-
-            projectile.timeLeft = 200;
 
             if (CurrentState == ANIMATION_SUMMON)
                 if (Opacity < 1f)
                     Opacity += 0.04f;
 
-            if (Owner.whoAmI == Main.myPlayer)
-            {
-                if (TBAInputs.SummonStand.JustPressed && CurrentState == ANIMATION_IDLE && Vector2.Distance(Owner.Center, projectile.Center) <= 16 * 10)
-                    CurrentState = ANIMATION_DESPAWN;
-            }
+            
 
             if (CurrentState == ANIMATION_DESPAWN || CurrentState == ANIMATION_SUMMON)
             {
@@ -114,15 +106,6 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
                 }
             }
 
-            if (IsFlipped && tPlayer.ASTurnLeft && CurrentState == ANIMATION_IDLE && !tPlayer.ASAngleUp && !tPlayer.ASAngleDown)
-            {
-                CurrentState = "TURN";
-            }
-
-            if (!IsFlipped && tPlayer.ASTurnRight && CurrentState == ANIMATION_IDLE && !tPlayer.ASAngleUp && !tPlayer.ASAngleDown)
-            {
-                CurrentState = "TURN";
-            }
 
             if (CurrentState == "TURN" && CurrentAnimation.Finished)
             {
@@ -131,21 +114,62 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
                 Angle += (float)MathHelper.Pi;
             }
 
-            if (tPlayer.ASAngleUp && CurrentState == ANIMATION_IDLE)
+            #region controls
+
+
+            if (Owner.whoAmI == Main.myPlayer)
             {
-                Angle = projectile.velocity.RotatedBy(0.06f).ToRotation();
+                if (tPlayer.ASHover)
+                {
+                    Speed = .000000001f;
+                }
+
+                if (IsFlipped && tPlayer.ASTurnLeft && CurrentState == ANIMATION_IDLE && !tPlayer.ASAngleUp && !tPlayer.ASAngleDown)
+                {
+                    CurrentState = "TURN";
+                }
+
+                if (!IsFlipped && tPlayer.ASTurnRight && CurrentState == ANIMATION_IDLE && !tPlayer.ASAngleUp && !tPlayer.ASAngleDown)
+                {
+                    CurrentState = "TURN";
+                }
+
+                if (tPlayer.ASAngleUp && CurrentState == ANIMATION_IDLE)
+                {
+                    Angle = projectile.velocity.RotatedBy(0.06f).ToRotation();
+                }
+
+                if (tPlayer.ASAngleDown && CurrentState == ANIMATION_IDLE)
+                {
+                    Angle = projectile.velocity.RotatedBy(-0.06f).ToRotation();
+                }
+
+                if (tPlayer.ASAttack && CurrentState == ANIMATION_IDLE && BarrageTime <= 0)
+                {
+                    tPlayer.CheckStaminaCost(2);
+                    BarrageTime = 32;
+                }
+
+                if (TBAInputs.SummonStand.JustPressed && CurrentState == ANIMATION_IDLE && Vector2.Distance(Owner.Center, projectile.Center) <= 16 * 10)
+                    CurrentState = ANIMATION_DESPAWN;
+
+                if (tPlayer.ASBomb && CurrentState == ANIMATION_IDLE && Owner.ownedProjectileCounts[ModContent.ProjectileType<AerosmithBomb>()] <= 0)
+                {
+                    tPlayer.CheckStaminaCost(15);
+
+                    Vector2 position = projectile.Center + new Vector2(0, 6);
+                    Vector2 velocity = new Vector2(9, 0).RotatedBy(Angle).RotatedByRandom(.12f);
+                    int type = ModContent.ProjectileType<AerosmithBomb>();
+                    int damage = 1;
+
+                    Main.PlaySound(SoundID.Item1, projectile.position);
+
+                    Projectile.NewProjectile(position, velocity, type, damage, 0, Owner.whoAmI);
+                }
+
             }
 
-            if (tPlayer.ASAngleDown && CurrentState == ANIMATION_IDLE)
-            {
-                Angle = projectile.velocity.RotatedBy(-0.06f).ToRotation();
-            }
-
-            if (tPlayer.ASAttack && CurrentState == ANIMATION_IDLE && BarrageTime <= 0)
-            {
-                tPlayer.CheckStaminaCost(2);
-                BarrageTime = 32;
-            }
+            #endregion
 
             if (BarrageTime > 0)
             {
@@ -174,20 +198,6 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
                 }
             }
 
-            if (tPlayer.ASBomb && CurrentState == ANIMATION_IDLE && Owner.ownedProjectileCounts[ModContent.ProjectileType<AerosmithBomb>()] <= 0)
-            {
-                tPlayer.CheckStaminaCost(15);
-
-                Vector2 position = projectile.Center + new Vector2(0, 6);
-                Vector2 velocity = new Vector2(9, 0).RotatedBy(Angle).RotatedByRandom(.12f);
-                int type = ModContent.ProjectileType<AerosmithBomb>();
-                int damage = 1;
-
-                Main.PlaySound(SoundID.Item1, projectile.position);
-
-                Projectile.NewProjectile(position, velocity, type, damage, 0, Owner.whoAmI);
-            }
-
             if (CurrentState != "TURN")
             {
 
@@ -195,12 +205,50 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
 
                 IsFlipped = projectile.velocity.X > 0;
             }
+
+            projectile.velocity = new Vector2(Speed, 0).RotatedBy(Angle);
+        }
+
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            base.SendExtraAI(writer);
+            writer.Write(Angle);
+            writer.Write(Speed);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            base.ReceiveExtraAI(reader);
+            Angle = reader.ReadSingle();
+            Speed = reader.ReadSingle();
         }
 
         public int BarrageTime { get; set; }
 
         public bool SetVel { get; set; }
 
-        public float Angle { get; set; }
+        private float _speed;
+        public float Speed
+        {
+            get => _speed;
+            set
+            {
+                projectile.netUpdate = true;
+                _speed = value;
+            }
+        }
+
+        private float _previousAngle;
+        private float _currentAngle;
+        public float Angle 
+        {
+            get => _currentAngle;
+            set
+            {
+                _previousAngle = _currentAngle;
+                projectile.netUpdate = true;
+                _currentAngle = value;
+            }
+        }
     }
 }

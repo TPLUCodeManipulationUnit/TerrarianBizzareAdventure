@@ -43,6 +43,8 @@ namespace TerrarianBizzareAdventure.Players
         {
             ActiveStandProjectileId = ACTIVE_STAND_PROJECTILE_INACTIVE_ID;
 
+            AuraAnimationKey = (int)AuraAnimationType.None;
+
             MaxStamina = 100;
             Stamina = MaxStamina;
 
@@ -59,13 +61,22 @@ namespace TerrarianBizzareAdventure.Players
 
         public override void PreUpdate()
         {
-            bool isStandReal = ActiveStandProjectileId != ACTIVE_STAND_PROJECTILE_INACTIVE_ID && Main.projectile[ActiveStandProjectileId].modProjectile is Stand;
+            /*bool isStandReal = ActiveStandProjectileId != ACTIVE_STAND_PROJECTILE_INACTIVE_ID && Main.projectile[ActiveStandProjectileId].modProjectile is Stand;
             if (!isStandReal)
-                ActiveStandProjectileId = ACTIVE_STAND_PROJECTILE_INACTIVE_ID;
+                ActiveStandProjectileId = ACTIVE_STAND_PROJECTILE_INACTIVE_ID;*/
         }
 
         public override void PostUpdate()
         {
+
+            OnPostUpdate?.Invoke(this);
+        }
+
+        public override void ResetEffects()
+        {
+            ResetDrawingEffects();
+            ResetStaminaEffects();
+
             if (AttackDirectionResetTimer > 0)
                 AttackDirectionResetTimer--;
             else
@@ -77,14 +88,6 @@ namespace TerrarianBizzareAdventure.Players
                 player.velocity.Y *= 0.01f;
                 player.direction = AttackDirection;
             }
-
-            OnPostUpdate?.Invoke(this);
-        }
-
-        public override void ResetEffects()
-        {
-            ResetDrawingEffects();
-            ResetStaminaEffects();
 
             if (player.controlUseItem)
             {
@@ -131,8 +134,10 @@ namespace TerrarianBizzareAdventure.Players
 
         public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
         {
-            if(newPlayer)
+            if (newPlayer)
+            {
                 new StandPacket().Send();
+            }
         }
 
         public override void SendClientChanges(ModPlayer clientPlayer)
@@ -141,6 +146,16 @@ namespace TerrarianBizzareAdventure.Players
             if (tPlayer.Stand != Stand)
             {
                 new StandPacket().Send();
+            }
+
+            if(tPlayer.ActiveStandProjectileId != ActiveStandProjectileId)
+            {
+                new StandProjectileIDPacket().Send();
+            }
+
+            if(tPlayer.AuraAnimationKey != AuraAnimationKey)
+            {
+                new AuraSyncPacket().Send();
             }
         }
 
@@ -224,9 +239,6 @@ namespace TerrarianBizzareAdventure.Players
                 if (_activeStandProjectileId == value) return;
 
                 _activeStandProjectileId = value;
-
-                if (Main.LocalPlayer == player)
-                    new StandProjectileIDPacket().Send();
             }
         }
 

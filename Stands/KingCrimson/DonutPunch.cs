@@ -41,15 +41,24 @@ namespace TerrarianBizzareAdventure.Projectiles
                 for (int i = 0; i < 3; i++)
                     Dust.NewDust(projectile.Center - new Vector2(dir == 1 ? 8 : 0, 0), 0, 0, DustID.Blood, 8 * Main.player[projectile.owner].direction, -2, 0, default(Color), 1.5f);
 
-                NPC tryGetNpc = DonutTarget as NPC;
+                if (DonutType == TargetType.NPC)
+                {
+                    NPC tryGetNpc = DonutTarget as NPC;
 
-                bool shouldNotPull = tryGetNpc.type == NPCID.WallofFlesh || tryGetNpc.type == NPCID.WallofFleshEye;
+                    bool shouldNotPull = tryGetNpc.type == NPCID.WallofFlesh || tryGetNpc.type == NPCID.WallofFleshEye;
 
-                if(!shouldNotPull)
+                    if (!shouldNotPull)
+                        DonutTarget.Center = projectile.Center;
+
+                    if (shouldNotPull)
+                        projectile.Center = DonutTarget.Center;
+                }
+
+                if (DonutType == TargetType.Player)
+                {
+                    DonutTarget.velocity = Vector2.Zero;
                     DonutTarget.Center = projectile.Center;
-
-                if (shouldNotPull)
-                    projectile.Center = DonutTarget.Center;
+                }
             }
         }
 
@@ -102,7 +111,50 @@ namespace TerrarianBizzareAdventure.Projectiles
             Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Punch" + Main.rand.Next(1, 5)).WithVolume(.2f));
         }
 
+        public override void ModifyHitPvp(Player target, ref int damage, ref bool crit)
+        {
+            base.ModifyHitPvp(target, ref damage, ref crit);
+
+            KingCrimson stando = ParentProjectile.modProjectile as KingCrimson;
+
+            if (stando != null)
+            {
+                projectile.timeLeft = stando.HasMissedDonut ? 75 : projectile.timeLeft;
+
+                stando.HasMissedDonut = false;
+            }
+
+            projectile.damage = 600;
+
+            if (target.statLife - damage > 0)
+            {
+                DonutTarget = target;
+                DonutType = TargetType.Player;
+                projectile.ai[1] = (int)target.whoAmI;
+            }
+            else
+            {
+                projectile.Kill();
+            }
+
+            Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Punch" + Main.rand.Next(1, 5)).WithVolume(.2f));
+        }
+
         public override bool? CanHitNPC(NPC target)
+        {
+            if (projectile.ai[1] == -5)
+                return false;
+
+            if (projectile.ai[1] == -1)
+                return true;
+
+            if (target.whoAmI == (int)projectile.ai[1] && projectile.timeLeft <= 2)
+                return true;
+
+            return false;
+        }
+
+        public override bool CanHitPvp(Player target)
         {
             if (projectile.ai[1] == -5)
                 return false;

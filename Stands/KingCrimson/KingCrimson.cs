@@ -109,8 +109,6 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
         {
             base.AI();
 
-            AuraColor = new Color(189, 0, 85);
-
             if (Animations.Count <= 0)
                 return;
 
