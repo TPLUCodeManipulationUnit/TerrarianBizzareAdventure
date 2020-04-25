@@ -14,6 +14,8 @@ namespace TerrarianBizzareAdventure.Players
     {
         public override void ModifyDrawLayers(List<PlayerLayer> layers)
         {
+            ModifySCARLayers();
+
             layers.Insert(0, standAuraLayer);
         }
 
@@ -114,6 +116,16 @@ namespace TerrarianBizzareAdventure.Players
                 return;
 
             Color drawColor = tPlayer.Stand == null ? Color.White : tPlayer.Stand.AuraColor;
+
+
+            if (tPlayer.ActiveStandProjectileId != ACTIVE_STAND_PROJECTILE_INACTIVE_ID)
+            {
+                Stand stando = Main.projectile[tPlayer.ActiveStandProjectileId].modProjectile as Stand;
+
+                if (stando != null)
+                    drawColor = stando.AuraColor;
+            }
+
 
             DrawData auraData = new DrawData
             (

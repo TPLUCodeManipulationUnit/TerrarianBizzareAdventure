@@ -42,5 +42,72 @@ namespace TerrarianBizzareAdventure.Helpers
                 Main.dust[dust].velocity = vel * 0.0f + vector2.SafeNormalize(Vector2.UnitY) * 1.0f;
             }
         }
+
+        public static void DrawBorderedRectangle(Vector2 position, int width, int height, Color color, Color borderColor, SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw
+                 (
+                     Main.magicPixel,
+                     position,
+                     new Rectangle(0, 0, width, height),
+                     color,
+                     0f,
+                     Vector2.Zero,
+                     1f,
+                     SpriteEffects.None,
+                     1
+                 );
+
+            #region Draw Borders
+            spriteBatch.Draw
+                     (
+                         Main.magicPixel,
+                         position,
+                         new Rectangle(0, 0, 2, height),
+                         borderColor,
+                         0f,
+                         Vector2.Zero,
+                         1f,
+                         SpriteEffects.None,
+                         1
+                     );
+            spriteBatch.Draw
+                     (
+                         Main.magicPixel,
+                         position,
+                         new Rectangle(0, 0, width, 2),
+                         borderColor,
+                         0f,
+                         Vector2.Zero,
+                         1f,
+                         SpriteEffects.None,
+                         1
+                     );
+            spriteBatch.Draw
+                     (
+                         Main.magicPixel,
+                         position + new Vector2(width - 2, 0),
+                         new Rectangle(0, 0, 2, height),
+                         borderColor,
+                         0f,
+                         Vector2.Zero,
+                         1f,
+                         SpriteEffects.None,
+                         1
+                     );
+            spriteBatch.Draw
+                     (
+                         Main.magicPixel,
+                         position + new Vector2(0, height - 2),
+                         new Rectangle(0, 0, width, 2),
+                         borderColor,
+                         0f,
+                         Vector2.Zero,
+                         1f,
+                         SpriteEffects.None,
+                         1
+                     );
+            #endregion
+        }
     }
 }
