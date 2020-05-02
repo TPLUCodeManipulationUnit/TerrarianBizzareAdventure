@@ -198,7 +198,7 @@ namespace TerrarianBizzareAdventure.Players
                     ActiveStandProjectileId = Projectile.NewProjectile(player.Center, Vector2.Zero, mod.ProjectileType(Stand.GetType().Name), 0, 0, player.whoAmI);
 
                     if(Stand.CallSoundPath != "")
-                    Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, Stand.CallSoundPath));
+                        Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, Stand.CallSoundPath));
                 }
             }
 
@@ -228,19 +228,10 @@ namespace TerrarianBizzareAdventure.Players
             SetAerosmithControls();
         }
 
+
         public Stand Stand { get; set; }
 
-        private int _activeStandProjectileId;
-        public int ActiveStandProjectileId
-        {
-            get => _activeStandProjectileId;
-            set
-            {
-                if (_activeStandProjectileId == value) return;
-
-                _activeStandProjectileId = value;
-            }
-        }
+        public int ActiveStandProjectileId { get; set; }
 
 
         public bool StandUser => Stand != null;

@@ -8,7 +8,6 @@ using Terraria.Graphics.Shaders;
 using Terraria.ModLoader;
 using Terraria.UI;
 using TerrarianBizzareAdventure.Helpers;
-using TerrarianBizzareAdventure.Items.Developer;
 using TerrarianBizzareAdventure.Players;
 using TerrarianBizzareAdventure.Stands;
 using TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio;

@@ -8,17 +8,18 @@ using TerrarianBizzareAdventure.Stands.SREKT;
 
 namespace TerrarianBizzareAdventure.Commands
 {
-    public class GetStandCommand : ModCommand
+    public class GetStandCommand : TBADebugCommand
     {
-        public override string Command => "getStand";
+        public GetStandCommand() : base("getStand", CommandType.Chat)
+        {
+        }
 
-        public override CommandType Type => CommandType.Chat;
 
-        public override void Action(CommandCaller caller, string input, string[] args)
+        protected override void ActionLocal(CommandCaller caller, Player player, string input, string[] args)
         {
             TBAPlayer tPlayer = TBAPlayer.Get(caller.Player);
 
-            if(input.Contains("DayOrk"))
+            if (input.Contains("DayOrk"))
             {
                 tPlayer.Stand = StandLoader.Instance.FindGeneric(x => x is SREKTStand);
                 Main.NewText("What the~");

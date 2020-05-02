@@ -6,17 +6,18 @@ using TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio;
 
 namespace TerrarianBizzareAdventure.Commands
 {
-    public class GetStandNamesCommand : ModCommand
+    public class GetStandNamesCommand : TBADebugCommand
     {
-        public override string Command => "listStands";
-
-        public override CommandType Type => CommandType.Chat;
-
-        public override void Action(CommandCaller caller, string input, string[] args)
+        public GetStandNamesCommand() : base("listStands", CommandType.Chat)
         {
-            foreach(Stand s in StandLoader.Instance.Generics)
+        }
+
+
+        protected override void ActionLocal(CommandCaller caller, Player player, string input, string[] args)
+        {
+            foreach (Stand s in StandLoader.Instance.Generics)
             {
-                if(s.CanAcquire(TBAPlayer.Get(caller.Player)))
+                if (s.CanAcquire(TBAPlayer.Get(caller.Player)))
                     Main.NewText(s.StandName);
             }
         }

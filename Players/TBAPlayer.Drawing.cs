@@ -7,6 +7,7 @@ using Terraria.ModLoader;
 using TerrarianBizzareAdventure.Drawing;
 using TerrarianBizzareAdventure.Enums;
 using TerrarianBizzareAdventure.Stands;
+using WebmilioCommons.Extensions;
 
 namespace TerrarianBizzareAdventure.Players
 {
@@ -119,12 +120,8 @@ namespace TerrarianBizzareAdventure.Players
 
 
             if (tPlayer.ActiveStandProjectileId != ACTIVE_STAND_PROJECTILE_INACTIVE_ID)
-            {
-                Stand stando = Main.projectile[tPlayer.ActiveStandProjectileId].modProjectile as Stand;
-
-                if (stando != null)
-                    drawColor = stando.AuraColor;
-            }
+                if (Main.projectile[tPlayer.ActiveStandProjectileId].modProjectile is Stand stand)
+                    drawColor = stand.AuraColor;
 
 
             DrawData auraData = new DrawData
@@ -167,12 +164,12 @@ namespace TerrarianBizzareAdventure.Players
             get => _auraAnimationKey;
             set
             {
-                if (_auraAnimationKey == value) return;
+                if (_auraAnimationKey == value) 
+                    return;
 
                 _auraAnimationKey = value;
 
-                if (Main.LocalPlayer == player)
-                    new AuraSyncPacket().Send();
+                this.SendIfLocal<AuraSyncPacket>();
             }
         }
 
