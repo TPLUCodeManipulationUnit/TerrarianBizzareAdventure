@@ -107,26 +107,6 @@ namespace TerrarianBizzareAdventure
         }
 
 
-        private void MainOnUpdate(On.Terraria.Main.orig_Update orig, Main self, GameTime gameTime)
-        {
-            if (KingCrimsonAbilityTrigger.lagFor > 0)
-            {
-                KingCrimsonAbilityTrigger.lagFor--;
-
-                if (KingCrimsonAbilityTrigger.lagFor <= 0)
-                    KingCrimsonAbilityTrigger.lagger = null;
-            }
-
-            if (KingCrimsonAbilityTrigger.lagFor > 0)
-            {
-                if (KingCrimsonAbilityTrigger.lagger == Main.LocalPlayer)
-                    orig(self, gameTime);
-            }
-            else
-                orig(self, gameTime);
-        }
-
-
         /*#region Packets
 
         public PlayerJoiningSynchronizationPacket PlayerJoiningSynchronizationPacket { get; private set; }

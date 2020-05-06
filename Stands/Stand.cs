@@ -68,7 +68,7 @@ namespace TerrarianBizzareAdventure.Stands
             LastState = CurrentState;
 
             if (Main.dedServ)
-                return false;
+                return true;
 
             if (TBAPlayer.Get(Owner).Stamina <= 0 && CurrentState == ANIMATION_IDLE)
                 CurrentState = ANIMATION_DESPAWN;
