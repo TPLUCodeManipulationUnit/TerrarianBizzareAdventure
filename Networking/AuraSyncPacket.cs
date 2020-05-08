@@ -1,11 +1,7 @@
-﻿using System.IO;
-using Terraria;
-using Terraria.ID;
-using TerrarianBizzareAdventure.Stands;
-using WebmilioCommons.Networking.Attributes;
+﻿using TerrarianBizzareAdventure.Players;
 using WebmilioCommons.Networking.Packets;
 
-namespace TerrarianBizzareAdventure.Players
+namespace TerrarianBizzareAdventure.Networking
 {
     public sealed class AuraSyncPacket  : ModPlayerNetworkPacket<TBAPlayer>
     {

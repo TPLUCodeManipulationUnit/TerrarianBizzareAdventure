@@ -9,6 +9,7 @@ using Terraria.ModLoader;
 using TerrarianBizzareAdventure.Enums;
 using TerrarianBizzareAdventure.Helpers;
 using TerrarianBizzareAdventure.Items.Weapons.Rewards;
+using TerrarianBizzareAdventure.Networking;
 using TerrarianBizzareAdventure.Projectiles.Misc;
 using TerrarianBizzareAdventure.Stands;
 using TerrarianBizzareAdventure.Stands.Aerosmith;

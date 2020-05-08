@@ -166,16 +166,20 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                 CurrentState == "DONUT_PUNCH" ||
                 CurrentState == "DONUT_PULL" ? 34 : -16;
 
+
             if(CurrentState == "DONUT_PUNCH" || CurrentState == "DONUT_PULL")
                 Owner.heldProj = projectile.whoAmI;
+
 
             if(CurrentState == "DONUT_PUNCH" && CurrentAnimation.CurrentFrame == 4)
                 Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/StarPlatinum/Donut"));
 
+
             if (CurrentState == "DONUT_PUNCH" && CurrentAnimation.CurrentFrame > 4)
-                projectile.damage = 350;
+                Damage = 350;
             else
-                projectile.damage = 0;
+                Damage = 0;
+
 
             if (CurrentState.Contains("BLOCK"))
             {
@@ -190,7 +194,9 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
             if (CurrentState.Contains("PUNCH"))
                 Owner.heldProj = projectile.whoAmI;
 
-            projectile.Center = Vector2.Lerp(projectile.Center, lerpPos, 0.26f);
+
+            Center = Vector2.Lerp(projectile.Center, lerpPos, 0.26f);
+
 
             if (IsTaunting)
             {
@@ -200,6 +206,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                     CurrentAnimation.ResetAnimation();
                 }
             }
+
 
             if (CurrentState == ANIMATION_SUMMON)
             {
@@ -211,12 +218,14 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                 IsPunching = false;
             }
 
+
             #region Punch
             if (CurrentState == ANIMATION_IDLE && TBAPlayer.Get(Owner).MouseOneTimeReset > 0 && TBAPlayer.Get(Owner).MouseOneTime < 15 && !Owner.controlUseItem)
             {
                 Punching(Main.rand.Next(2) == 0);
             }
             #endregion
+
 
             if (CurrentState == ANIMATION_DESPAWN)
             {
@@ -233,6 +242,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
             }
 
             IsFlipped = Owner.direction == 1;
+
 
             if (projectile.active)
             {
@@ -293,6 +303,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
 
                 else
                     CurrentState = left ? "MIDDLEPUNCH_LEFTHAND" : "MIDDLEPUNCH_RIGHTHAND";
+
 
                 SpawnPunch();
 

@@ -5,19 +5,20 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using TerrarianBizzareAdventure.Players;
+using WebmilioCommons.Projectiles;
 
 namespace TerrarianBizzareAdventure.Stands.Aerosmith
 {
-    public class AerosmithBomb : ModProjectile
+    public class AerosmithBomb : StandardProjectile
     {
         private const int TRIGGER_DELAY = 30;
 
         public override void SetDefaults()
         {
-            projectile.width = 12;
-            projectile.height = 12;
-            projectile.timeLeft = 240;
-            projectile.penetrate = -1;
+            Width = 12;
+            Height = 12;
+            TimeLeft = 240;
+            Penetrate = -1;
             projectile.friendly = true;
             HitNPC = -999;
         }
@@ -26,20 +27,20 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
         {
             if (!HasHitGround) // We only want to rotate the bomb up to the point of where it hits the ground.
             {
-                Rotation = projectile.velocity.ToRotation();
+                VelocityRotation = projectile.velocity.ToRotation();
 
                 int dustIndex = Dust.NewDust(projectile.Center, 0, 0, 31, 0f, 0f, 100, default(Color), 2f);
                 Main.dust[dustIndex].position = projectile.Center;
                 Main.dust[dustIndex].velocity = -projectile.velocity * 0.25f;
                 Main.dust[dustIndex].noGravity = true;
             }
-            // when the warhead touches the ground, there is small delay before it goes kaboom
+            // Wwhen the warhead touches the ground, there is small delay before it goes kaboom
 
 
             // I want the bomb to slowly tilt towards dropping down until it goes straight down
             projectile.velocity.X *= 0.99f;
 
-            if (projectile.velocity.Y < 10 && !HasHitGround)
+            if (Velocity.Y < 10 && !HasHitGround)
                 projectile.velocity.Y += 0.2f;
 
             if(HasHitGround)
@@ -58,7 +59,6 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
                     /// TO DO: Implement KABOOM
                     if (ExplosionDelay < TRIGGER_DELAY + 1)
                     {
-
                         #region poop code
                         for (int g = 0; g < 4; g++)
                         {
@@ -92,14 +92,17 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
                         }
                         #endregion
 
-                        projectile.damage = 400;
+
+                        Damage = 400;
 
                         projectile.friendly = true;
                         ExplosionDelay += 2;
-                        projectile.timeLeft = 2;
-                        projectile.width = 400;
-                        projectile.height = 400;
-                        projectile.position -= new Vector2(200);
+                        TimeLeft = 2;
+
+                        Width = 400;
+                        Height = 400;
+
+                        Position -= new Vector2(200);
                     }
 
                     Main.PlaySound(SoundID.Item14, projectile.position);
@@ -112,8 +115,8 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
         {
             HasHitGround = true;
             projectile.netUpdate = true;
-            projectile.Center += oldVelocity;
-            projectile.velocity = Vector2.Zero;
+            Center += oldVelocity;
+            Velocity = Vector2.Zero;
             projectile.tileCollide = false;
 
             return false;
@@ -139,7 +142,7 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
             {
                 HasHitGround = true;
                 projectile.netUpdate = true;
-                projectile.velocity = Vector2.Zero;
+                Velocity = Vector2.Zero;
                 projectile.tileCollide = false;
 
                 projectile.friendly = false;
@@ -162,16 +165,16 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
                 return;
 
             Texture2D texture = Main.projectileTexture[projectile.type];
-            Vector2 position = projectile.Center - Main.screenPosition;
+            Vector2 position = Center - Main.screenPosition;
 
-            spriteBatch.Draw(texture, position, null, Color.White, Rotation, new Vector2(9, 11), 0.75f, SpriteEffects.None, 1f);
+            spriteBatch.Draw(texture, position, null, Color.White, VelocityRotation, new Vector2(9, 11), 0.75f, SpriteEffects.None, 1f);
         }
 
         public bool HasHitGround { get; private set; }
 
         public int ExplosionDelay { get; private set; }
 
-        public float Rotation { get; private set; }
+        public float VelocityRotation { get; private set; }
 
         public int HitNPC { get; private set; }
 

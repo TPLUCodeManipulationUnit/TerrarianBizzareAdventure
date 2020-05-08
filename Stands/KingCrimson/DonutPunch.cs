@@ -3,14 +3,12 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using TerrarianBizzareAdventure.Stands.KingCrimson;
+using WebmilioCommons.Projectiles;
 
-namespace TerrarianBizzareAdventure.Projectiles
+namespace TerrarianBizzareAdventure.Stands.KingCrimson
 {
-    public class DonutPunch : ModProjectile
+    public class DonutPunch : StandardProjectile
     {
-        public sealed override string Texture => "TerrarianBizzareAdventure/Textures/EmptyPixel";
-
         public override void SetDefaults()
         {
             projectile.width = 32;
@@ -25,34 +23,37 @@ namespace TerrarianBizzareAdventure.Projectiles
             projectile.ai[1] = -1;
         }
 
+
         public override void AI()
         {
             projectile.netUpdate = true;
-            projectile.netUpdate2 = true;
 
-            var dir = Main.player[projectile.owner].direction;
 
-            Vector2 offset = new Vector2(36 * dir, projectile.ai[1] > -1 ? -8 : 0);
+            var playerDirection = Owner.direction;
+
+            Vector2 offset = new Vector2(36 * playerDirection, AI1 > -1 ? -8 : 0);
 
             projectile.Center = ParentProjectile.Center + offset;
+
 
             if (DonutTarget != null)
             {
                 for (int i = 0; i < 3; i++)
-                    Dust.NewDust(projectile.Center - new Vector2(dir == 1 ? 8 : 0, 0), 0, 0, DustID.Blood, 8 * Main.player[projectile.owner].direction, -2, 0, default(Color), 1.5f);
+                    Dust.NewDust(projectile.Center - new Vector2(playerDirection == 1 ? 8 : 0, 0), 0, 0, DustID.Blood, 8 * Owner.direction, -2, 0, default(Color), 1.5f);
+
 
                 if (DonutType == TargetType.NPC)
                 {
-                    NPC tryGetNpc = DonutTarget as NPC;
+                    NPC npc = DonutTarget as NPC;
 
-                    bool shouldNotPull = tryGetNpc.type == NPCID.WallofFlesh || tryGetNpc.type == NPCID.WallofFleshEye;
-
-                    if (!shouldNotPull)
-                        DonutTarget.Center = projectile.Center;
+                    bool shouldNotPull = npc.type == NPCID.WallofFlesh || npc.type == NPCID.WallofFleshEye;
 
                     if (shouldNotPull)
                         projectile.Center = DonutTarget.Center;
+                    else
+                        DonutTarget.Center = Center;
                 }
+
 
                 if (DonutType == TargetType.Player)
                 {
@@ -62,12 +63,13 @@ namespace TerrarianBizzareAdventure.Projectiles
             }
         }
 
+
         public override void SendExtraAI(BinaryWriter writer)
         {
-            if(DonutType != TargetType.None)
+            if (DonutType != TargetType.None)
                 writer.Write((byte)DonutType);
 
-            if(DonutTarget != null)
+            if (DonutTarget != null)
                 writer.Write(DonutTarget.whoAmI);
         }
 
@@ -82,31 +84,28 @@ namespace TerrarianBizzareAdventure.Projectiles
                 DonutTarget = Main.player[reader.ReadInt32()];
         }
 
+
         public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
             base.ModifyHitNPC(target, ref damage, ref knockback, ref crit, ref hitDirection);
 
-            KingCrimson stando = ParentProjectile.modProjectile as KingCrimson;
 
-            if (stando != null)
-            {
-                projectile.timeLeft = stando.HasMissedDonut ? 75 : projectile.timeLeft;
+            DonutMissedCheckAndUpdate();
 
-                stando.HasMissedDonut = false;
-            }
 
             projectile.damage = 600;
+
 
             if (target.life - damage > 0)
             {
                 DonutTarget = target;
                 DonutType = TargetType.NPC;
-                projectile.ai[1] = (int)target.whoAmI;
+
+                AI1 = target.whoAmI;
             }
             else
-            {
                 projectile.Kill();
-            }
+
 
             Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Punch" + Main.rand.Next(1, 5)).WithVolume(.2f));
         }
@@ -115,64 +114,85 @@ namespace TerrarianBizzareAdventure.Projectiles
         {
             base.ModifyHitPvp(target, ref damage, ref crit);
 
-            KingCrimson stando = ParentProjectile.modProjectile as KingCrimson;
 
-            if (stando != null)
-            {
-                projectile.timeLeft = stando.HasMissedDonut ? 75 : projectile.timeLeft;
+            DonutMissedCheckAndUpdate();
 
-                stando.HasMissedDonut = false;
-            }
 
-            projectile.damage = 600;
+            Damage = 600;
+
 
             if (target.statLife - damage > 0)
             {
                 DonutTarget = target;
                 DonutType = TargetType.Player;
-                projectile.ai[1] = (int)target.whoAmI;
+
+                AI1 = target.whoAmI;
             }
             else
-            {
                 projectile.Kill();
-            }
+
 
             Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Punch" + Main.rand.Next(1, 5)).WithVolume(.2f));
         }
 
+
+        private void DonutMissedCheckAndUpdate()
+        {
+            if (!(ParentProjectile.modProjectile is KingCrimson kc))
+                return;
+
+            if (kc.HasMissedDonut)
+                TimeLeft = 75;
+
+            kc.HasMissedDonut = false;
+        }
+
+
         public override bool? CanHitNPC(NPC target)
         {
-            if (projectile.ai[1] == -5)
-                return false;
+            switch (AI1)
+            {
+                case -5:
+                    return false;
+                case -1:
+                    return true;
+            }
 
-            if (projectile.ai[1] == -1)
+
+            if (target.whoAmI == (int)AI1 && TimeLeft <= 2)
                 return true;
 
-            if (target.whoAmI == (int)projectile.ai[1] && projectile.timeLeft <= 2)
-                return true;
 
             return false;
         }
 
         public override bool CanHitPvp(Player target)
         {
-            if (projectile.ai[1] == -5)
-                return false;
+            switch (AI1)
+            {
+                case -5:
+                    return false;
+                case -1:
+                    return true;
+            }
 
-            if (projectile.ai[1] == -1)
+
+            if (target.whoAmI == (int)AI1 && TimeLeft <= 2)
                 return true;
 
-            if (target.whoAmI == (int)projectile.ai[1] && projectile.timeLeft <= 2)
-                return true;
 
             return false;
         }
 
-        private Projectile ParentProjectile => Main.projectile[(int)projectile.ai[0]];
+
+        public sealed override string Texture => "TerrarianBizzareAdventure/Textures/EmptyPixel";
+
+
+        private Projectile ParentProjectile => Main.projectile[(int)AI1];
 
         public Entity DonutTarget { get; private set; }
 
-        public TargetType DonutType { get; private set; } 
+        public TargetType DonutType { get; private set; }
     }
 
     public enum TargetType : byte

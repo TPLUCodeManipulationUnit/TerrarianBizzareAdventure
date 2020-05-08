@@ -10,10 +10,11 @@ using TerrarianBizzareAdventure.TimeStop;
 using WebmilioCommons.Managers;
 using System.Linq;
 using TerrarianBizzareAdventure.Drawing;
+using WebmilioCommons.Projectiles;
 
 namespace TerrarianBizzareAdventure.Stands
 {
-    public abstract class Stand : ModProjectile, IHasUnlocalizedName, IProjectileHasImmunityToTimeStop
+    public abstract class Stand : StandardProjectile, IHasUnlocalizedName, IProjectileHasImmunityToTimeStop
     {
         public const string
             ANIMATION_SUMMON = "SUMMON",
@@ -33,11 +34,6 @@ namespace TerrarianBizzareAdventure.Stands
             StandCombos = new List<StandCombo>();
         }
 
-        public virtual void AddCombos(List<StandCombo> combos)
-        {
-
-        }
-
 
         public override void SetStaticDefaults()
         {
@@ -52,6 +48,9 @@ namespace TerrarianBizzareAdventure.Stands
         }
 
 
+        public virtual void AddCombos(List<StandCombo> combos) { }
+
+
         public abstract void AddAnimations();
 
 
@@ -59,13 +58,15 @@ namespace TerrarianBizzareAdventure.Stands
         {
             projectile.timeLeft = 200;
 
+
             if(CurrentState != LastState)
             {
                 projectile.netUpdate = true;
-                projectile.netUpdate2 = true;
             }
 
+
             LastState = CurrentState;
+
 
             if (Main.dedServ)
                 return true;
@@ -73,14 +74,15 @@ namespace TerrarianBizzareAdventure.Stands
             if (TBAPlayer.Get(Owner).Stamina <= 0 && CurrentState == ANIMATION_IDLE)
                 CurrentState = ANIMATION_DESPAWN;
 
+
             if (!HasSetAnimations)
             {
                 AddAnimations();
 
                 if (Animations.Count >= 1)
                 {
-                    projectile.width = (int)Animations[CurrentState].FrameSize.X;
-                    projectile.height = (int)Animations[CurrentState].FrameSize.Y;
+                    Width = (int)Animations[CurrentState].FrameSize.X;
+                    Height = (int)Animations[CurrentState].FrameSize.Y;
                 }
 
                 HasSetAnimations = true;
@@ -102,16 +104,20 @@ namespace TerrarianBizzareAdventure.Stands
                 }
             }
 
+
             if (Owner.dead || !Owner.active)
                 KillStand();
 
+
             return true;
         }
+
 
         public override bool? CanCutTiles()
         {
             return false;
         }
+
 
         public override void SendExtraAI(BinaryWriter writer)
         {
@@ -126,6 +132,7 @@ namespace TerrarianBizzareAdventure.Stands
             IsFlipped = reader.ReadBoolean();
         }
 
+
         // Getting rid of vanilla drawing
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) => false;
 
@@ -136,6 +143,7 @@ namespace TerrarianBizzareAdventure.Stands
             // Stand shouldn't be drawn in 2 scenarios:
             // 1) We aren't a stand user, so we can't see stands
             // 2) Someone fucked shit up and forgot to fill Animations smh;
+
             if (!tbaPlayer.StandUser || Animations.Count <= 0)
                 return;
 
@@ -159,6 +167,7 @@ namespace TerrarianBizzareAdventure.Stands
 			
 			return base.PreKill(timeLeft);
 		}
+
 
 
         public bool IsNativelyImmuneToTimeStop() => true;
@@ -190,13 +199,14 @@ namespace TerrarianBizzareAdventure.Stands
         // Even if it gets past PreDraw somehow
         public sealed override string Texture => "TerrarianBizzareAdventure/Textures/EmptyPixel";
 
-        public Player Owner => Main.player[projectile.owner];
 
         public float Opacity { get; set; }
+
 
         public string CallSoundPath { get; set; }
 
         public string LastState { get; private set; }
+
 
         public List<StandCombo> StandCombos { get; private set; }
     }

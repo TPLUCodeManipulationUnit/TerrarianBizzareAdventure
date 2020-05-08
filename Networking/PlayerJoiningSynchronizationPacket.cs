@@ -1,12 +1,11 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Terraria;
 using Terraria.ID;
+using TerrarianBizzareAdventure.Players;
 using TerrarianBizzareAdventure.Stands;
-using WebmilioCommons.Networking.Attributes;
 using WebmilioCommons.Networking.Packets;
 
-namespace TerrarianBizzareAdventure.Players
+namespace TerrarianBizzareAdventure.Networking
 {
     public sealed class PlayerJoiningSynchronizationPacket : ModPlayerNetworkPacket<TBAPlayer>
     {

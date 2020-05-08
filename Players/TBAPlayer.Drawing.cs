@@ -6,6 +6,7 @@ using Terraria.DataStructures;
 using Terraria.ModLoader;
 using TerrarianBizzareAdventure.Drawing;
 using TerrarianBizzareAdventure.Enums;
+using TerrarianBizzareAdventure.Networking;
 using TerrarianBizzareAdventure.Stands;
 using WebmilioCommons.Extensions;
 

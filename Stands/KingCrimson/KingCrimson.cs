@@ -14,6 +14,9 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
 {
     public class KingCrimson : Stand
     {
+        private Vector2 _punchRushDirection;
+
+
         public KingCrimson() : base("howDoesItWork", "King Crimson")
         {
             CallSoundPath = "Sounds/KingCrimson/KC_Call";
@@ -21,7 +24,6 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
             KingRush = new StandPunchRush(ModContent.ProjectileType<KCRush>(), ModContent.ProjectileType<KCRushBack>());
         }
 
-        private Vector2 _punchRushDirection;
 
         public override void AddCombos(List<StandCombo> combos)
         {
@@ -104,6 +106,7 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
             Animations["CUT_IDLE"].SetNextAnimation(Animations["CUT_ATT"]);
             #endregion
         }
+
 
         public override void AI()
         {

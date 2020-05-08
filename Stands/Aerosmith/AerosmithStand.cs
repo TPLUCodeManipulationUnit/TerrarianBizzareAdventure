@@ -12,6 +12,9 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
 {
     public sealed class AerosmithStand : Stand
     {
+        private float _previousAngle, _currentAngle, _speed;
+
+
         public AerosmithStand() : base("aerosmith", "Aerosmith")
         {
             AuraColor = new Color(0f, 0.25f, 1f);
@@ -46,29 +49,32 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
             if (_previousAngle != Angle)
                 projectile.netUpdate = true;
 
+
             Owner.heldProj = projectile.whoAmI;
 
-            if(Vector2.Distance(projectile.Center, Owner.Center) >= 16 * 300)
-            {
+
+            if(Vector2.Distance(Center, Owner.Center) >= 16 * 300)
                 CurrentState = ANIMATION_DESPAWN;
-            }
 
             if (CurrentAnimation != null)
             {
-                projectile.width = (int)CurrentAnimation.FrameSize.X;
-
-                projectile.height = (int)CurrentAnimation.FrameSize.Y;
+                Width = (int)CurrentAnimation.FrameSize.X;
+                Height = (int)CurrentAnimation.FrameSize.Y;
             }
+
 
             if (!SetVel)
             {
                 if (Owner.direction == -1)
                     Angle = (float)MathHelper.Pi;
+
+
                 Opacity = 0f;
-                projectile.Center = Owner.Center - new Vector2(120 * Owner.direction, 24);
+                Center = Owner.Center - new Vector2(120 * Owner.direction, 24);
                 SetVel = true;
             }
             
+
             Speed = 8.0f;
 
             if (CurrentState == "TURN" && CurrentAnimation.CurrentFrame <= 8)
@@ -113,6 +119,7 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
                 CurrentState = ANIMATION_IDLE;
                 Angle += (float)MathHelper.Pi;
             }
+
 
             #region controls
 
@@ -171,13 +178,14 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
 
             #endregion
 
+
             if (BarrageTime > 0)
             {
                 BarrageTime--;
 
                 if (BarrageTime % 4 == 0)
                 {
-                    Vector2 position = projectile.Center;
+                    Vector2 position = Center;
                     Vector2 velocity = new Vector2(16, 0).RotatedBy(Angle);
                     int type = ModContent.ProjectileType<AerosmithBullet>();
                     int damage = 60;
@@ -206,7 +214,7 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
                 IsFlipped = projectile.velocity.X > 0;
             }
 
-            projectile.velocity = new Vector2(Speed, 0).RotatedBy(Angle);
+            Velocity = new Vector2(Speed, 0).RotatedBy(Angle);
         }
 
         public override void SendExtraAI(BinaryWriter writer)
@@ -227,27 +235,27 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
 
         public bool SetVel { get; set; }
 
-        private float _speed;
+
         public float Speed
         {
             get => _speed;
             set
             {
-                projectile.netUpdate = true;
                 _speed = value;
+                projectile.netUpdate = true;
             }
         }
 
-        private float _previousAngle;
-        private float _currentAngle;
+
         public float Angle 
         {
             get => _currentAngle;
             set
             {
                 _previousAngle = _currentAngle;
-                projectile.netUpdate = true;
                 _currentAngle = value;
+
+                projectile.netUpdate = true;
             }
         }
     }

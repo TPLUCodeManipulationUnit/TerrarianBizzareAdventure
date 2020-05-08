@@ -19,6 +19,7 @@ namespace TerrarianBizzareAdventure.World
                 TimeSkipManager.UpdateTimeSkip();
                 TimeStopManagement.MainOnOnTick();
             }
+
             base.PostDrawTiles();
         }
 
@@ -30,11 +31,12 @@ namespace TerrarianBizzareAdventure.World
                 TimeStopManagement.MainOnOnTick();
             }
 
+
             TBAPlayer plr = TimeStopManagement.TimeStopper as TBAPlayer;
 
             if (TimeStopManagement.TimeStoppedFor <= 78 && TimeStopManagement.TimeStoppedFor > 76)
             {
-                if (plr.Stand != null)
+                if (plr.StandUser)
                 {
 
                     if (plr.Stand is TheWorldStand)
@@ -49,6 +51,8 @@ namespace TerrarianBizzareAdventure.World
                     }
                 }
             }
+
+
             base.PreUpdate();
         }
 
