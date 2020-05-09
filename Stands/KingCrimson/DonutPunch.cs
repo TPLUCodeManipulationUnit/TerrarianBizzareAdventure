@@ -188,7 +188,7 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
         public sealed override string Texture => "TerrarianBizzareAdventure/Textures/EmptyPixel";
 
 
-        private Projectile ParentProjectile => Main.projectile[(int)AI1];
+        private Projectile ParentProjectile => Main.projectile[(int)AI0];
 
         public Entity DonutTarget { get; private set; }
 

@@ -64,6 +64,21 @@ namespace TerrarianBizzareAdventure.Stands
                 projectile.netUpdate = true;
             }
 
+            if(!ReverseOffset)
+            {
+                if (DrawOffset < 4.0f)
+                    DrawOffset += 0.1f;
+                else
+                    ReverseOffset = true;
+            }
+            else
+            {
+                if (DrawOffset > 0.0f)
+                    DrawOffset -= 0.1f;
+                else
+                    ReverseOffset = false;
+            }
+
 
             LastState = CurrentState;
 
@@ -149,6 +164,12 @@ namespace TerrarianBizzareAdventure.Stands
 
             SpriteEffects spriteEffects = IsFlipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
+
+            spriteBatch.Draw(Animations[CurrentState].SpriteSheet, projectile.Center + new Vector2(DrawOffset, 0) - Main.screenPosition, Animations[CurrentState].FrameRect, AuraColor * 0.25f * Opacity, projectile.rotation, Animations[CurrentState].DrawOrigin, 1f, spriteEffects, 1f);
+            spriteBatch.Draw(Animations[CurrentState].SpriteSheet, projectile.Center + new Vector2(-DrawOffset, 0) - Main.screenPosition, Animations[CurrentState].FrameRect, AuraColor * 0.25f * Opacity, projectile.rotation, Animations[CurrentState].DrawOrigin, 1f, spriteEffects, 1f);
+            spriteBatch.Draw(Animations[CurrentState].SpriteSheet, projectile.Center + new Vector2(0, DrawOffset) - Main.screenPosition, Animations[CurrentState].FrameRect, AuraColor * 0.25f * Opacity, projectile.rotation, Animations[CurrentState].DrawOrigin, 1f, spriteEffects, 1f);
+            spriteBatch.Draw(Animations[CurrentState].SpriteSheet, projectile.Center + new Vector2(0, -DrawOffset) - Main.screenPosition, Animations[CurrentState].FrameRect, AuraColor * 0.25f * Opacity, projectile.rotation, Animations[CurrentState].DrawOrigin, 1f, spriteEffects, 1f);
+
             spriteBatch.Draw(Animations[CurrentState].SpriteSheet, projectile.Center - Main.screenPosition, Animations[CurrentState].FrameRect, Color.White * Opacity, projectile.rotation, Animations[CurrentState].DrawOrigin, 1f, spriteEffects, 1f);
         }
 
@@ -207,6 +228,9 @@ namespace TerrarianBizzareAdventure.Stands
 
         public string LastState { get; private set; }
 
+        public float DrawOffset { get; private set; }
+
+        public bool ReverseOffset { get; private set; }
 
         public List<StandCombo> StandCombos { get; private set; }
     }

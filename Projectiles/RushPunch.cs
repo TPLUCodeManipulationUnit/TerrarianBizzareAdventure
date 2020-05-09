@@ -42,6 +42,11 @@ namespace TerrarianBizzareAdventure.Projectiles
             SpriteEffects spriteEffects = SpriteEffects.FlipHorizontally;
 
             Texture2D texture = ModContent.GetTexture(Texture);
+            spriteBatch.Draw(texture, projectile.Center + new Vector2(2, 0) - Main.screenPosition, new Rectangle(0, (int)(texture.Height * Frame), (int)texture.Width, (int)texture.Height / 2), Color.White * Opacity * 0.35f, projectile.velocity.ToRotation(), new Vector2(texture.Width / 2, texture.Height / 4), 1f, spriteEffects, 1f);
+            spriteBatch.Draw(texture, projectile.Center + new Vector2(-2, 0) - Main.screenPosition, new Rectangle(0, (int)(texture.Height * Frame), (int)texture.Width, (int)texture.Height / 2), Color.White * Opacity * 0.35f, projectile.velocity.ToRotation(), new Vector2(texture.Width / 2, texture.Height / 4), 1f, spriteEffects, 1f);
+            spriteBatch.Draw(texture, projectile.Center + new Vector2(0, 2) - Main.screenPosition, new Rectangle(0, (int)(texture.Height * Frame), (int)texture.Width, (int)texture.Height / 2), Color.White * Opacity * 0.35f, projectile.velocity.ToRotation(), new Vector2(texture.Width / 2, texture.Height / 4), 1f, spriteEffects, 1f);
+            spriteBatch.Draw(texture, projectile.Center + new Vector2(0, -2) - Main.screenPosition, new Rectangle(0, (int)(texture.Height * Frame), (int)texture.Width, (int)texture.Height / 2), Color.White * Opacity * 0.35f, projectile.velocity.ToRotation(), new Vector2(texture.Width / 2, texture.Height / 4), 1f, spriteEffects, 1f);
+
             spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle(0, (int)(texture.Height * Frame), (int)texture.Width, (int)texture.Height / 2), Color.White * Opacity, projectile.velocity.ToRotation(), new Vector2(texture.Width / 2, texture.Height / 4), 1f, spriteEffects, 1f);
         }
 
