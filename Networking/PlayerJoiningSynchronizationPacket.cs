@@ -9,18 +9,14 @@ namespace TerrarianBizzareAdventure.Networking
 {
     public sealed class PlayerJoiningSynchronizationPacket : ModPlayerNetworkPacket<TBAPlayer>
     {
-        public override bool Receive(BinaryReader reader, int fromWho)
+        public PlayerJoiningSynchronizationPacket()
         {
-            if (!IsResponse && Main.netMode == NetmodeID.MultiplayerClient)
-            {
-                IsResponse = true;
-                Send(Main.myPlayer, Player.whoAmI);
-            }
-
-            return true;
         }
 
-        public bool IsResponse { get; set; }
+        public PlayerJoiningSynchronizationPacket(TBAPlayer standUser) : base(standUser)
+        {
+        }
+
 
         public string StandName
         {

@@ -35,6 +35,7 @@ namespace TerrarianBizzareAdventure.Players
             }
         }
 
+
         public bool ASHover { get; set; }
 
         public bool ASAngleUp { get; set; }
