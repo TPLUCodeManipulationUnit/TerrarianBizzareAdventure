@@ -9,9 +9,12 @@ namespace TerrarianBizzareAdventure.Players
         public void ResetStaminaEffects()
         {
             var staminaDebuff = 0;
-            if (ActiveStandProjectileId != ACTIVE_STAND_PROJECTILE_INACTIVE_ID)
+
+
+            if (StandActive)
                 staminaDebuff -= 8 * Constants.TICKS_PER_SECOND;
 
+            
             StaminaRegenTicks++;
 
             if (StaminaRegenTicks >= StaminaRegenTickRate)

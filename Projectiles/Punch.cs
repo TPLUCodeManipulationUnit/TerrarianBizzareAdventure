@@ -1,12 +1,11 @@
 ﻿using Terraria;
 using Terraria.ModLoader;
+using WebmilioCommons.Projectiles;
 
 namespace TerrarianBizzareAdventure.Projectiles
 {
-    public class Punch : ModProjectile
+    public class Punch : StandardProjectile
     {
-        public sealed override string Texture => "TerrarianBizzareAdventure/Textures/EmptyPixel";
-
         public override void SetDefaults()
         {
             projectile.width = 32;
@@ -20,16 +19,16 @@ namespace TerrarianBizzareAdventure.Projectiles
             projectile.aiStyle = -1;
         }
 
+
         public override void AI()
         {
             if (projectile.timeLeft >= 4)
-            {
                 projectile.netUpdate = true;
-                projectile.netUpdate2 = true;
-            }
+            
 
             projectile.Center = ParentProjectile.Center + projectile.velocity;
         }
+
 
         public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
@@ -38,6 +37,9 @@ namespace TerrarianBizzareAdventure.Projectiles
             Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Punch" + Main.rand.Next(1, 5)).WithVolume(.2f));
         }
 
-        private Projectile ParentProjectile => Main.projectile[(int)projectile.ai[0]];
+
+        private Projectile ParentProjectile => Main.projectile[(int) AI0];
+
+        public sealed override string Texture => "TerrarianBizzareAdventure/Textures/EmptyPixel";
     }
 }

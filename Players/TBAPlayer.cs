@@ -17,6 +17,7 @@ using TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio;
 using TerrarianBizzareAdventure.Stands.TheWorld;
 using TerrarianBizzareAdventure.TimeStop;
 using TerrarianBizzareAdventure.UserInterfaces;
+using WebmilioCommons.Extensions;
 using WebmilioCommons.Networking;
 
 namespace TerrarianBizzareAdventure.Players
@@ -28,6 +29,9 @@ namespace TerrarianBizzareAdventure.Players
 
         public static TBAPlayer Get() => Get(Main.LocalPlayer);
         public static TBAPlayer Get(Player player) => player.GetModPlayer<TBAPlayer>();
+
+
+        private Stand _activeStandProjectile;
 
 
         public override void SetupStartInventory(IList<Item> items, bool mediumcoreDeath)
@@ -42,7 +46,7 @@ namespace TerrarianBizzareAdventure.Players
 
         public override void Initialize()
         {
-            ActiveStandProjectileId = ACTIVE_STAND_PROJECTILE_INACTIVE_ID;
+            _activeStandProjectile = default;
 
             AuraAnimationKey = (int)AuraAnimationType.None;
 
@@ -52,13 +56,6 @@ namespace TerrarianBizzareAdventure.Players
             UnlockedStands = new List<string>();
         }
 
-        public override bool CanSellItem(NPC vendor, Item[] shopInventory, Item item)
-        {
-            if (item.type == ModContent.ItemType<RewardStiletto>())
-                return false;
-
-            return base.CanSellItem(vendor, shopInventory, item);
-        }
 
         public override void PreUpdate()
         {
@@ -69,7 +66,6 @@ namespace TerrarianBizzareAdventure.Players
 
         public override void PostUpdate()
         {
-
             OnPostUpdate?.Invoke(this);
         }
 
@@ -128,8 +124,7 @@ namespace TerrarianBizzareAdventure.Players
 
         public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
         {
-            if (newPlayer)
-                new PlayerJoiningSynchronizationPacket(this).Send(fromWho, toWho);
+            new PlayerJoiningSynchronizationPacket(this).Send(fromWho, toWho);
         }
 
         public override void SendClientChanges(ModPlayer clientPlayer)
@@ -137,19 +132,13 @@ namespace TerrarianBizzareAdventure.Players
             TBAPlayer tPlayer = clientPlayer as TBAPlayer;
 
             if (tPlayer.Stand != Stand)
-            {
                 new PlayerJoiningSynchronizationPacket(this).Send();
-            }
 
-            if (tPlayer.ActiveStandProjectileId != ActiveStandProjectileId)
-            {
-                new StandProjectileIDPacket().Send();
-            }
+            if (tPlayer.ActiveStandProjectile != ActiveStandProjectile)
+                new ActiveStandChangedPacket().Send();
 
             if (tPlayer.AuraAnimationKey != AuraAnimationKey)
-            {
                 new AuraSyncPacket().Send();
-            }
         }
 
         public override void UpdateBiomeVisuals()
@@ -172,7 +161,7 @@ namespace TerrarianBizzareAdventure.Players
             //string text = VoiceRecognitionSystem.SuccesfulBoot ? "Successfully booted up Voice Recognition System;" : "Unsuccessful boot attempt at Voice Recognition System;";
             //Main.NewText(text + VoiceRecognitionSystem.FailReason, VoiceRecognitionSystem.SuccesfulBoot ? Color.Lime : Color.Red);
 
-            ActiveStandProjectileId = ACTIVE_STAND_PROJECTILE_INACTIVE_ID;
+            ActiveStandProjectile = null;
         }
 
         public override void ProcessTriggers(TriggersSet triggersSet)
@@ -183,9 +172,9 @@ namespace TerrarianBizzareAdventure.Players
 
             if (TBAInputs.SummonStand.JustPressed)
             {
-                if (ActiveStandProjectileId == -999) // Minimal value for a DAT in SHENZEN.IO :haha:
+                if (ActiveStandProjectile == null) // Minimal value for a DAT in SHENZEN.IO :haha:
                 {
-                    ActiveStandProjectileId = Projectile.NewProjectile(player.Center, Vector2.Zero, mod.ProjectileType(Stand.GetType().Name), 0, 0, player.whoAmI);
+                    ActiveStandProjectile = Main.projectile[Projectile.NewProjectile(player.Center, Vector2.Zero, mod.ProjectileType(Stand.GetType().Name), 0, 0, player.whoAmI)].modProjectile as Stand;
 
                     if (Stand.CallSoundPath != "")
                         Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, Stand.CallSoundPath));
@@ -194,9 +183,6 @@ namespace TerrarianBizzareAdventure.Players
 
             if (TBAInputs.OpenCollection.JustPressed)
                 UIManager.SCLayer.State.Visible = !UIManager.SCLayer.State.Visible;
-
-            if (ActiveStandProjectileId == ACTIVE_STAND_PROJECTILE_INACTIVE_ID)
-                return;
         }
 
         public override void PlayerDisconnect(Player player)
@@ -219,12 +205,29 @@ namespace TerrarianBizzareAdventure.Players
         }
 
 
+        public void KillStand() => ActiveStandProjectile = null;
+
+
         public Stand Stand { get; set; }
 
-        public int ActiveStandProjectileId { get; set; }
+        public Stand ActiveStandProjectile
+        {
+            get => _activeStandProjectile;
+            set
+            {
+                if (_activeStandProjectile != default && value != default && _activeStandProjectile.projectile.whoAmI == value.projectile.whoAmI)
+                    return;
+
+                _activeStandProjectile = value;
+
+                this.SendIfLocal<ActiveStandChangedPacket>();
+            }
+        }
 
 
         public bool StandUser => Stand != null;
+
+        public bool StandActive => ActiveStandProjectile != null;
 
 
         public int AttackDirection { get; set; }

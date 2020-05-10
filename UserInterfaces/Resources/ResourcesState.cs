@@ -19,7 +19,6 @@ namespace TerrarianBizzareAdventure.UserInterfaces
             Vector2 position = new Vector2(20, Main.screenHeight - 80);
             Rectangle barSize = new Rectangle((int)position.X, (int)position.Y, border.Width, border.Height);
 
-            bool hasNoActiveStand = mPlayer.ActiveStandProjectileId == -999;
 
             if (mPlayer.StandUser)
             {
@@ -72,18 +71,18 @@ namespace TerrarianBizzareAdventure.UserInterfaces
                     1f
                     );
 
-                if(mPlayer.IsDebugging)
-                spriteBatch.DrawString(
-                    Main.fontMouseText,
-                    "DEBUG",
-                    new Vector2(20, Main.screenHeight - 80) + new Vector2(16, -36),
-                    Color.Red,
-                    0,
-                    Vector2.Zero,
-                    1,
-                    SpriteEffects.None,
-                    1f
-                    );
+                if (mPlayer.IsDebugging)
+                    spriteBatch.DrawString(
+                        Main.fontMouseText,
+                        "DEBUG",
+                        new Vector2(20, Main.screenHeight - 80) + new Vector2(16, -36),
+                        Color.Red,
+                        0,
+                        Vector2.Zero,
+                        1,
+                        SpriteEffects.None,
+                        1f
+                        );
             }
         }
     }

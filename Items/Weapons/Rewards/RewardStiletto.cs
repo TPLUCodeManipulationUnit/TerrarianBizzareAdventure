@@ -5,10 +5,12 @@ using Terraria.ModLoader;
 using TerrarianBizzareAdventure.Players;
 using TerrarianBizzareAdventure.Stands;
 using TerrarianBizzareAdventure.Helpers;
+using WebmilioCommons.Items;
+using WebmilioCommons.Players;
 
 namespace TerrarianBizzareAdventure.Items.Weapons.Rewards
 {
-    public class RewardStiletto : TBAItem
+    public class RewardStiletto : TBAItem, ICanBeSold
     {
         public RewardStiletto() : base("☆Stiletto | Marble Fade", "Welcome to the Knife Gang", new Vector2(40, 40), 0, ItemRarityID.Expert)
         {
@@ -39,5 +41,7 @@ namespace TerrarianBizzareAdventure.Items.Weapons.Rewards
         }
 
         public override bool CanUseItem(Player player) => TBAPlayer.Get(player).KnifeGangMember;
+
+        public bool CanBeSold(WCPlayer wcPlayer, NPC vendor, Item[] shopInventory) => false;
     }
 }

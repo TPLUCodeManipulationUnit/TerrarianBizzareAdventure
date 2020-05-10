@@ -52,11 +52,10 @@ namespace TerrarianBizzareAdventure.Players
                 AuraAnimation = AuraAnimations[AuraAnimationKey];
             }
 
-            if (ActiveStandProjectileId != ACTIVE_STAND_PROJECTILE_INACTIVE_ID)
+            if (StandActive)
             {
                 if (Opacity < 0.7f)
                     Opacity += 0.035f;
-
             }
             else
             {
@@ -64,10 +63,7 @@ namespace TerrarianBizzareAdventure.Players
                     Opacity -= 0.035f;
             }
 
-            if (AuraAnimation != null)
-            {
-                AuraAnimation.Update();
-            }
+            AuraAnimation?.Update();
         }
 
         public void FillAnimations()
@@ -112,27 +108,26 @@ namespace TerrarianBizzareAdventure.Players
 
             Player drawPlayer = drawInfo.drawPlayer;
 
-            TBAPlayer tPlayer = Get(drawPlayer);
+            TBAPlayer standUser = Get(drawPlayer);
 
-            if (drawPlayer.dead || tPlayer.AuraAnimation == null) // If the player can't use the item, don't draw it.
+            if (drawPlayer.dead || standUser.AuraAnimation == null) // If the player can't use the item, don't draw it.
                 return;
 
-            Color drawColor = tPlayer.Stand == null ? Color.White : tPlayer.Stand.AuraColor;
+            Color drawColor = standUser.Stand == null ? Color.White : standUser.Stand.AuraColor;
 
 
-            if (tPlayer.ActiveStandProjectileId != ACTIVE_STAND_PROJECTILE_INACTIVE_ID)
-                if (Main.projectile[tPlayer.ActiveStandProjectileId].modProjectile is Stand stand)
-                    drawColor = stand.AuraColor;
+            if (standUser.StandActive)
+                drawColor = standUser.ActiveStandProjectile.AuraColor;
 
 
             DrawData auraData = new DrawData
             (
-                TBAMod.Instance.GetTexture(tPlayer.AuraAnimation.SpritePath),
+                TBAMod.Instance.GetTexture(standUser.AuraAnimation.SpritePath),
                 new Vector2((int)drawPlayer.MountedCenter.X, (int)drawPlayer.MountedCenter.Y + drawPlayer.gfxOffY - 4) - Main.screenPosition,
-                tPlayer.AuraAnimation.FrameRect,
-                drawColor * tPlayer.Opacity,
+                standUser.AuraAnimation.FrameRect,
+                drawColor * standUser.Opacity,
                 0,
-                tPlayer.AuraAnimation.DrawOrigin,
+                standUser.AuraAnimation.DrawOrigin,
                 1f,
                 drawPlayer.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally,
                 1
@@ -140,12 +135,12 @@ namespace TerrarianBizzareAdventure.Players
 
             DrawData auraData2ElectricBoogaloo = new DrawData
             (
-                TBAMod.Instance.GetTexture(tPlayer.AuraAnimation.SpritePath),
+                TBAMod.Instance.GetTexture(standUser.AuraAnimation.SpritePath),
                 new Vector2((int)drawPlayer.MountedCenter.X, (int)drawPlayer.MountedCenter.Y + ((drawPlayer.gfxOffY - 6) * 1.2f)) - Main.screenPosition,
-                tPlayer.AuraAnimation.FrameRect,
-                drawColor * tPlayer.Opacity * 0.5f,
+                standUser.AuraAnimation.FrameRect,
+                drawColor * standUser.Opacity * 0.5f,
                 0,
-                tPlayer.AuraAnimation.DrawOrigin,
+                standUser.AuraAnimation.DrawOrigin,
                 1.1f,
                 drawPlayer.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally,
                 1

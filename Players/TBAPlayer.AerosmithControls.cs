@@ -7,7 +7,7 @@ namespace TerrarianBizzareAdventure.Players
     {
         public void SetAerosmithControls()
         {
-            if (Stand is AerosmithStand && ActiveStandProjectileId != ACTIVE_STAND_PROJECTILE_INACTIVE_ID)
+            if (Stand is AerosmithStand && StandActive)
             {
                 ASHover = player.controlJump;
 

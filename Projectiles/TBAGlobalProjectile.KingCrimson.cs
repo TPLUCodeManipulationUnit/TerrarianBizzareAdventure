@@ -11,6 +11,8 @@ namespace TerrarianBizzareAdventure.Projectiles
         public void PreTimeSkipAI(Projectile projectile)
         {
             var IsTimeSkipped = TimeSkipManager.IsTimeSkipped && projectile.hostile;
+
+
             if (IsTimeSkipped)
             {
                 if (TimeSkipManager.TimeSkippedFor % 4 == 0)
@@ -22,8 +24,10 @@ namespace TerrarianBizzareAdventure.Projectiles
                 }
             }
 
+
             if (TimeSkipStates.Count > 12)
                 TimeSkipStates.RemoveAt(0);
+
 
             if (IsTimeSkipped && TimeSkipManager.TimeSkippedFor <= 2 && TimeSkipStates.Count > 0)
             {
@@ -33,15 +37,17 @@ namespace TerrarianBizzareAdventure.Projectiles
                 projectile.direction = TimeSkipStates[0].Direction;
             }
         }
+
+
         public void PostTimeSkipDraw(Projectile projectile, SpriteBatch spriteBatch, Color lightColor)
         {
-            var IsTimeSkipped = TimeSkipManager.IsTimeSkipped && projectile.hostile;
+            var timeSkipped = TimeSkipManager.IsTimeSkipped && projectile.hostile;
 
-            if (IsTimeSkipped)
+
+            if (timeSkipped)
+            {
                 lightColor = Color.Red;
 
-            if (IsTimeSkipped)
-            {
                 Texture2D texture = Main.projectileTexture[projectile.type];
                 int frameCount = Main.projFrames[projectile.type];
                 int frameHeight = texture.Height / frameCount;

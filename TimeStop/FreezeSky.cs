@@ -9,8 +9,7 @@ namespace TerrarianBizzareAdventure.TimeStop
 {
 	public class FreezeSky : CustomSky
 	{
-		private Random _random = new Random();
-		private bool _isActive;
+        private bool _isActive;
 		public static Color color;
 
 		public override void OnLoad()

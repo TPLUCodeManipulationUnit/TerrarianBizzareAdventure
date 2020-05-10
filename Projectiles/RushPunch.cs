@@ -4,10 +4,11 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ModLoader;
 using TerrarianBizzareAdventure.Players;
+using WebmilioCommons.Projectiles;
 
 namespace TerrarianBizzareAdventure.Projectiles
 {
-    public abstract class RushPunch : ModProjectile
+    public abstract class RushPunch : StandardProjectile
     {
         public override void SetDefaults()
         {
@@ -23,7 +24,7 @@ namespace TerrarianBizzareAdventure.Projectiles
 
             Opacity = 0.7f;
 
-            Frame = -1f;
+            SFrame = -1f;
         }
 
 
@@ -36,34 +37,37 @@ namespace TerrarianBizzareAdventure.Projectiles
         {
             TBAPlayer tbaPlayer = TBAPlayer.Get(Main.player[Main.myPlayer]);
 
+            
             if (!tbaPlayer.StandUser)
                 return;
 
+            
             SpriteEffects spriteEffects = SpriteEffects.FlipHorizontally;
 
-            Texture2D texture = ModContent.GetTexture(Texture);
-            spriteBatch.Draw(texture, projectile.Center + new Vector2(2, 0) - Main.screenPosition, new Rectangle(0, (int)(texture.Height * Frame), (int)texture.Width, (int)texture.Height / 2), Color.White * Opacity * 0.35f, projectile.velocity.ToRotation(), new Vector2(texture.Width / 2, texture.Height / 4), 1f, spriteEffects, 1f);
-            spriteBatch.Draw(texture, projectile.Center + new Vector2(-2, 0) - Main.screenPosition, new Rectangle(0, (int)(texture.Height * Frame), (int)texture.Width, (int)texture.Height / 2), Color.White * Opacity * 0.35f, projectile.velocity.ToRotation(), new Vector2(texture.Width / 2, texture.Height / 4), 1f, spriteEffects, 1f);
-            spriteBatch.Draw(texture, projectile.Center + new Vector2(0, 2) - Main.screenPosition, new Rectangle(0, (int)(texture.Height * Frame), (int)texture.Width, (int)texture.Height / 2), Color.White * Opacity * 0.35f, projectile.velocity.ToRotation(), new Vector2(texture.Width / 2, texture.Height / 4), 1f, spriteEffects, 1f);
-            spriteBatch.Draw(texture, projectile.Center + new Vector2(0, -2) - Main.screenPosition, new Rectangle(0, (int)(texture.Height * Frame), (int)texture.Width, (int)texture.Height / 2), Color.White * Opacity * 0.35f, projectile.velocity.ToRotation(), new Vector2(texture.Width / 2, texture.Height / 4), 1f, spriteEffects, 1f);
 
-            spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle(0, (int)(texture.Height * Frame), (int)texture.Width, (int)texture.Height / 2), Color.White * Opacity, projectile.velocity.ToRotation(), new Vector2(texture.Width / 2, texture.Height / 4), 1f, spriteEffects, 1f);
+            Texture2D texture = ModContent.GetTexture(Texture);
+            
+            spriteBatch.Draw(texture, projectile.Center + new Vector2(2, 0) - Main.screenPosition, new Rectangle(0, (int)(texture.Height * SFrame), (int)texture.Width, (int)texture.Height / 2), Color.White * Opacity * 0.35f, projectile.velocity.ToRotation(), new Vector2(texture.Width / 2, texture.Height / 4), 1f, spriteEffects, 1f);
+            spriteBatch.Draw(texture, projectile.Center + new Vector2(-2, 0) - Main.screenPosition, new Rectangle(0, (int)(texture.Height * SFrame), (int)texture.Width, (int)texture.Height / 2), Color.White * Opacity * 0.35f, projectile.velocity.ToRotation(), new Vector2(texture.Width / 2, texture.Height / 4), 1f, spriteEffects, 1f);
+            spriteBatch.Draw(texture, projectile.Center + new Vector2(0, 2) - Main.screenPosition, new Rectangle(0, (int)(texture.Height * SFrame), (int)texture.Width, (int)texture.Height / 2), Color.White * Opacity * 0.35f, projectile.velocity.ToRotation(), new Vector2(texture.Width / 2, texture.Height / 4), 1f, spriteEffects, 1f);
+            spriteBatch.Draw(texture, projectile.Center + new Vector2(0, -2) - Main.screenPosition, new Rectangle(0, (int)(texture.Height * SFrame), (int)texture.Width, (int)texture.Height / 2), Color.White * Opacity * 0.35f, projectile.velocity.ToRotation(), new Vector2(texture.Width / 2, texture.Height / 4), 1f, spriteEffects, 1f);
+
+            spriteBatch.Draw(texture, projectile.Center - Main.screenPosition, new Rectangle(0, (int)(texture.Height * SFrame), (int)texture.Width, (int)texture.Height / 2), Color.White * Opacity, projectile.velocity.ToRotation(), new Vector2(texture.Width / 2, texture.Height / 4), 1f, spriteEffects, 1f);
         }
 
 
         public override void AI()
         {
             if (projectile.timeLeft >= 11)
-            {
                 projectile.netUpdate = true;
-                projectile.netUpdate2 = true;
-            }
 
-            if(Frame == -1)
-                Frame = Main.rand.NextBool() ? 0f : 0.5f;
+
+            if(SFrame == -1)
+                SFrame = Main.rand.NextBool() ? 0f : 0.5f;
 
             if(SpeedMultiplier < 3f)
-            SpeedMultiplier += 0.5f;
+                SpeedMultiplier += 0.5f;
+
 
             Opacity -= SpeedMultiplier >= 3.0f ? 0.1f : 0.01f;
 
@@ -84,6 +88,7 @@ namespace TerrarianBizzareAdventure.Projectiles
             target.immune[projectile.owner] = 4;
         }
 
+
         public override void SendExtraAI(BinaryWriter writer)
         {
             writer.Write(SpeedMultiplier);
@@ -101,6 +106,7 @@ namespace TerrarianBizzareAdventure.Projectiles
             Offset = new Vector2(reader.ReadSingle(), reader.ReadSingle());
         }
 
+
         public float SpeedMultiplier { get; private set; }
 
         public int ParentProjectile { get; set; }
@@ -111,7 +117,7 @@ namespace TerrarianBizzareAdventure.Projectiles
 
         public float Opacity { get; private set; }
 
-        public float Frame { get; private set; }
+        public float SFrame { get; private set; }
 
         public override string Texture => "TerrarianBizzareAdventure/Textures/EmptyPixel";
     }

@@ -39,13 +39,13 @@ namespace TerrarianBizzareAdventure.Items.Tools
                 Main.NewText("Whoops! It looks like you forgot to setup your hotkeys! Go to Settings -> Controls and scroll down. Bind all hotkeys from this mod & try again");
             }
 
-                if (!tbaPlayer.UnlockedStands.Contains(stand.UnlocalizedName))
+            if (!tbaPlayer.UnlockedStands.Contains(stand.UnlocalizedName))
                 tbaPlayer.UnlockedStands.Add(stand.UnlocalizedName);
 
             return true;
         }
 
-        public override bool CanUseItem(Player player) => TBAPlayer.Get(player).ActiveStandProjectileId == TBAPlayer.ACTIVE_STAND_PROJECTILE_INACTIVE_ID;
+        public override bool CanUseItem(Player player) => !TBAPlayer.Get(player).StandUser;
 
         public override void AddRecipes()
         {

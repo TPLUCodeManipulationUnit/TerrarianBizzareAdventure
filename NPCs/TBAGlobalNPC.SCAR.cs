@@ -14,14 +14,15 @@ namespace TerrarianBizzareAdventure.NPCs
         {
             if (Main.LocalPlayer.whoAmI == Main.myPlayer)
             {
-                TBAPlayer tPlayer = TBAPlayer.Get(Main.LocalPlayer);
-                if (tPlayer.Stand is SREKTStand && tPlayer.ActiveStandProjectileId != TBAPlayer.ACTIVE_STAND_PROJECTILE_INACTIVE_ID)
+                TBAPlayer standUser = TBAPlayer.Get(Main.LocalPlayer);
+
+
+                if (standUser.Stand is SREKTStand && standUser.StandActive)
                 {
                     int maxHeight = (npc.life * npc.height) / npc.lifeMax;
 
-                    SREKTStand srekt = Main.projectile[tPlayer.ActiveStandProjectileId].modProjectile as SREKTStand;
 
-                    if (srekt != null && srekt.Wallhack)
+                    if (standUser.ActiveStandProjectile is SREKTStand stand && stand.Wallhack)
                     {
 
                         DrawHelpers.DrawBorderedRectangle(npc.position - Main.screenPosition - new Vector2(12, maxHeight - npc.height), 10, maxHeight, Color.Lime, Color.Green, spriteBatch);

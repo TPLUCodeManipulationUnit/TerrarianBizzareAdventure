@@ -10,23 +10,22 @@ namespace TerrarianBizzareAdventure.Players
     {
         public void ModifySCARLayers()
         {
-            if (Stand is SREKTStand && ActiveStandProjectileId != ACTIVE_STAND_PROJECTILE_INACTIVE_ID)
+            if (Stand is SREKTStand && StandActive)
             {
-                if(player.controlLeft || player.controlRight)
+                if (player.controlLeft || player.controlRight)
                     player.legFrame = new Rectangle(0, 56 * 9, player.bodyFrame.Width, player.bodyFrame.Height);
                 else
                     player.legFrame = new Rectangle(0, 56 * 6, player.bodyFrame.Width, player.bodyFrame.Height);
 
-                Stand tryGetSCAR = Main.projectile[ActiveStandProjectileId].modProjectile as SREKTStand;
 
-                if(tryGetSCAR != null)
+                if (Stand is SREKTStand stand)
                 {
-                    Projectile SCAR = tryGetSCAR.projectile;
+                    Projectile scar = stand.projectile;
 
-                    if(SCAR.velocity.SafeNormalize(-Vector2.UnitY).Y > 0.5)
+                    if (scar.velocity.SafeNormalize(-Vector2.UnitY).Y > 0.5)
                         player.bodyFrame = new Rectangle(0, 56 * 4, player.bodyFrame.Width, player.bodyFrame.Height);
 
-                    else if (SCAR.velocity.SafeNormalize(-Vector2.UnitY).Y < -0.5)
+                    else if (scar.velocity.SafeNormalize(-Vector2.UnitY).Y < -0.5)
                         player.bodyFrame = new Rectangle(0, 56 * 2, player.bodyFrame.Width, player.bodyFrame.Height);
 
                     else

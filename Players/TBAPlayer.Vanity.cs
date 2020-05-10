@@ -15,7 +15,7 @@ namespace TerrarianBizzareAdventure.Players
         public override void FrameEffects()
         {
             if (Stand is KingCrimson
-                && ActiveStandProjectileId != ACTIVE_STAND_PROJECTILE_INACTIVE_ID
+                && StandActive
                 && player.head == mod.GetEquipSlot("VinegarHead", EquipType.Head)
                 && player.body == mod.GetEquipSlot("VinegarShirt", EquipType.Body)
                 && player.legs == mod.GetEquipSlot("VinegarPants", EquipType.Legs))

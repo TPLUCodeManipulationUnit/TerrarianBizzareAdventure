@@ -177,14 +177,14 @@ namespace TerrarianBizzareAdventure.Stands
         public virtual void KillStand()
         {
             projectile.Kill();
-            TBAPlayer.Get(Owner).ActiveStandProjectileId = TBAPlayer.ACTIVE_STAND_PROJECTILE_INACTIVE_ID;
+            TBAPlayer.Get(Owner).ActiveStandProjectile = null;
 
             Animations.Clear();
         }
 		
 		public override bool PreKill(int timeLeft)
 		{
-            TBAPlayer.Get(Owner).ActiveStandProjectileId = TBAPlayer.ACTIVE_STAND_PROJECTILE_INACTIVE_ID;
+            TBAPlayer.Get(Owner).KillStand();
 			
 			return base.PreKill(timeLeft);
 		}

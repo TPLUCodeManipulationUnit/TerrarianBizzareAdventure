@@ -38,9 +38,11 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
         {
             base.AI();
 
+
             Opacity = 1f;
             projectile.Center = Owner.Center + new Vector2(34 * Owner.direction, -10 + Owner.gfxOffY);
             IsFlipped = Owner.direction == 1;
+
 
             if (CurrentState == ANIMATION_SUMMON)
             {
@@ -57,9 +59,11 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
                 }
             }
 
+
             projectile.timeLeft = 200;
 
-            if (Owner == Main.LocalPlayer)
+
+            if (Owner.IsLocalPlayer())
             {
                 if (TBAInputs.SummonStand.JustPressed && CurrentState == ANIMATION_IDLE)
                     CurrentState = ANIMATION_DESPAWN;
@@ -82,6 +86,7 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
                     InstantEnvironment?.Selected?.Stop();
             }
 
+
             if (CurrentState == ANIMATION_ERROR && _errorLoopCount < ERROR_LOOP_COUNT)
             {
                 if (CurrentAnimation.Finished)
@@ -97,6 +102,7 @@ namespace TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio
                     CurrentAnimation.ResetAnimation();
                 }
             }
+
 
             if (CurrentState == ANIMATION_DESPAWN)
             {

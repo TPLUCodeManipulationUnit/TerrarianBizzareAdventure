@@ -19,6 +19,7 @@ namespace TerrarianBizzareAdventure.Helpers
 
         private static readonly List<Donator> _activeDonators = new List<Donator>()
         {
+            TheSilverGhost
         };
 
 
@@ -101,11 +102,13 @@ namespace TerrarianBizzareAdventure.Helpers
         public static Donator CurrentDonator { get; private set; }
         public static bool IsDonator { get; private set; }
 
+
         #region Developers
 
         public static Developer Webmilio => new Developer(76561198046878487, "webmilio", 247893661990387713);
 
         #endregion
+
 
         #region Donators
 
@@ -113,11 +116,11 @@ namespace TerrarianBizzareAdventure.Helpers
 
         #endregion
 
+
         #region Knife Gang members
 
         public static List<KnifeGang> KnifeGangMembers
-            => new List<KnifeGang>
-            ()
+            => new List<KnifeGang>()
             {
                 new KnifeGang(76561198242290004, "Belarhos", 182295149685112832),
                 new KnifeGang(76561198213553913, "Phobostar", 297422963500908544),

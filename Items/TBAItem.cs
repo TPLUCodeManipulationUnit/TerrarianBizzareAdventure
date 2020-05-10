@@ -1,46 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria.ID;
 using Terraria.ModLoader;
+using WebmilioCommons.Items.Standard;
 
 namespace TerrarianBizzareAdventure.Items
 {
-    public abstract class TBAItem : ModItem
+    public abstract class TBAItem : StandardItem
     {
-        protected TBAItem(string name, string tooltip, Vector2 size, int value = 0, int rare = ItemRarityID.White)
+        protected TBAItem(string name, string tooltip, Vector2 size, int value = 0, int rare = ItemRarityID.White) : base(name, tooltip, (int) size.X, (int) size.Y, value: value, rarity: rare)
         {
-            ItemName = name;
-            ItemTooltip = tooltip;
-            Size = size;
-
-            Value = value;
-            Rarity = rare;
         }
-
-
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault(ItemName);
-            Tooltip.SetDefault(ItemTooltip);
-        }
-
-        public override void SetDefaults()
-        {
-            item.width = (int)Size.X;
-            item.height = (int)Size.Y;
-
-            item.value = Value;
-            item.rare = Rarity;
-        }
-
-
-        private int Rarity { get; }
-
-        private string ItemName { get; }
-
-        private string ItemTooltip { get; }
-
-        private Vector2 Size { get; }
-
-        private int Value { get; }
     }
 }
