@@ -48,7 +48,7 @@ namespace TerrarianBizzareAdventure.Players
         {
             _activeStandProjectile = default;
 
-            AuraAnimationKey = (int)AuraAnimationType.None;
+            //AuraAnimationKey = (int)AuraAnimationType.None;
 
             MaxStamina = 100;
             Stamina = MaxStamina;

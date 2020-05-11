@@ -18,7 +18,7 @@ namespace TerrarianBizzareAdventure.Players
                     player.legFrame = new Rectangle(0, 56 * 6, player.bodyFrame.Width, player.bodyFrame.Height);
 
 
-                if (Stand is SREKTStand stand)
+                if (StandActive && ActiveStandProjectile is SREKTStand stand)
                 {
                     Projectile scar = stand.projectile;
 
