@@ -9,7 +9,7 @@ namespace TerrarianBizzareAdventure.Players
     {
         public override void ModifyScreenPosition()
         {
-            if(Stand is AerosmithStand stand && StandActive)
+            if(StandActive && ActiveStandProjectile is AerosmithStand stand)
             {
                 if(stand.CurrentState != "SUMMON")
                     Main.screenPosition = stand.Center - new Vector2(Main.screenWidth, Main.screenHeight) * 0.5f;

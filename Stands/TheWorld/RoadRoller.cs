@@ -56,6 +56,9 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
             if (HasNoTarget && projectile.velocity.Y < 16f)
                 projectile.velocity.Y += 0.18f;
 
+            if (!HasTouchedGround)
+                projectile.timeLeft = 200;
+
 
             projectile.velocity = Collision.TileCollision(projectile.position, projectile.velocity, projectile.width, projectile.height);
 

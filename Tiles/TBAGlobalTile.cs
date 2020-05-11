@@ -15,9 +15,10 @@ namespace TerrarianBizzareAdventure.Tiles
         {
             if(ShaderEnabled && TimeSkipManager.IsTimeSkipped)
             {
-                DrawHelpers.StartShader(spriteBatch);
-
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.BackgroundViewMatrix.EffectMatrix);
                 TimeSkipManager.TwilightShader.CurrentTechnique.Passes[31].Apply();
+
                 return true;
             }
 
@@ -34,7 +35,8 @@ namespace TerrarianBizzareAdventure.Tiles
         {
             if (ShaderEnabled && TimeSkipManager.IsTimeSkipped)
             {
-                DrawHelpers.StartShader(spriteBatch);
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.BackgroundViewMatrix.EffectMatrix);
 
                 TimeSkipManager.TwilightShader.CurrentTechnique.Passes[31].Apply();
                 return true;

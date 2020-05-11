@@ -90,11 +90,9 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
 
             projectile.timeLeft = 200;
 
-            Vector2 lerpPos = Vector2.Zero;
-
             int xOffset = CurrentState.Contains("PUNCH") || CurrentState.Contains("RUSH") ?  34 : -16;
 
-            lerpPos = Owner.Center + new Vector2(xOffset * Owner.direction, -24 + Owner.gfxOffY);
+            Vector2 lerpPos = Owner.Center + new Vector2(xOffset * Owner.direction, -24 + Owner.gfxOffY);
 
             if (CurrentState.Contains("PUNCH") || CurrentState == "SLAM")
                 Owner.heldProj = projectile.whoAmI;
@@ -317,6 +315,7 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
 
             writer.Write(RoadRollerID);
             writer.Write(BeganAscending);
+            writer.Write(RushTimer);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader)
@@ -325,6 +324,7 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
 
             RoadRollerID = reader.ReadInt32();
             BeganAscending = reader.ReadBoolean();
+            RushTimer = reader.ReadInt32();
         }
 
 

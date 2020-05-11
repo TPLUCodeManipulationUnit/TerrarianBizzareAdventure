@@ -17,7 +17,7 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
 
         public AerosmithStand() : base("aerosmith", "Aerosmith")
         {
-            AuraColor = new Color(0f, 0.25f, 1f);
+            AuraColor = Color.Cyan;
         }
 
         public override void AddAnimations()

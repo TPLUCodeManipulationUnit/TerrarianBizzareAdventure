@@ -378,6 +378,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
             base.SendExtraAI(writer);
 
             writer.Write(IsTaunting);
+            writer.Write(RushTimer);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader)
@@ -385,6 +386,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
             base.ReceiveExtraAI(reader);
 
             IsTaunting = reader.ReadBoolean();
+            RushTimer = reader.ReadInt32();
         }
 
 

@@ -308,6 +308,7 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
             base.SendExtraAI(writer);
 
             writer.Write(OwnerCtrlUse);
+            writer.Write(RushTimer);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader)
@@ -315,6 +316,7 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
             base.ReceiveExtraAI(reader);
 
             OwnerCtrlUse = reader.ReadBoolean();
+            RushTimer = reader.ReadInt32();
         }
 
         public void EraseTime()
