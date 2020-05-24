@@ -36,7 +36,7 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
 
         public override void AddAnimations()
         {
-            string path = "Stands/TheWorld/";
+            string path = "Stands/TheWorld/TheWorld";
 
             Animations.Add(ANIMATION_SUMMON, new SpriteAnimation(mod.GetTexture(path + "Spawn"), 7, 5));
 
@@ -46,14 +46,14 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
             Animations.Add(ANIMATION_DESPAWN, new SpriteAnimation(mod.GetTexture(path + "Spawn"), 7, 5, false, null, true));
             Animations[ANIMATION_DESPAWN].ReversePlayback = true;
 
-            Animations.Add("PUNCH_RD", new SpriteAnimation(mod.GetTexture(path + "PunchDown"), 4, 3));
-            Animations.Add("PUNCH_LD", new SpriteAnimation(mod.GetTexture(path + "PunchDownAlt"), 4, 3));
+            Animations.Add("PUNCH_RD", new SpriteAnimation(mod.GetTexture(path + "PunchDown"), 7, 3));
+            Animations.Add("PUNCH_LD", new SpriteAnimation(mod.GetTexture(path + "PunchDownAlt"), 8, 3));
 
-            Animations.Add("PUNCH_RU", new SpriteAnimation(mod.GetTexture(path + "PunchUp"), 4, 3));
-            Animations.Add("PUNCH_LU", new SpriteAnimation(mod.GetTexture(path + "PunchUpAlt"), 4, 3));
+            Animations.Add("PUNCH_RU", new SpriteAnimation(mod.GetTexture(path + "PunchUp"), 8, 3));
+            Animations.Add("PUNCH_LU", new SpriteAnimation(mod.GetTexture(path + "PunchUpAlt"), 8, 3));
 
-            Animations.Add("PUNCH_R", new SpriteAnimation(mod.GetTexture(path + "PunchMiddle"), 4, 3));
-            Animations.Add("PUNCH_L", new SpriteAnimation(mod.GetTexture(path + "PunchMiddleAlt"), 4, 3));
+            Animations.Add("PUNCH_R", new SpriteAnimation(mod.GetTexture(path + "PunchMiddle"), 7, 3));
+            Animations.Add("PUNCH_L", new SpriteAnimation(mod.GetTexture(path + "PunchMiddleAlt"), 8, 3));
 
             Animations["PUNCH_R"].SetNextAnimation(Animations[ANIMATION_IDLE]);
             Animations["PUNCH_L"].SetNextAnimation(Animations[ANIMATION_IDLE]);
@@ -63,11 +63,11 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
             Animations["PUNCH_LU"].SetNextAnimation(Animations[ANIMATION_IDLE]);
 
 
-            Animations.Add("RUSH_UP", new SpriteAnimation(mod.GetTexture(path + "TWRushUp"), 4, 4));
-            Animations.Add("RUSH_DOWN", new SpriteAnimation(mod.GetTexture(path + "TWRushDown"), 4, 4));
-            Animations.Add("RUSH_MID", new SpriteAnimation(mod.GetTexture(path + "TWRushMiddle"), 4, 4));
+            Animations.Add("RUSH_UP", new SpriteAnimation(mod.GetTexture(path + "RushUp"), 4, 4));
+            Animations.Add("RUSH_DOWN", new SpriteAnimation(mod.GetTexture(path + "RushDown"), 4, 4));
+            Animations.Add("RUSH_MID", new SpriteAnimation(mod.GetTexture(path + "RushMiddle"), 4, 4));
 
-            Animations.Add("SLAM", new SpriteAnimation(mod.GetTexture(path + "TWSlamDunk"), 2, 5, true));
+            Animations.Add("SLAM", new SpriteAnimation(mod.GetTexture(path + "SlamDunk"), 2, 5, true));
 
             Animations[ANIMATION_SUMMON].SetNextAnimation(Animations[ANIMATION_IDLE]);
         }
@@ -89,7 +89,12 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
             IsFlipped = Owner.direction == 1;
 
             projectile.timeLeft = 200;
-
+			
+			if(!Main.dedServ)
+			{
+				projectile.width = (int)CurrentAnimation.FrameSize.X;
+				projectile.height = (int)CurrentAnimation.FrameSize.Y;
+			}
             int xOffset = CurrentState.Contains("PUNCH") || CurrentState.Contains("RUSH") ?  34 : -16;
 
             Vector2 lerpPos = Owner.Center + new Vector2(xOffset * Owner.direction, -24 + Owner.gfxOffY);
