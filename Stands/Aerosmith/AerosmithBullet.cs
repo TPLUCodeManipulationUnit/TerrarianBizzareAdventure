@@ -36,6 +36,7 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
 
             Texture2D texture = Main.projectileTexture[projectile.type];
             Vector2 position = Center - Main.screenPosition;
+
             float rotation = Velocity.ToRotation() + MathHelper.Pi / 2;
             float opacity = TimeLeft > 116 ? 0f : 1f;
 

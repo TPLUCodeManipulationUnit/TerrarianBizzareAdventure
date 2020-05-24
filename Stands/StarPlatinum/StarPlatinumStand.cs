@@ -105,7 +105,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
         {
             base.AI();
 
-            projectile.penetrate = -1;
+            Penetrate = -1;
             projectile.friendly = true;
 
             if (Animations.Count <= 0)
@@ -138,7 +138,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
             }
             #endregion
 
-            projectile.timeLeft = 200;
+            TimeLeft = 200;
 
             // Runs on clients only
             if (Owner.whoAmI == Main.myPlayer)
@@ -310,7 +310,6 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                 SetOwnerDirection();
 
                 PunchCounter++;
-
                 PunchCounterReset = 26;
 
                 IsPunching = true;
@@ -334,7 +333,6 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                     CurrentState = "RUSH_MIDDLE";
 
                 PunchCounter = 0;
-
                 PunchCounterReset = 0;
 
                 _punchRushDirection = VectorHelpers.DirectToMouse(projectile.Center, 14f);
