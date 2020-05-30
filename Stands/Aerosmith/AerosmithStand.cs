@@ -95,7 +95,7 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
             {
                 for (int i = 0; i < 5; i++)
                 {
-                    int dustIndex = Dust.NewDust(new Vector2(projectile.Center.X, projectile.Center.Y) + projectile.velocity * 4.5f, 0, 0, 31, 0f, 0f, 100, default(Color), 2f);
+                    int dustIndex = Dust.NewDust(new Vector2(projectile.Center.X, projectile.Center.Y) + projectile.velocity * 4.5f, 0, 0, 31, 0f, 0f, 100, default, 2f);
                     Main.dust[dustIndex].velocity = -(projectile.velocity * 0.5f).RotatedByRandom(.45f);
                 }
             }

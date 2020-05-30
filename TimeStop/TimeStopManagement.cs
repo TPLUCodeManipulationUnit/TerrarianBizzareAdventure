@@ -104,6 +104,9 @@ namespace TerrarianBizzareAdventure.TimeStop
             {
                 Projectile projectile = Main.projectile[i];
 
+                if (TBAMod.Instance.TimeStopImmuneProjectiles.Contains(projectile.type))
+                    continue;
+
                 if (!projectile.active || projectile.modProjectile is IProjectileHasImmunityToTimeStop phitts && phitts.IsNativelyImmuneToTimeStop())
                     continue;
 
@@ -244,7 +247,7 @@ namespace TerrarianBizzareAdventure.TimeStop
         }
 
 
-        internal static void Load(TBAMod tbaMod)
+        internal static void Load()
         {
             //Main.OnTick += MainOnOnTick;
 

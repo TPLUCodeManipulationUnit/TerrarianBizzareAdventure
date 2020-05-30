@@ -34,13 +34,13 @@ namespace TerrarianBizzareAdventure
 
             //VoiceRecognitionSystem.Load();
             TBAInputs.Load(this);
-            TimeStopManagement.Load(this);
+            TimeStopManagement.Load();
             TimeSkipManager.Load();
 
             if (!Main.dedServ)
             {
 
-                Textures.Load(this);
+                Textures.Load();
 
                 Ref<Effect> screenRef = new Ref<Effect>(GetEffect("Effects/ShockwaveEffect")); // The path to the compiled shader file.
                 Filters.Scene["Shockwave"] = new Filter(new ScreenShaderData(screenRef, "Shockwave"), EffectPriority.VeryHigh);
@@ -137,6 +137,19 @@ namespace TerrarianBizzareAdventure
             UIManager.Update(gameTime);
         }
 
+        public static void PlayVoiceLine(string SoundPath)
+        {
+            if (!Instance.VoiceLinesEnabled)
+                return;
+
+            Main.PlaySound(Instance.GetLegacySoundSlot(SoundType.Custom, SoundPath));
+        }
+
+        public bool VoiceLinesEnabled { get; set; }
+
         public static TBAMod Instance { get; private set; }
+
+
+        public List<int> TimeStopImmuneProjectiles = new List<int>();
     }
 }

@@ -41,6 +41,9 @@ namespace TerrarianBizzareAdventure.Players
 
         public bool CheckStaminaCost(int cost)
         {
+            if (IsDebugging)
+                return true;
+
             if (Stamina >= cost)
             {
                 Stamina -= cost;

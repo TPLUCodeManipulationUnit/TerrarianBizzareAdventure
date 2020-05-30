@@ -21,8 +21,6 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
             LEFTHAND = "_LeftHand",
             RIGHTHAND = "_RightHand";
 
-        private bool _leftMouseButtonLastState;
-
         private Vector2 _punchRushDirection;
 
 
@@ -172,7 +170,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
 
 
             if(CurrentState == "DONUT_PUNCH" && CurrentAnimation.CurrentFrame == 4)
-                Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/StarPlatinum/Donut"));
+               TBAMod.PlayVoiceLine("Sounds/StarPlatinum/Donut");
 
 
             if (CurrentState == "DONUT_PUNCH" && CurrentAnimation.CurrentFrame > 4)
@@ -250,8 +248,6 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                 Animations["BLOCK_IDLE"].AutoLoop = Owner.controlDown;
             }
 
-            _leftMouseButtonLastState = Owner.controlUseItem;
-
             #region Time Stop
 
             if (TimeStopDelay > 1)
@@ -321,7 +317,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
             {
                 TBAPlayer.Get(Owner).CheckStaminaCost(16);
 
-                Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/StarPlatinum/Ora"));
+                TBAMod.PlayVoiceLine("Sounds/StarPlatinum/Ora");
 
                 if (Main.MouseWorld.Y > Owner.Center.Y + 60)
                     CurrentState = "RUSH_DOWN";
@@ -352,7 +348,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
             if (TBAPlayer.Get(Owner).CheckStaminaCost(TIME_STOP_COST))
             {
                 if (!TimeStopManagement.TimeStopped)
-                    Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/StarPlatinum/SP_TimeStopCall"));
+                    TBAMod.PlayVoiceLine("Sounds/StarPlatinum/SP_TimeStopCall");
 
                 CurrentState = ANIMATION_IDLE;
                 IsTaunting = false;

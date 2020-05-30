@@ -169,10 +169,13 @@ namespace TerrarianBizzareAdventure.Stands
 
             SpriteEffects spriteEffects = IsFlipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-            spriteBatch.Draw(Animations[CurrentState].SpriteSheet, projectile.Center + new Vector2(DrawOffset, 0).RotatedBy(DrawRotation) - Main.screenPosition, Animations[CurrentState].FrameRect, AuraColor * 0.25f * Opacity, projectile.rotation, Animations[CurrentState].DrawOrigin, 1f, spriteEffects, 1f);
-            spriteBatch.Draw(Animations[CurrentState].SpriteSheet, projectile.Center + new Vector2(-DrawOffset, 0).RotatedBy(DrawRotation) - Main.screenPosition, Animations[CurrentState].FrameRect, AuraColor * 0.25f * Opacity, projectile.rotation, Animations[CurrentState].DrawOrigin, 1f, spriteEffects, 1f);
-            spriteBatch.Draw(Animations[CurrentState].SpriteSheet, projectile.Center + new Vector2(0, DrawOffset).RotatedBy(DrawRotation) - Main.screenPosition, Animations[CurrentState].FrameRect, AuraColor * 0.25f * Opacity, projectile.rotation, Animations[CurrentState].DrawOrigin, 1f, spriteEffects, 1f);
-            spriteBatch.Draw(Animations[CurrentState].SpriteSheet, projectile.Center + new Vector2(0, -DrawOffset).RotatedBy(DrawRotation) - Main.screenPosition, Animations[CurrentState].FrameRect, AuraColor * 0.25f * Opacity, projectile.rotation, Animations[CurrentState].DrawOrigin, 1f, spriteEffects, 1f);
+            if (DrawStandAura)
+            {
+                spriteBatch.Draw(Animations[CurrentState].SpriteSheet, projectile.Center + new Vector2(DrawOffset, 0).RotatedBy(DrawRotation) - Main.screenPosition, Animations[CurrentState].FrameRect, AuraColor * 0.25f * Opacity, projectile.rotation, Animations[CurrentState].DrawOrigin, 1f, spriteEffects, 1f);
+                spriteBatch.Draw(Animations[CurrentState].SpriteSheet, projectile.Center + new Vector2(-DrawOffset, 0).RotatedBy(DrawRotation) - Main.screenPosition, Animations[CurrentState].FrameRect, AuraColor * 0.25f * Opacity, projectile.rotation, Animations[CurrentState].DrawOrigin, 1f, spriteEffects, 1f);
+                spriteBatch.Draw(Animations[CurrentState].SpriteSheet, projectile.Center + new Vector2(0, DrawOffset).RotatedBy(DrawRotation) - Main.screenPosition, Animations[CurrentState].FrameRect, AuraColor * 0.25f * Opacity, projectile.rotation, Animations[CurrentState].DrawOrigin, 1f, spriteEffects, 1f);
+                spriteBatch.Draw(Animations[CurrentState].SpriteSheet, projectile.Center + new Vector2(0, -DrawOffset).RotatedBy(DrawRotation) - Main.screenPosition, Animations[CurrentState].FrameRect, AuraColor * 0.25f * Opacity, projectile.rotation, Animations[CurrentState].DrawOrigin, 1f, spriteEffects, 1f);
+            }
 
             spriteBatch.Draw(Animations[CurrentState].SpriteSheet, projectile.Center - Main.screenPosition, Animations[CurrentState].FrameRect, Color.White * Opacity, projectile.rotation, Animations[CurrentState].DrawOrigin, 1f, spriteEffects, 1f);
         }
@@ -239,5 +242,7 @@ namespace TerrarianBizzareAdventure.Stands
         public List<StandCombo> StandCombos { get; private set; }
 
         public float DrawRotation { get; private set; }
+
+        public static bool DrawStandAura { get; set; }
     }
 }

@@ -6,19 +6,16 @@ using Terraria.GameInput;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
-using TerrarianBizzareAdventure.Enums;
 using TerrarianBizzareAdventure.Helpers;
 using TerrarianBizzareAdventure.Items.Weapons.Rewards;
 using TerrarianBizzareAdventure.Networking;
 using TerrarianBizzareAdventure.Projectiles.Misc;
 using TerrarianBizzareAdventure.Stands;
-using TerrarianBizzareAdventure.Stands.Aerosmith;
 using TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio;
 using TerrarianBizzareAdventure.Stands.TheWorld;
 using TerrarianBizzareAdventure.TimeStop;
 using TerrarianBizzareAdventure.UserInterfaces;
 using WebmilioCommons.Extensions;
-using WebmilioCommons.Networking;
 
 namespace TerrarianBizzareAdventure.Players
 {
@@ -118,7 +115,7 @@ namespace TerrarianBizzareAdventure.Players
 
             CanTransform = false;
 
-            if (Stand is TheWorldStand theWorld)
+            if (Stand is TheWorldStand)
                 player.noFallDmg = true;
         }
 
@@ -177,7 +174,7 @@ namespace TerrarianBizzareAdventure.Players
                     ActiveStandProjectile = Main.projectile[Projectile.NewProjectile(player.Center, Vector2.Zero, mod.ProjectileType(Stand.GetType().Name), 0, 0, player.whoAmI)].modProjectile as Stand;
 
                     if (Stand.CallSoundPath != "")
-                        Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, Stand.CallSoundPath));
+                       TBAMod.PlayVoiceLine(Stand.CallSoundPath);
                 }
             }
 

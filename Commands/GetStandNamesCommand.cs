@@ -15,11 +15,16 @@ namespace TerrarianBizzareAdventure.Commands
 
         protected override void ActionLocal(CommandCaller caller, Player player, string input, string[] args)
         {
-            foreach (Stand s in StandLoader.Instance.Generics)
+            if (TBAMultiplayerConfig.EnableDebugCommands)
             {
-                if (s.CanAcquire(TBAPlayer.Get(caller.Player)))
-                    Main.NewText(s.StandName);
+                foreach (Stand s in StandLoader.Instance.Generics)
+                {
+                    if (s.CanAcquire(TBAPlayer.Get(caller.Player)))
+                        Main.NewText(s.StandName);
+                }
             }
+            else
+                DisabledDebugCommands();
         }
     }
 }

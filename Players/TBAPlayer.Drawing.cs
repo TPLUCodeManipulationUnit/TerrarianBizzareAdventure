@@ -138,7 +138,7 @@ namespace TerrarianBizzareAdventure.Players
                 TBAMod.Instance.GetTexture(standUser.AuraAnimation.SpritePath),
                 new Vector2((int)drawPlayer.MountedCenter.X, (int)drawPlayer.MountedCenter.Y + ((drawPlayer.gfxOffY - 6) * 1.2f)) - Main.screenPosition,
                 standUser.AuraAnimation.FrameRect,
-                drawColor * standUser.Opacity * 0.5f,
+                Color.Lerp(drawColor, Color.White, 0.5f) * standUser.Opacity * 0.85f,
                 0,
                 standUser.AuraAnimation.DrawOrigin,
                 1.1f,

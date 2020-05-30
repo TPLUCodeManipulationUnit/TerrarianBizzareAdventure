@@ -12,6 +12,9 @@ namespace TerrarianBizzareAdventure.Projectiles
         {
             var IsTimeSkipped = TimeSkipManager.IsTimeSkipped && projectile.hostile;
 
+            if (TimeSkipManager.IsTimeSkipped && projectile.owner == TimeSkipManager.TimeSkipper.player.whoAmI)
+                return;
+
 
             if (IsTimeSkipped)
             {
@@ -39,7 +42,9 @@ namespace TerrarianBizzareAdventure.Projectiles
         }
 
 
+#pragma warning disable IDE0060 // Remove unused parameter
         public void PostTimeSkipDraw(Projectile projectile, SpriteBatch spriteBatch, Color lightColor)
+#pragma warning restore IDE0060 // Remove unused parameter
         {
             var timeSkipped = TimeSkipManager.IsTimeSkipped && projectile.hostile;
 

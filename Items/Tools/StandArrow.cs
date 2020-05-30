@@ -45,7 +45,7 @@ namespace TerrarianBizzareAdventure.Items.Tools
             return true;
         }
 
-        public override bool CanUseItem(Player player) => !TBAPlayer.Get(player).StandUser;
+        public override bool CanUseItem(Player player) => RerollAllowed || !TBAPlayer.Get(player).StandUser;
 
         public override void AddRecipes()
         {
@@ -60,5 +60,7 @@ namespace TerrarianBizzareAdventure.Items.Tools
 
             recipe.AddRecipe();
         }
+
+        public static bool RerollAllowed { get; set; }
     }
 }

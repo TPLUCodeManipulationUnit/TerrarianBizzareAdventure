@@ -137,9 +137,6 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
                 if (TBAInputs.SummonStand.JustPressed && CurrentState == ANIMATION_IDLE)
                     CurrentState = ANIMATION_DESPAWN;
             }
-
-            Vector2 lerpPos = Vector2.Zero;
-
             int xOffset = IsTaunting || CurrentState.Contains("PUNCH") || CurrentState.Contains("ATT") || CurrentState == "DONUT_UNDO" ||  CurrentState == "DONUT_MISS" ||RushTimer > 0? 34 : -16;
 
             int yOffset = CurrentState.Contains("POSE") ? 36 : 0;
@@ -147,7 +144,7 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
             xOffset = CurrentState.Contains("POSE") ? 24 : xOffset;
 
 
-            lerpPos = Owner.Center + new Vector2(xOffset * Owner.direction, -24 + Owner.gfxOffY + yOffset);
+            Vector2 lerpPos = Owner.Center + new Vector2(xOffset * Owner.direction, -24 + Owner.gfxOffY + yOffset);
 
             projectile.Center = Vector2.Lerp(projectile.Center, lerpPos, 0.26f);
 

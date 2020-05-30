@@ -13,4 +13,9 @@
   <ItemGroup>
     <PackageReference Include="tModLoader.CodeAssist" Version="0.1.*" />
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="WebmilioCommons">
+      <HintPath>..\WebmilioCommons-Releases\WebmilioCommons.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>
