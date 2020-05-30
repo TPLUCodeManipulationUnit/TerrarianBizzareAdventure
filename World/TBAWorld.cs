@@ -41,7 +41,7 @@ namespace TerrarianBizzareAdventure.World
 
                     if (plr.Stand is TheWorldStand)
                     {
-                        Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/TheWorld/TimeResume"));
+                        TBAMod.PlayVoiceLine("Sounds/TheWorld/TimeResume");
                         Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/TheWorld/TheWorld_ZaWarudoReleaseSFX"));
                     }
 

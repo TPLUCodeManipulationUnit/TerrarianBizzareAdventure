@@ -98,7 +98,7 @@ namespace TerrarianBizzareAdventure.TimeSkip
             TimeSkipper = Skipper;
             TimeSkippedFor = duration;
 
-            new TimeSkipPacket() { Duration = duration }.Send();
+            new TimeSkipPacket() { Duration = duration, Skipper = Skipper }.Send();
         }
 
         public static ModPlayer TimeSkipper { get; set; }

@@ -36,7 +36,9 @@ namespace TerrarianBizzareAdventure.UserInterfaces.Elements.StandCollection
         {
             base.Update(gameTime);
 
-            Idle.Update();
+
+            if(Main.GameUpdateCount % 1 == 0)
+                Idle.Update();
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
