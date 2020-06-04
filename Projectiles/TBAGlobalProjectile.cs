@@ -22,13 +22,12 @@ namespace TerrarianBizzareAdventure.Projectiles
             IsStopped = !TBAMod.Instance.TimeStopImmuneProjectiles.Contains(projectile.type) && TimeStopManagement.TimeStopped && !(projectile.modProjectile is IProjectileHasImmunityToTimeStop iisitts && iisitts.IsNativelyImmuneToTimeStop()) && RanForTicks > tickLimit && (!(projectile.modProjectile is Stand) && projectile.owner == TimeStopManagement.TimeStopper.player.whoAmI);
 
             var IsTimeSkipped = TimeSkipManager.IsTimeSkipped && projectile.hostile;
-            var immuneToTE = TimeSkipManager.IsTimeSkipped && projectile.owner == TimeSkipManager.TimeSkipper.player.whoAmI;
 
             RanForTicks++;
 
             PreTimeSkipAI(projectile);
 
-            if (IsTimeSkipped && !immuneToTE && RanForTicks > 2 && RanForTicks < 60)
+            if (IsTimeSkipped && RanForTicks > 2 && RanForTicks < 60)
                 return false;
 
             if (IsStopped)

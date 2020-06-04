@@ -73,7 +73,8 @@ namespace TerrarianBizzareAdventure.UserInterfaces.Elements.StandCollection
         {
             base.Click(evt);
 
-            Main.PlaySound(TBAMod.Instance.GetLegacySoundSlot(SoundType.Custom, CallPath));
+            if(Unlocked)
+             Main.PlaySound(TBAMod.Instance.GetLegacySoundSlot(SoundType.Custom, CallPath));
         }
 
         public bool Unlocked => TBAPlayer.Get(Main.LocalPlayer).UnlockedStands.Contains(StandUnlocalizedName);

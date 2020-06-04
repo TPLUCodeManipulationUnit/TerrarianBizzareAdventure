@@ -71,11 +71,6 @@ namespace TerrarianBizzareAdventure.Players
             ResetDrawingEffects();
             ResetStaminaEffects();
 
-            if (AttackDirectionResetTimer > 0)
-                AttackDirectionResetTimer--;
-            else
-                AttackDirection = 0;
-
             if (AttackDirection != 0)
             {
                 player.velocity.X *= 0.2f;
@@ -117,6 +112,11 @@ namespace TerrarianBizzareAdventure.Players
 
             if (Stand is TheWorldStand)
                 player.noFallDmg = true;
+
+            if (AttackDirectionResetTimer > 0)
+                AttackDirectionResetTimer--;
+            else
+                AttackDirection = 0;
         }
 
         public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
@@ -226,10 +226,32 @@ namespace TerrarianBizzareAdventure.Players
 
         public bool StandActive => ActiveStandProjectile != null;
 
+        private int _attackDirection;
+        public int AttackDirection
+        {
+            get => _attackDirection;
+            set
+            {
+                if (_attackDirection == value)
+                    return;
 
-        public int AttackDirection { get; set; }
+                _attackDirection = value;
 
-        public int AttackDirectionResetTimer { get; set; }
+                this.SendIfLocal<AttackDirectionPacket>();
+            }
+        }
+
+        private int _attackResetTimer;
+        public int AttackDirectionResetTimer
+        {
+            get => _attackResetTimer;
+            set
+            {
+                _attackResetTimer = value;
+                if (_attackResetTimer >= 180)
+                    this.SendIfLocal<AttackTimerPacket>();
+            }
+        }
 
 
         // Used for stuff that happens when you hold LMB for some time.

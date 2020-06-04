@@ -28,7 +28,6 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
         {
             CallSoundPath = "Sounds/StarPlatinum/SP_Call";
             AuraColor = new Color(1f, 0f, 1f);//new Color(210, 101, 198);//new Color(203, 85, 195);
-            StarRush = new StandPunchRush(ModContent.ProjectileType<StarPlatinumRush>(), ModContent.ProjectileType<StarPlatinumRushBack>());
         }
 
         public override void AddCombos(List<StandCombo> combos)
@@ -123,7 +122,6 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                 if (CurrentAnimation.Finished)
                     CurrentAnimation.ResetAnimation();
 
-                StarRush.DoRush(projectile, _punchRushDirection, 80, RushTimer, new Vector2(-14, 0));
                 RushTimer--;
             }
             else
@@ -331,9 +329,18 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                 PunchCounter = 0;
                 PunchCounterReset = 0;
 
-                _punchRushDirection = VectorHelpers.DirectToMouse(projectile.Center, 14f);
+                _punchRushDirection = VectorHelpers.DirectToMouse(projectile.Center, 18f);
 
                 RushTimer = 180;
+
+                int barrage = Projectile.NewProjectile(projectile.Center, _punchRushDirection, ModContent.ProjectileType<StarBarrage>(), 60, 0, Owner.whoAmI);
+
+                if(Main.projectile[barrage].modProjectile is StarBarrage starBarrage)
+                {
+                    starBarrage.RushDirection = _punchRushDirection;
+                    starBarrage.ParentProjectile = projectile.whoAmI;
+                }
+
 
                 SetOwnerDirection(180);
 
@@ -392,7 +399,5 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
         public int RushTimer { get; private set; }
 
         public int TimeStopDelay { get; private set; }
-
-        public StandPunchRush StarRush { get; private set; }
     }
 }

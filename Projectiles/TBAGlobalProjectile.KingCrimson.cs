@@ -12,10 +12,6 @@ namespace TerrarianBizzareAdventure.Projectiles
         {
             var IsTimeSkipped = TimeSkipManager.IsTimeSkipped && projectile.hostile;
 
-            if (TimeSkipManager.IsTimeSkipped && projectile.owner == TimeSkipManager.TimeSkipper.player.whoAmI)
-                return;
-
-
             if (IsTimeSkipped)
             {
                 if (TimeSkipManager.TimeSkippedFor % 4 == 0)

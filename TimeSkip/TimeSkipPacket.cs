@@ -9,14 +9,12 @@ namespace TerrarianBizzareAdventure.TimeSkip
     {
         protected override bool PostReceive(BinaryReader reader, int fromWho)
         {
-            TimeSkipManager.TimeSkipper = Skipper;
             TimeSkipManager.TimeSkippedFor = Duration;
+            TimeSkipManager.TimeSkipper = ModPlayer;
 
             return true;
         }
 
         public int Duration { get; set; }
-
-        public ModPlayer Skipper { get; set; }
     }
 }

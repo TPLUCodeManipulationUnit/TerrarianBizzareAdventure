@@ -21,7 +21,6 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
         {
             CallSoundPath = "Sounds/KingCrimson/KC_Call";
             AuraColor = new Color(189, 0, 85);
-            KingRush = new StandPunchRush(ModContent.ProjectileType<KCRush>(), ModContent.ProjectileType<KCRushBack>());
         }
 
 
@@ -207,10 +206,18 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
 
                     RushTimer = 180;
 
-                    _punchRushDirection = VectorHelpers.DirectToMouse(projectile.Center, 14f);
+                    _punchRushDirection = VectorHelpers.DirectToMouse(projectile.Center, 18f);
 
                     TBAPlayer.Get(Owner).AttackDirectionResetTimer = RushTimer;
                     TBAPlayer.Get(Owner).AttackDirection = Main.MouseWorld.X < projectile.Center.X ? -1 : 1;
+                    
+                    int barrage = Projectile.NewProjectile(projectile.Center, _punchRushDirection, ModContent.ProjectileType<CrimsonBarrage>(), 60, 0, Owner.whoAmI);
+
+                    if (Main.projectile[barrage].modProjectile is CrimsonBarrage crimsonBarrage)
+                    {
+                        crimsonBarrage.RushDirection = _punchRushDirection;
+                        crimsonBarrage.ParentProjectile = projectile.whoAmI;
+                    }
                 }
             }
             #endregion
@@ -218,8 +225,6 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
             #region Rush
             if (RushTimer > 0)
             {
-                KingRush.DoRush(projectile, _punchRushDirection, 60, RushTimer, new Vector2(-14, 0), new Vector2(2, 6));
-
                 RushTimer--;
             }
 
@@ -332,7 +337,5 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
         public int RushTimer { get; private set; }
 
         public bool OwnerCtrlUse { get; set; }
-
-        public StandPunchRush KingRush { get; private set; }
     }
 }

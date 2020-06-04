@@ -23,7 +23,6 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
         {
             AuraColor = new Color(1.0f, 0.7f, 0.0f);
             CallSoundPath = "Sounds/TheWorld/Call";
-            TWRush = new StandPunchRush(ModContent.ProjectileType<TWRush>(), ModContent.ProjectileType<TWRushBack>());
         }
 
         private Vector2 _punchRushDirection;
@@ -67,7 +66,7 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
             Animations.Add("RUSH_DOWN", new SpriteAnimation(mod.GetTexture(path + "RushDown"), 4, 4));
             Animations.Add("RUSH_MID", new SpriteAnimation(mod.GetTexture(path + "RushMiddle"), 4, 4));
 
-            Animations.Add("SLAM", new SpriteAnimation(mod.GetTexture(path + "SlamDunk"), 2, 5, true));
+            Animations.Add("SLAM", new SpriteAnimation(mod.GetTexture(path + "SlamDunk"), 1, 5, true));
 
             Animations[ANIMATION_SUMMON].SetNextAnimation(Animations[ANIMATION_IDLE]);
         }
@@ -95,6 +94,7 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
 				projectile.width = (int)CurrentAnimation.FrameSize.X;
 				projectile.height = (int)CurrentAnimation.FrameSize.Y;
 			}
+
             int xOffset = CurrentState.Contains("PUNCH") || CurrentState.Contains("RUSH") ?  34 : -16;
 
             Vector2 lerpPos = Owner.Center + new Vector2(xOffset * Owner.direction, -24 + Owner.gfxOffY);
@@ -188,10 +188,18 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
 
                     RushTimer = 180;
 
-                    _punchRushDirection = VectorHelpers.DirectToMouse(projectile.Center, 14f);
+                    _punchRushDirection = VectorHelpers.DirectToMouse(projectile.Center, 18f);
 
                     TBAPlayer.Get(Owner).AttackDirectionResetTimer = RushTimer;
                     TBAPlayer.Get(Owner).AttackDirection = Main.MouseWorld.X < projectile.Center.X ? -1 : 1;
+
+                    int barrage = Projectile.NewProjectile(projectile.Center, _punchRushDirection, ModContent.ProjectileType<WorldBarrage>(), 60, 0, Owner.whoAmI);
+
+                    if (Main.projectile[barrage].modProjectile is WorldBarrage worldBarrage)
+                    {
+                        worldBarrage.RushDirection = _punchRushDirection;
+                        worldBarrage.ParentProjectile = projectile.whoAmI;
+                    }
                 }
             }
 
@@ -217,15 +225,14 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
 
             if (RushTimer > 1)
             {
-                if (CurrentAnimation.Finished)
+                if (CurrentAnimation != null && CurrentAnimation.Finished)
                     CurrentAnimation.ResetAnimation();
 
-                TWRush.DoRush(projectile, _punchRushDirection, 80, RushTimer, new Vector2(-8, 0));
                 RushTimer--;
             }
             else
             {
-                if (RushTimer > 0 && CurrentAnimation.Finished)
+                if (RushTimer > 0 && CurrentAnimation != null && CurrentAnimation.Finished)
                 {
                     RushTimer--;
                     CurrentState = ANIMATION_IDLE;
@@ -286,6 +293,14 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
                     TBAPlayer.Get(Owner).PointOfInterest = Vector2.Zero;
 
                     HasResetRoadRollerDrop = true;
+
+                    int barrage = Projectile.NewProjectile(projectile.Center, _punchRushDirection, ModContent.ProjectileType<WorldBarrage>(), 60, 0, Owner.whoAmI);
+
+                    if (Main.projectile[barrage].modProjectile is WorldBarrage worldBarrage)
+                    {
+                        worldBarrage.RushDirection = _punchRushDirection;
+                        worldBarrage.ParentProjectile = projectile.whoAmI;
+                    }
                 }
             }
         }
@@ -335,7 +350,6 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
         public int PunchCounterReset { get; private set; }
         public int RushTimer { get; private set; }
 
-        public StandPunchRush TWRush { get; private set; }
 
         public int TimeStopDelay { get; private set; }
 
