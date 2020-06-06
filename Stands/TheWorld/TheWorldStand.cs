@@ -88,12 +88,6 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
             IsFlipped = Owner.direction == 1;
 
             projectile.timeLeft = 200;
-			
-			if(!Main.dedServ)
-			{
-				projectile.width = (int)CurrentAnimation.FrameSize.X;
-				projectile.height = (int)CurrentAnimation.FrameSize.Y;
-			}
 
             int xOffset = CurrentState.Contains("PUNCH") || CurrentState.Contains("RUSH") ?  34 : -16;
 
@@ -126,7 +120,8 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
 
                     if (TBAInputs.ExtraAction01.JustPressed && !BeganAscending && TBAPlayer.Get(Owner).CheckStaminaCost(roadRollerCost))
                     {
-                        if(!TimeStopManagement.TimeStopped)
+                        projectile.netUpdate = true;
+                        if (!TimeStopManagement.TimeStopped)
                         {
                             if (!TimeStopManagement.TimeStopped)
                                 TBAMod.PlayVoiceLine("Sounds/TheWorld/TimeStop");
@@ -151,6 +146,7 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
                 {
                     if (TBAPlayer.Get(Owner).MouseOneTimeReset > 0)
                     {
+                        projectile.netUpdate = true;
                         if (TBAPlayer.Get(Owner).MouseOneTime < 15 && !Owner.controlUseItem)
                         {
                             TBAPlayer.Get(Owner).CheckStaminaCost(2);
@@ -165,7 +161,7 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
 
                             PunchCounter++;
 
-                            PunchCounterReset = 28;
+                            PunchCounterReset = 32;
 
                             Projectile.NewProjectile(projectile.Center, VectorHelpers.DirectToMouse(projectile.Center, 22f), ModContent.ProjectileType<Punch>(), 80, 3.5f, Owner.whoAmI, projectile.whoAmI);
 
@@ -174,6 +170,7 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
                 }
                 else if (Owner.controlUseItem)
                 {
+                    projectile.netUpdate = true;
                     TBAMod.PlayVoiceLine("Sounds/TheWorld/MudaRush");
 
                     TBAPlayer.Get(Owner).CheckStaminaCost(16);
@@ -188,7 +185,7 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
 
                     RushTimer = 180;
 
-                    _punchRushDirection = VectorHelpers.DirectToMouse(projectile.Center, 18f);
+                    _punchRushDirection = VectorHelpers.DirectToMouse(projectile.Center, 22f);
 
                     TBAPlayer.Get(Owner).AttackDirectionResetTimer = RushTimer;
                     TBAPlayer.Get(Owner).AttackDirection = Main.MouseWorld.X < projectile.Center.X ? -1 : 1;
@@ -241,7 +238,6 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
 
             if(BeganAscending)
             {
-
                 if (AscensionTimer >= (int)(2 * Constants.TICKS_PER_SECOND))
                 {
                     if (RoadRollerXAxis == -1.0f)
@@ -252,6 +248,7 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
 
                 if(++AscensionTimer >= (int)(2.5 * Constants.TICKS_PER_SECOND))
                 {
+                    projectile.netUpdate = true;
                     TBAMod.PlayVoiceLine("Sounds/TheWorld/RoadRoller");
                     BeganAscending = false;
                     AscensionTimer = 0;
@@ -316,6 +313,12 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
 
         public void TimeStop()
         {
+            if(TimeStopManagement.TimeStopped)
+            {
+                TimeStopManagement.TryResumeTime(TBAPlayer.Get(Owner));
+                return;
+            }
+
             if (TBAPlayer.Get(Owner).CheckStaminaCost(TIME_STOP_COST))
             {
 
@@ -326,6 +329,8 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
                 TimeStopDelay = 25;
             }
         }
+
+        public override bool CanDie => TimeStopDelay <= 0;
 
         public override void SendExtraAI(BinaryWriter writer)
         {

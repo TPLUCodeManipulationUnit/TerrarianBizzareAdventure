@@ -91,9 +91,8 @@ namespace TerrarianBizzareAdventure.Stands
             if (Main.dedServ)
                 return false;
 
-            if (TBAPlayer.Get(Owner).Stamina <= 0 && CurrentState == ANIMATION_IDLE)
-                CurrentState = ANIMATION_DESPAWN;
-
+            if (TBAPlayer.Get(Owner).Stamina <= 0)
+                ShouldDie = true;
 
             if (!HasSetAnimations)
             {
@@ -106,6 +105,11 @@ namespace TerrarianBizzareAdventure.Stands
                 }
 
                 HasSetAnimations = true;
+            }
+
+            if(ShouldDie && CurrentState != ANIMATION_DESPAWN)
+            {
+                CurrentState = ANIMATION_DESPAWN;
             }
 
             if (Animations.Count >= 1 && !TimeStopManagement.projectileStates.ContainsKey(projectile))
@@ -180,13 +184,15 @@ namespace TerrarianBizzareAdventure.Stands
             spriteBatch.Draw(Animations[CurrentState].SpriteSheet, projectile.Center - Main.screenPosition, Animations[CurrentState].FrameRect, Color.White * Opacity, projectile.rotation, Animations[CurrentState].DrawOrigin, 1f, spriteEffects, 1f);
         }
 
-
         public virtual void KillStand()
         {
-            projectile.Kill();
-            TBAPlayer.Get(Owner).KillStand();
+            if (CanDie || Owner.dead || !Owner.active)
+            {
+                projectile.Kill();
+                TBAPlayer.Get(Owner).KillStand();
 
-            Animations.Clear();
+                Animations.Clear();
+            }
         }
 		
 		public override bool PreKill(int timeLeft)
@@ -222,6 +228,13 @@ namespace TerrarianBizzareAdventure.Stands
 
         public Color AuraColor { get; set; }
 
+        // should be used to force stand into certain animation
+        public bool ShouldDie { get; set; }
+
+        // should be used to check whether stand should try to commit NullReferenceException on its existance or not
+        // depending on circumstances. I.e. TW
+        public virtual bool CanDie => true;
+
 
         // Automaticly supplies all future stands with a transparent texture so it won't ever draw
         // Even if it gets past PreDraw somehow
@@ -229,7 +242,6 @@ namespace TerrarianBizzareAdventure.Stands
 
 
         public float Opacity { get; set; }
-
 
         public string CallSoundPath { get; set; }
 

@@ -1,8 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
+using TerrarianBizzareAdventure.Players;
 using TerrarianBizzareAdventure.Stands;
 using TerrarianBizzareAdventure.TimeSkip;
 using TerrarianBizzareAdventure.TimeStop;
@@ -44,6 +46,25 @@ namespace TerrarianBizzareAdventure.Projectiles
 
 
             return true;
+        }
+
+        public override void OnHitNPC(Projectile projectile, NPC target, int damage, float knockback, bool crit)
+        {
+        }
+
+        public override void ModifyHitNPC(Projectile projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        {
+            if(TimeStopManagement.TimeStopped)
+            {
+                for (int i = 0; i < Main.combatText.Length; i++)
+                {
+                    if (!Main.combatText[i].active)
+                    {
+                        if(!TBAPlayer.Get().CombatTextQue.ContainsKey(i))
+                            TBAPlayer.Get().CombatTextQue.Add(i, damage);
+                    }
+                }
+            }
         }
 
         public override void PostDraw(Projectile projectile, SpriteBatch spriteBatch, Color lightColor)

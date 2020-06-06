@@ -162,6 +162,7 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
 
                 if (PunchCounter < 2)
                 {
+                    projectile.netUpdate = true;
                     if (TBAPlayer.Get(Owner).MouseOneTimeReset > 0)
                     {
                         if (TBAPlayer.Get(Owner).MouseOneTime < 15 && !Owner.controlUseItem)
@@ -194,7 +195,10 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
                 }
                 else if(Owner.controlUseItem)
                 {
+                    projectile.netUpdate = true;
+
                     TBAPlayer.Get(Owner).Stamina -= 16;
+
                     if (Main.MouseWorld.Y > Owner.Center.Y + 60)
                         CurrentState = "RUSH_DOWN";
 

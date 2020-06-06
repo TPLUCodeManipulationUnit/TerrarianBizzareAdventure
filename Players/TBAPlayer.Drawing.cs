@@ -63,6 +63,13 @@ namespace TerrarianBizzareAdventure.Players
                     Opacity -= 0.035f;
             }
 
+            foreach(KeyValuePair<int, int> kvp in CombatTextQue)
+            {
+                Main.combatText[kvp.Key].text = kvp.Value.ToString();
+            }
+
+            CombatTextQue.Clear();
+
             AuraAnimation?.Update();
         }
 
@@ -170,6 +177,8 @@ namespace TerrarianBizzareAdventure.Players
         }
 
         public float Opacity { get; private set; }
+
+        public Dictionary<int, int> CombatTextQue { get; } = new Dictionary<int, int>();
 
         public static Dictionary<int, ServerFriendlyAnimation> AuraAnimations
             = new Dictionary<int, ServerFriendlyAnimation>();

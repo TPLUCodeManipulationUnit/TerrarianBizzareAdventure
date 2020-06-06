@@ -6,6 +6,7 @@ using Terraria.ModLoader;
 using System.Collections.Generic;
 using TerrarianBizzareAdventure.TimeStop;
 using System.IO;
+using Terraria.ID;
 
 namespace TerrarianBizzareAdventure.Projectiles
 {
@@ -82,14 +83,39 @@ namespace TerrarianBizzareAdventure.Projectiles
             }
         }
 
+        public override void PostAI()
+        {
+            if (CanDeflectProjectiles)
+            {
+                foreach (Projectile proj in Main.projectile)
+                {
+                    if (!proj.active || proj == projectile || (proj.friendly && proj.owner == Owner.whoAmI))
+                        continue;
+
+                    if (proj.Hitbox.Intersects(projectile.Hitbox))
+                    {
+                        proj.velocity = -proj.velocity;
+                        proj.friendly = true;
+                        proj.hostile = false;
+                    }
+                }
+            }
+        }
+
+        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        {
+            target.immune[Owner.whoAmI] = 6;
+
+            Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Punch" + Main.rand.Next(1, 5)).WithVolume(.2f));
+        }
+
         // In ideal world, i wouldn't need to sync things, but we live in a shitty world so rip
         public override void SendExtraAI(BinaryWriter writer)
         {
             writer.Write(RushDirection.X);
             writer.Write(RushDirection.Y);
 
-                writer.Write(ParentProjectile);
-
+            writer.Write(ParentProjectile);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader)
@@ -139,6 +165,8 @@ namespace TerrarianBizzareAdventure.Projectiles
 
         public string TexturePath { get; }
         public string SecondaryPath { get; }
+
+        public virtual bool CanDeflectProjectiles => true;
 
         // We do not need the texture really, but terraria is a boomer and makes a fuss
         public override string Texture => "TerrarianBizzareAdventure/Textures/EmptyPixel";

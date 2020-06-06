@@ -218,6 +218,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
             #region Punch
             if (CurrentState == ANIMATION_IDLE && TBAPlayer.Get(Owner).MouseOneTimeReset > 0 && TBAPlayer.Get(Owner).MouseOneTime < 15 && !Owner.controlUseItem)
             {
+                projectile.netUpdate = true;
                 Punching(Main.rand.Next(2) == 0);
             }
             #endregion
@@ -252,6 +253,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                 TimeStopDelay--;
             else if (TimeStopDelay == 1)
             {
+                projectile.netUpdate = true;
                 if (!TimeStopManagement.TimeStopped)
                 {
                     Projectile.NewProjectile(Owner.Center, Vector2.Zero, ModContent.ProjectileType<TimeStopVFX>(), 0, 0, Owner.whoAmI);
@@ -352,6 +354,12 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
 
         public void TimeStop()
         {
+            if (TimeStopManagement.TimeStopped)
+            {
+                TimeStopManagement.TryResumeTime(TBAPlayer.Get(Owner));
+                return;
+            }
+
             if (TBAPlayer.Get(Owner).CheckStaminaCost(TIME_STOP_COST))
             {
                 if (!TimeStopManagement.TimeStopped)
@@ -389,6 +397,8 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
             IsTaunting = reader.ReadBoolean();
             RushTimer = reader.ReadInt32();
         }
+
+        public override bool CanDie => TimeStopDelay <= 0;
 
 
         public bool IsPunching { get; private set; }

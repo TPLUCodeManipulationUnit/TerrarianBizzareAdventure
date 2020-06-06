@@ -10,7 +10,7 @@ namespace TerrarianBizzareAdventure.Projectiles
     {
         public void PreTimeSkipAI(Projectile projectile)
         {
-            var IsTimeSkipped = TimeSkipManager.IsTimeSkipped && projectile.hostile;
+            var IsTimeSkipped = TimeSkipManager.IsTimeSkipped && projectile.hostile && !(projectile.modProjectile is PunchBarrage);
 
             if (IsTimeSkipped)
             {
