@@ -13,15 +13,13 @@ using TerrarianBizzareAdventure.TimeStop;
 
 namespace TerrarianBizzareAdventure.Stands.StarPlatinum
 {
-    public class StarPlatinumStand : Stand
+    public class StarPlatinumStand : PunchBarragingStand
     {
         private const string
             TEXPATH = "Stands/StarPlatinum/",
             PUNCH = "SPPunch_",
             LEFTHAND = "_LeftHand",
             RIGHTHAND = "_RightHand";
-
-        private Vector2 _punchRushDirection;
 
 
         public StarPlatinumStand() : base("starPlatinum", "Star Platinum")
@@ -331,15 +329,15 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                 PunchCounter = 0;
                 PunchCounterReset = 0;
 
-                _punchRushDirection = VectorHelpers.DirectToMouse(projectile.Center, 18f);
+                PunchRushDirection = VectorHelpers.DirectToMouse(projectile.Center, 18f);
 
                 RushTimer = 180;
 
-                int barrage = Projectile.NewProjectile(projectile.Center, _punchRushDirection, ModContent.ProjectileType<StarBarrage>(), 60, 0, Owner.whoAmI);
+                int barrage = Projectile.NewProjectile(projectile.Center, PunchRushDirection, ModContent.ProjectileType<StarBarrage>(), 60, 0, Owner.whoAmI);
 
                 if(Main.projectile[barrage].modProjectile is StarBarrage starBarrage)
                 {
-                    starBarrage.RushDirection = _punchRushDirection;
+                    starBarrage.RushDirection = PunchRushDirection;
                     starBarrage.ParentProjectile = projectile.whoAmI;
                 }
 
@@ -406,7 +404,6 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
 
         public int PunchCounter { get; set; }
         public int PunchCounterReset { get; private set; }
-        public int RushTimer { get; private set; }
 
         public int TimeStopDelay { get; private set; }
     }

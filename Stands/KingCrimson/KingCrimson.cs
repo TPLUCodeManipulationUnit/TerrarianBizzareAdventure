@@ -12,17 +12,13 @@ using TerrarianBizzareAdventure.TimeSkip;
 
 namespace TerrarianBizzareAdventure.Stands.KingCrimson
 {
-    public class KingCrimson : Stand
+    public class KingCrimson : PunchBarragingStand
     {
-        private Vector2 _punchRushDirection;
-
-
         public KingCrimson() : base("howDoesItWork", "King Crimson")
         {
             CallSoundPath = "Sounds/KingCrimson/KC_Call";
             AuraColor = new Color(189, 0, 85);
         }
-
 
         public override void AddCombos(List<StandCombo> combos)
         {
@@ -210,16 +206,16 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
 
                     RushTimer = 180;
 
-                    _punchRushDirection = VectorHelpers.DirectToMouse(projectile.Center, 18f);
+                    PunchRushDirection = VectorHelpers.DirectToMouse(projectile.Center, 18f);
 
                     TBAPlayer.Get(Owner).AttackDirectionResetTimer = RushTimer;
                     TBAPlayer.Get(Owner).AttackDirection = Main.MouseWorld.X < projectile.Center.X ? -1 : 1;
                     
-                    int barrage = Projectile.NewProjectile(projectile.Center, _punchRushDirection, ModContent.ProjectileType<CrimsonBarrage>(), 60, 0, Owner.whoAmI);
+                    int barrage = Projectile.NewProjectile(projectile.Center, PunchRushDirection, ModContent.ProjectileType<CrimsonBarrage>(), 60, 0, Owner.whoAmI);
 
                     if (Main.projectile[barrage].modProjectile is CrimsonBarrage crimsonBarrage)
                     {
-                        crimsonBarrage.RushDirection = _punchRushDirection;
+                        crimsonBarrage.RushDirection = PunchRushDirection;
                         crimsonBarrage.ParentProjectile = projectile.whoAmI;
                     }
                 }
@@ -294,7 +290,7 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
             else
                 PunchCounter = 0;
 
-            if (TBAInputs.ContextAction.JustPressed && Owner.whoAmI == Main.myPlayer)
+            if (TBAInputs.ContextAction.JustPressed && Owner.whoAmI == Main.myPlayer && !CurrentState.Contains("RUSH"))
             {
                 EraseTime();
             }
@@ -338,7 +334,6 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
 
         public int PunchCounter { get; private set; }
         public int PunchCounterReset { get; private set; }
-        public int RushTimer { get; private set; }
 
         public bool OwnerCtrlUse { get; set; }
     }

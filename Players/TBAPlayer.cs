@@ -9,6 +9,7 @@ using Terraria.ModLoader;
 using TerrarianBizzareAdventure.Helpers;
 using TerrarianBizzareAdventure.Items.Weapons.Rewards;
 using TerrarianBizzareAdventure.Networking;
+using TerrarianBizzareAdventure.Projectiles;
 using TerrarianBizzareAdventure.Projectiles.Misc;
 using TerrarianBizzareAdventure.Stands;
 using TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio;
@@ -192,6 +193,11 @@ namespace TerrarianBizzareAdventure.Players
 
         public override void SetControls()
         {
+            if (ActiveStandProjectile is PunchBarragingStand stando && stando.RushTimer > 0)
+            {
+                BlockInputs();
+            }
+
             if (AttackDirection != 0)
             {
                 player.controlLeft = AttackDirection != 1;
@@ -199,6 +205,33 @@ namespace TerrarianBizzareAdventure.Players
             }
 
             SetAerosmithControls();
+        }
+
+        private void BlockInputs(bool blockDirections = true, bool blockJumps = true, bool blockItemUse = true, bool blockOther = true)
+        {
+            if (blockDirections)
+            {
+                player.controlDown = false;
+                player.controlUp = false;
+                player.controlLeft = false;
+                player.controlRight = false;
+            }
+
+            if (blockJumps)
+                player.controlJump = false;
+
+            if (blockItemUse)
+            {
+                player.controlUseItem = false;
+                player.controlUseTile = false;
+            }
+
+            if (blockOther)
+            {
+                player.controlThrow = false;
+                player.controlMount = false;
+                player.controlHook = false;
+            }
         }
 
 

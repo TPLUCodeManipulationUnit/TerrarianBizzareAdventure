@@ -17,15 +17,13 @@ using TerrarianBizzareAdventure.Enums;
 
 namespace TerrarianBizzareAdventure.Stands.TheWorld
 {
-    public class TheWorldStand : Stand
+    public class TheWorldStand : PunchBarragingStand
     {
         public TheWorldStand() : base("theWorld", "The World")
         {
             AuraColor = new Color(1.0f, 0.7f, 0.0f);
             CallSoundPath = "Sounds/TheWorld/Call";
         }
-
-        private Vector2 _punchRushDirection;
 
         public override void SetDefaults()
         {
@@ -185,16 +183,16 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
 
                     RushTimer = 180;
 
-                    _punchRushDirection = VectorHelpers.DirectToMouse(projectile.Center, 22f);
+                    PunchRushDirection = VectorHelpers.DirectToMouse(projectile.Center, 22f);
 
                     TBAPlayer.Get(Owner).AttackDirectionResetTimer = RushTimer;
                     TBAPlayer.Get(Owner).AttackDirection = Main.MouseWorld.X < projectile.Center.X ? -1 : 1;
 
-                    int barrage = Projectile.NewProjectile(projectile.Center, _punchRushDirection, ModContent.ProjectileType<WorldBarrage>(), 60, 0, Owner.whoAmI);
+                    int barrage = Projectile.NewProjectile(projectile.Center, PunchRushDirection, ModContent.ProjectileType<WorldBarrage>(), 60, 0, Owner.whoAmI);
 
                     if (Main.projectile[barrage].modProjectile is WorldBarrage worldBarrage)
                     {
-                        worldBarrage.RushDirection = _punchRushDirection;
+                        worldBarrage.RushDirection = PunchRushDirection;
                         worldBarrage.ParentProjectile = projectile.whoAmI;
                     }
                 }
@@ -282,7 +280,7 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
 
                     RushTimer = 180;
 
-                    _punchRushDirection = (RoadaRollaDa.Center - projectile.Center).SafeNormalize(-Vector2.UnitX) * 12f;
+                    PunchRushDirection = (RoadaRollaDa.Center - projectile.Center).SafeNormalize(-Vector2.UnitX) * 12f;
 
                     TBAPlayer.Get(Owner).AttackDirectionResetTimer = RushTimer;
                     TBAPlayer.Get(Owner).AttackDirection = RoadaRollaDa.Center.X < projectile.Center.X ? -1 : 1;
@@ -291,11 +289,11 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
 
                     HasResetRoadRollerDrop = true;
 
-                    int barrage = Projectile.NewProjectile(projectile.Center, _punchRushDirection, ModContent.ProjectileType<WorldBarrage>(), 60, 0, Owner.whoAmI);
+                    int barrage = Projectile.NewProjectile(projectile.Center, PunchRushDirection, ModContent.ProjectileType<WorldBarrage>(), 60, 0, Owner.whoAmI);
 
                     if (Main.projectile[barrage].modProjectile is WorldBarrage worldBarrage)
                     {
-                        worldBarrage.RushDirection = _punchRushDirection;
+                        worldBarrage.RushDirection = PunchRushDirection;
                         worldBarrage.ParentProjectile = projectile.whoAmI;
                     }
                 }
@@ -353,7 +351,6 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
 
         public int PunchCounter { get; private set; }
         public int PunchCounterReset { get; private set; }
-        public int RushTimer { get; private set; }
 
 
         public int TimeStopDelay { get; private set; }
