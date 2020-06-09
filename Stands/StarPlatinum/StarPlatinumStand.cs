@@ -214,7 +214,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
 
 
             #region Punch
-            if (CurrentState == ANIMATION_IDLE && TBAPlayer.Get(Owner).MouseOneTimeReset > 0 && TBAPlayer.Get(Owner).MouseOneTime < 15 && !Owner.controlUseItem)
+            if (InIdleState && TBAPlayer.Get(Owner).MouseOneTimeReset > 0 && TBAPlayer.Get(Owner).MouseOneTime < 15 && !Owner.controlUseItem)
             {
                 projectile.netUpdate = true;
                 Punching(Main.rand.Next(2) == 0);
@@ -270,7 +270,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                 CurrentState = ANIMATION_IDLE;
             }
 
-            if (TBAPlayer.Get(Owner).MouseOneTime >= 15 && CurrentState == ANIMATION_IDLE)
+            if (TBAPlayer.Get(Owner).MouseOneTime >= 20 && InIdleState)
             {
                 TBAPlayer.Get(Owner).CheckStaminaCost(15);
                 CurrentState = "DONUT_PREP";
@@ -313,7 +313,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
 
             else
             {
-                TBAPlayer.Get(Owner).CheckStaminaCost(16);
+                TBAPlayer.Get(Owner).CheckStaminaCost(16, true);
 
                 TBAMod.PlayVoiceLine("Sounds/StarPlatinum/Ora");
 
@@ -355,6 +355,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
             if (TimeStopManagement.TimeStopped)
             {
                 TimeStopManagement.TryResumeTime(TBAPlayer.Get(Owner));
+                Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/StarPlatinum/SP_TimeRestore"));
                 return;
             }
 

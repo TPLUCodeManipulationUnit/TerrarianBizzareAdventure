@@ -129,7 +129,7 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
                     else
                         IsTaunting = false;*/
 
-                if (TBAInputs.SummonStand.JustPressed && CurrentState == ANIMATION_IDLE)
+                if (TBAInputs.SummonStand.JustPressed && InIdleState)
                     CurrentState = ANIMATION_DESPAWN;
             }
             int xOffset = IsTaunting || CurrentState.Contains("PUNCH") || CurrentState.Contains("ATT") || CurrentState == "DONUT_UNDO" ||  CurrentState == "DONUT_MISS" ||RushTimer > 0? 34 : -16;
@@ -149,7 +149,7 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
             }
 
             #region Punching
-            if (CurrentState == ANIMATION_IDLE)
+            if (InIdleState)
             {
                 if(TBAInputs.StandPose.JustPressed && Owner.whoAmI == Main.myPlayer)
                 {
@@ -252,7 +252,7 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
             }
             #endregion
 
-            if(TBAPlayer.Get(Owner).MouseTwoTime > 15 && CurrentState == ANIMATION_IDLE)
+            if(TBAPlayer.Get(Owner).MouseTwoTime > 20 && InIdleState)
             {
                 TBAPlayer.Get(Owner).Stamina -= 10;
                 CurrentState = "DONUT_PREP";
@@ -268,7 +268,7 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
 
 
 
-            if (CurrentState == ANIMATION_IDLE && CurrentAnimation.Finished)
+            if (InIdleState && CurrentAnimation.Finished)
                 CurrentAnimation.ResetAnimation();
 
             if (CurrentState == ANIMATION_DESPAWN)
@@ -279,7 +279,7 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
                     KillStand();
             }
 
-            if (CurrentState == ANIMATION_IDLE) 
+            if (InIdleState) 
                 HasMissedDonut = true;
 
             if (CurrentState == "DONUT_ATT")

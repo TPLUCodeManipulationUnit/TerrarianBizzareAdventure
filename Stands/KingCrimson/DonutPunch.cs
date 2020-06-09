@@ -11,8 +11,8 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
     {
         public override void SetDefaults()
         {
-            projectile.width = 32;
-            projectile.height = 48;
+            projectile.width = 50;
+            projectile.height = 50;
 
             projectile.friendly = true;
             projectile.penetrate = -1;
@@ -39,7 +39,7 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
             if (DonutTarget != null)
             {
                 for (int i = 0; i < 3; i++)
-                    Dust.NewDust(projectile.Center - new Vector2(playerDirection == 1 ? 8 : 0, 0), 0, 0, DustID.Blood, 8 * Owner.direction, -2, 0, default(Color), 1.5f);
+                    Dust.NewDust(projectile.Center - new Vector2(playerDirection == 1 ? 8 : 0, 0), 0, 0, DustID.Blood, 8 * Owner.direction, -2, 0, default, 1.5f);
 
 
                 if (DonutType == TargetType.NPC)
@@ -49,7 +49,7 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
                     bool shouldNotPull = npc.type == NPCID.WallofFlesh || npc.type == NPCID.WallofFleshEye;
 
                     if (shouldNotPull)
-                        projectile.Center = DonutTarget.Center;
+                        Owner.Center = DonutTarget.Center - new Vector2(60 * -Owner.direction, 0);
                     else
                         DonutTarget.Center = Center;
                 }

@@ -30,6 +30,9 @@ namespace TerrarianBizzareAdventure.Players
             {
                 int key = 3;
 
+                if (MaxStamina == 0)
+                    return;
+
                 int stamina = (Stamina * 100) / MaxStamina;
 
                 if (stamina <= 100)

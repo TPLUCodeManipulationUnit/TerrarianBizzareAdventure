@@ -54,6 +54,9 @@ namespace TerrarianBizzareAdventure.Projectiles
 
             Center = Main.projectile[ParentProjectile].Center + Velocity;
 
+            if (!(Parent.modProjectile is Stand))
+                projectile.Kill();
+
             if (FrontPunches.Count <= 4)
             {
                 float x = -Main.rand.NextFloat(26f, 50f);
@@ -139,7 +142,7 @@ namespace TerrarianBizzareAdventure.Projectiles
 
                 if (Main.projectile[ClashingWith].modProjectile is PunchBarrage enemyBarrage)
                 {
-                    RushDirection = (enemyBarrage.Center - Center).SafeNormalize(-Vector2.UnitY) * 16f;
+                    RushDirection = (enemyBarrage.Parent.Center - Center).SafeNormalize(-Vector2.UnitY) * 16f;
 
                     if (ClashPower > 5)
                     {
@@ -241,6 +244,8 @@ namespace TerrarianBizzareAdventure.Projectiles
         // I'm glad you asked. 
         // On the server it would be null meaning packet cannot be sent, therefore causing an error :)
         public int ParentProjectile { get; set; }
+
+        public Projectile Parent => Main.projectile[ParentProjectile];
 
         public string TexturePath { get; }
         public string SecondaryPath { get; }

@@ -87,6 +87,8 @@ namespace TerrarianBizzareAdventure.Stands
 
             LastState = CurrentState;
 
+            if (TBAPlayer.Get(Owner).ActiveStandProjectile != projectile.modProjectile)
+                KillStand();
 
             if (Main.dedServ)
                 return false;
@@ -256,5 +258,7 @@ namespace TerrarianBizzareAdventure.Stands
         public float DrawRotation { get; private set; }
 
         public static bool DrawStandAura { get; set; }
+
+        public bool InIdleState => CurrentState == ANIMATION_IDLE;
     }
 }

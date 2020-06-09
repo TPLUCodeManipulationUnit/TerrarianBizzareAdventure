@@ -14,7 +14,6 @@ namespace TerrarianBizzareAdventure.Players
             if (StandActive)
                 staminaDebuff -= 8 * Constants.TICKS_PER_SECOND;
 
-            
             StaminaRegenTicks++;
 
             if (StaminaRegenTicks >= StaminaRegenTickRate)
@@ -39,10 +38,16 @@ namespace TerrarianBizzareAdventure.Players
                 Stamina = MaxStamina;
         }
 
-        public bool CheckStaminaCost(int cost)
+        public bool CheckStaminaCost(int cost, bool forceSpend = false)
         {
             if (IsDebugging)
                 return true;
+
+            if (forceSpend)
+            {
+                Stamina -= cost;
+                return true;
+            }
 
             if (Stamina >= cost)
             {

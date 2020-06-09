@@ -14,6 +14,7 @@ using TerrarianBizzareAdventure.TimeStop;
 using TerrarianBizzareAdventure.Projectiles.Misc;
 using System.IO;
 using TerrarianBizzareAdventure.Enums;
+using Terraria.ID;
 
 namespace TerrarianBizzareAdventure.Stands.TheWorld
 {
@@ -52,12 +53,16 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
             Animations.Add("PUNCH_R", new SpriteAnimation(mod.GetTexture(path + "PunchMiddle"), 7, 3));
             Animations.Add("PUNCH_L", new SpriteAnimation(mod.GetTexture(path + "PunchMiddleAlt"), 8, 3));
 
+            Animations.Add("THROW_KNIVES", new SpriteAnimation(mod.GetTexture(path + "KnifeThrow"), 14, 4));
+
             Animations["PUNCH_R"].SetNextAnimation(Animations[ANIMATION_IDLE]);
             Animations["PUNCH_L"].SetNextAnimation(Animations[ANIMATION_IDLE]);
             Animations["PUNCH_RD"].SetNextAnimation(Animations[ANIMATION_IDLE]);
             Animations["PUNCH_LD"].SetNextAnimation(Animations[ANIMATION_IDLE]);
             Animations["PUNCH_RU"].SetNextAnimation(Animations[ANIMATION_IDLE]);
             Animations["PUNCH_LU"].SetNextAnimation(Animations[ANIMATION_IDLE]);
+
+            Animations["THROW_KNIVES"].SetNextAnimation(Animations[ANIMATION_IDLE]);
 
 
             Animations.Add("RUSH_UP", new SpriteAnimation(mod.GetTexture(path + "RushUp"), 4, 4));
@@ -75,6 +80,7 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
             combos.Add(new StandCombo("Punch Barrage", MouseClick.LeftClick.ToString(), MouseClick.LeftClick.ToString(), MouseClick.LeftClick.ToString()));
             combos.Add(new StandCombo("ZA WARUDO", TBAInputs.ContextAction.GetAssignedKeys()[0].ToString()));
             combos.Add(new StandCombo("Earth Flattener", TBAInputs.ExtraAction01.GetAssignedKeys()[0].ToString()));
+            combos.Add(new StandCombo("Sick Throw", TBAInputs.ExtraAction02.GetAssignedKeys()[0].ToString()));
         }
 
         public override void AI()
@@ -87,21 +93,37 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
 
             projectile.timeLeft = 200;
 
-            int xOffset = CurrentState.Contains("PUNCH") || CurrentState.Contains("RUSH") ?  34 : -16;
+            int xOffset = CurrentState.Contains("PUNCH") || CurrentState.Contains("RUSH") || CurrentState == "THROW_KNIVES" ?  34 : -16;
 
             Vector2 lerpPos = Owner.Center + new Vector2(xOffset * Owner.direction, -24 + Owner.gfxOffY);
 
-            if (CurrentState.Contains("PUNCH") || CurrentState == "SLAM")
+            if (CurrentState.Contains("PUNCH") || CurrentState == "SLAM" || CurrentState == "THROW_KNIVES")
                 Owner.heldProj = projectile.whoAmI;
 
             projectile.Center = Vector2.Lerp(projectile.Center, lerpPos, 0.26f);
 
+            if (CurrentState == "THROW_KNIVES")
+            {
+                if (CurrentAnimation.CurrentFrame == 10)
+                {
+                    Vector2 direction = VectorHelpers.DirectToMouse(projectile.Center, 14f);
+
+                    if (Owner.Center.X + direction.X > Owner.Center.X)
+                        Owner.direction = 1;
+                    else
+                        Owner.direction = -1;
+                    for (int i = 0; i < 2; i++)
+                    {
+                        Projectile.NewProjectile(projectile.Center + direction * 2.2f + new Vector2(Main.rand.Next(-5, 5), Main.rand.Next(-34, 34)).RotatedBy(direction.ToRotation()), direction, ModContent.ProjectileType<Knife>(), 80, 3.5f, Owner.whoAmI, projectile.whoAmI);
+                    }
+                }
+            }
 
 
             if (CurrentState == ANIMATION_DESPAWN && CurrentAnimation.Finished && TimeStopDelay <= 0)
                 KillStand();
 
-            if (CurrentState == ANIMATION_IDLE)
+            if (InIdleState)
             {
                 if (Owner.whoAmI == Main.myPlayer)
                 {
@@ -111,7 +133,10 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
                         else
                             IsTaunting = false;
 
-                    if (TBAInputs.SummonStand.JustPressed && CurrentState == ANIMATION_IDLE)
+                    if (TBAInputs.ExtraAction02.JustPressed && TBAPlayer.Get(Owner).CheckStaminaCost(10))
+                        CurrentState = "THROW_KNIVES";
+
+                    if (TBAInputs.SummonStand.JustPressed)
                         CurrentState = ANIMATION_DESPAWN;
 
                     int roadRollerCost = TimeStopManagement.TimeStopped ? 10 : 50;
@@ -314,6 +339,9 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
             if(TimeStopManagement.TimeStopped)
             {
                 TimeStopManagement.TryResumeTime(TBAPlayer.Get(Owner));
+
+                TBAMod.PlayVoiceLine("Sounds/TheWorld/TimeResume");
+                Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/TheWorld/TheWorld_ZaWarudoReleaseSFX"));
                 return;
             }
 

@@ -27,7 +27,6 @@ namespace TerrarianBizzareAdventure.Players
             Stand = null;
             KillStand();
 
-
             if (tag.ContainsKey(nameof(Stand)))
                 Stand = StandLoader.Instance.GetGeneric(tag.GetString(nameof(Stand)));
 
