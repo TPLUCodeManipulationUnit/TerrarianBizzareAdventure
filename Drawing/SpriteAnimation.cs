@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Terraria.ModLoader;
 
 namespace TerrarianBizzareAdventure.Drawing
 {
@@ -16,6 +17,19 @@ namespace TerrarianBizzareAdventure.Drawing
         public SpriteAnimation(Texture2D texture, int frameCount, int frameSpeed, bool autoLoop = false, SpriteAnimation nextAnimation = null, bool reverseNextAnimation = false)
         {
             SpriteSheet = texture;
+            FrameCount = frameCount;
+            FrameSpeed = frameSpeed;
+
+            AutoLoop = autoLoop;
+
+            NextAnimation = nextAnimation;
+
+            ReverseNextAnimation = reverseNextAnimation;
+        }
+
+        public SpriteAnimation(string texture, int frameCount, int frameSpeed, bool autoLoop = false, SpriteAnimation nextAnimation = null, bool reverseNextAnimation = false)
+        {
+            SpriteSheet = ModContent.GetTexture(texture);
             FrameCount = frameCount;
             FrameSpeed = frameSpeed;
 

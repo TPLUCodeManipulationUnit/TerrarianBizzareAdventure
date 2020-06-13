@@ -18,7 +18,7 @@ using Terraria.ID;
 
 namespace TerrarianBizzareAdventure.Stands.TheWorld
 {
-    public class TheWorldStand : PunchBarragingStand
+    public class TheWorldStand : TimeStoppingStand
     {
         public TheWorldStand() : base("theWorld", "The World")
         {
@@ -72,6 +72,10 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
             Animations.Add("SLAM", new SpriteAnimation(mod.GetTexture(path + "SlamDunk"), 1, 5, true));
 
             Animations[ANIMATION_SUMMON].SetNextAnimation(Animations[ANIMATION_IDLE]);
+
+            Animations["RUSH_UP"].SetNextAnimation(Animations[ANIMATION_IDLE]);
+            Animations["RUSH_MID"].SetNextAnimation(Animations[ANIMATION_IDLE]);
+            Animations["RUSH_DOWN"].SetNextAnimation(Animations[ANIMATION_IDLE]);
         }
 
         public override void AddCombos(List<StandCombo> combos)
@@ -95,12 +99,12 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
 
             int xOffset = CurrentState.Contains("PUNCH") || CurrentState.Contains("RUSH") || CurrentState == "THROW_KNIVES" ?  34 : -16;
 
-            Vector2 lerpPos = Owner.Center + new Vector2(xOffset * Owner.direction, -24 + Owner.gfxOffY);
+            PositionOffset = Owner.Center + new Vector2(xOffset * Owner.direction, -24 + Owner.gfxOffY);
 
             if (CurrentState.Contains("PUNCH") || CurrentState == "SLAM" || CurrentState == "THROW_KNIVES")
                 Owner.heldProj = projectile.whoAmI;
 
-            projectile.Center = Vector2.Lerp(projectile.Center, lerpPos, 0.26f);
+            projectile.Center = Vector2.Lerp(projectile.Center, PositionOffset, 0.26f);
 
             if (CurrentState == "THROW_KNIVES")
             {
@@ -223,11 +227,6 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
                 }
             }
 
-            if (PunchCounterReset > 0)
-                PunchCounterReset--;
-            else
-                PunchCounter = 0;
-
             if (TimeStopDelay > 1)
                 TimeStopDelay--;
             else if (TimeStopDelay == 1)
@@ -243,23 +242,14 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
                 TimeStopDelay--;
             }
 
-            if (RushTimer > 1)
+            if (Animations.Count > 0)
             {
-                if (CurrentAnimation != null && CurrentAnimation.Finished)
-                    CurrentAnimation.ResetAnimation();
-
-                RushTimer--;
-            }
-            else
-            {
-                if (RushTimer > 0 && CurrentAnimation != null && CurrentAnimation.Finished)
-                {
-                    RushTimer--;
-                    CurrentState = ANIMATION_IDLE;
-                }
+                Animations["RUSH_DOWN"].AutoLoop = RushTimer > 0;
+                Animations["RUSH_UP"].AutoLoop = RushTimer > 0;
+                Animations["RUSH_MID"].AutoLoop = RushTimer > 0;
             }
 
-            if(BeganAscending)
+            if (BeganAscending)
             {
                 if (AscensionTimer >= (int)(2 * Constants.TICKS_PER_SECOND))
                 {
@@ -332,29 +322,9 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
             return base.PreKill(timeLeft);
         }
 
-        private const int TIME_STOP_COST = 20;
+        public override string TimeStopRestorePath => "Sounds/TheWorld/TheWorld_ZaWarudoReleaseSFX";
 
-        public void TimeStop()
-        {
-            if(TimeStopManagement.TimeStopped)
-            {
-                TimeStopManagement.TryResumeTime(TBAPlayer.Get(Owner));
-
-                TBAMod.PlayVoiceLine("Sounds/TheWorld/TimeResume");
-                Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/TheWorld/TheWorld_ZaWarudoReleaseSFX"));
-                return;
-            }
-
-            if (TBAPlayer.Get(Owner).CheckStaminaCost(TIME_STOP_COST))
-            {
-
-                if (!TimeStopManagement.TimeStopped)
-                    TBAMod.PlayVoiceLine("Sounds/TheWorld/TimeStop");
-
-                IsTaunting = false;
-                TimeStopDelay = 25;
-            }
-        }
+        public override string TimeStopVoiceLinePath => "Sounds/TheWorld/TimeStop";
 
         public override bool CanDie => TimeStopDelay <= 0;
 
@@ -375,13 +345,6 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
             BeganAscending = reader.ReadBoolean();
             RushTimer = reader.ReadInt32();
         }
-
-
-        public int PunchCounter { get; private set; }
-        public int PunchCounterReset { get; private set; }
-
-
-        public int TimeStopDelay { get; private set; }
 
         public int RoadRollerID { get; private set; }
 

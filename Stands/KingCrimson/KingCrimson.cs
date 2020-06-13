@@ -139,9 +139,9 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
             xOffset = CurrentState.Contains("POSE") ? 24 : xOffset;
 
 
-            Vector2 lerpPos = Owner.Center + new Vector2(xOffset * Owner.direction, -24 + Owner.gfxOffY + yOffset);
+            PositionOffset = Owner.Center + new Vector2(xOffset * Owner.direction, -24 + Owner.gfxOffY + yOffset);
 
-            projectile.Center = Vector2.Lerp(projectile.Center, lerpPos, 0.26f);
+            projectile.Center = Vector2.Lerp(projectile.Center, PositionOffset, 0.26f);
 
             if (CurrentState == ANIMATION_SUMMON)
             {
@@ -223,10 +223,6 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
             #endregion
 
             #region Rush
-            if (RushTimer > 0)
-            {
-                RushTimer--;
-            }
 
             Animations["RUSH_DOWN"].AutoLoop = RushTimer > 0;
             Animations["RUSH_UP"].AutoLoop = RushTimer > 0;
@@ -285,11 +281,6 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
             if (CurrentState == "DONUT_ATT")
                 Animations["DONUT_ATT"].SetNextAnimation(HasMissedDonut ? Animations["DONUT_MISS"] : Animations["DONUT_UNDO"]);
 
-            if (PunchCounterReset > 0)
-                PunchCounterReset--;
-            else
-                PunchCounter = 0;
-
             if (TBAInputs.ContextAction.JustPressed && Owner.whoAmI == Main.myPlayer && !CurrentState.Contains("RUSH"))
             {
                 EraseTime();
@@ -331,9 +322,6 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
         }
 
         public bool HasMissedDonut { get; set; }
-
-        public int PunchCounter { get; private set; }
-        public int PunchCounterReset { get; private set; }
 
         public bool OwnerCtrlUse { get; set; }
     }

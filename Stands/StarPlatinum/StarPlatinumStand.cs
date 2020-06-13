@@ -13,7 +13,7 @@ using TerrarianBizzareAdventure.TimeStop;
 
 namespace TerrarianBizzareAdventure.Stands.StarPlatinum
 {
-    public class StarPlatinumStand : PunchBarragingStand
+    public class StarPlatinumStand : TimeStoppingStand
     {
         private const string
             TEXPATH = "Stands/StarPlatinum/",
@@ -83,6 +83,10 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
             Animations["DONUT_PULL"].SetNextAnimation(Animations[ANIMATION_IDLE]);
             Animations["DONUT_PREP"].SetNextAnimation(Animations["DONUT_IDLE"]);
             Animations["DONUT_PUNCH"].SetNextAnimation(Animations["DONUT_PULL"]);
+
+            Animations["RUSH_UP"].SetNextAnimation(Animations[ANIMATION_IDLE]);
+            Animations["RUSH_MIDDLE"].SetNextAnimation(Animations[ANIMATION_IDLE]);
+            Animations["RUSH_DOWN"].SetNextAnimation(Animations[ANIMATION_IDLE]);
         }
 
         public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
@@ -106,30 +110,30 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
             if (Animations.Count <= 0)
                 return;
 
-            if (CurrentState == ANIMATION_SUMMON && CurrentAnimation.CurrentFrame < 3)
-                Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/StarPlatinum/SP_Spawn"));
+            if (CurrentState == ANIMATION_SUMMON)
+            {
+                if (CurrentAnimation.CurrentFrame < 3)
+                    Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/StarPlatinum/SP_Spawn"));
+
+                Opacity = CurrentAnimation.FrameRect.Y / CurrentAnimation.FrameRect.Height * 0.25f;
+
+                XPosOffset = -16;
+                YPosOffset = -24;
+            }
+
+            if(InIdleState)
+                XPosOffset = -16;
 
             #region Rush
-            if (PunchCounterReset > 0)
-                PunchCounterReset--;
-            else
-                PunchCounter = 0;
 
-            if (RushTimer > 1)
-            {
-                if (CurrentAnimation.Finished)
-                    CurrentAnimation.ResetAnimation();
 
-                RushTimer--;
-            }
-            else
+            if (Animations.Count > 0)
             {
-                if (RushTimer > 0 && CurrentAnimation.Finished)
-                {
-                    RushTimer--;
-                    CurrentState = ANIMATION_IDLE;
-                }
+                Animations["RUSH_DOWN"].AutoLoop = RushTimer > 0;
+                Animations["RUSH_UP"].AutoLoop = RushTimer > 0;
+                Animations["RUSH_MIDDLE"].AutoLoop = RushTimer > 0;
             }
+
             #endregion
 
             TimeLeft = 200;
@@ -152,13 +156,14 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                 }
             }
 
-            Vector2 lerpPos = Vector2.Zero;
-
-            int xOffset = IsPunching ||
+            if(IsPunching ||
                 RushTimer > 0 || 
                 CurrentState.Contains("POSE") || 
                 CurrentState == "DONUT_PUNCH" ||
-                CurrentState == "DONUT_PULL" ? 34 : -16;
+                CurrentState == "DONUT_PULL")
+            {
+                XPosOffset = 34;
+            }
 
 
             if(CurrentState == "DONUT_PUNCH" || CurrentState == "DONUT_PULL")
@@ -178,18 +183,18 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
             if (CurrentState.Contains("BLOCK"))
             {
                 Owner.heldProj = projectile.whoAmI;
-                lerpPos = Owner.Center + new Vector2(6 * Owner.direction, -24 + Owner.gfxOffY);
+                PositionOffset = Owner.Center + new Vector2(6 * Owner.direction, YPosOffset + Owner.gfxOffY);
             }
             else
             {
-                lerpPos = Owner.Center + new Vector2(xOffset * Owner.direction, -24 + Owner.gfxOffY);
+                PositionOffset = Owner.Center + new Vector2(XPosOffset * Owner.direction, YPosOffset + Owner.gfxOffY);
             }
 
             if (CurrentState.Contains("PUNCH"))
                 Owner.heldProj = projectile.whoAmI;
 
 
-            Center = Vector2.Lerp(projectile.Center, lerpPos, 0.26f);
+            Center = Vector2.Lerp(projectile.Center, PositionOffset, 0.26f);
 
 
             if (IsTaunting)
@@ -199,12 +204,6 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                     CurrentState = "POSE_TRANSITION";
                     CurrentAnimation.ResetAnimation();
                 }
-            }
-
-
-            if (CurrentState == ANIMATION_SUMMON)
-            {
-                Opacity = CurrentAnimation.FrameRect.Y / CurrentAnimation.FrameRect.Height * 0.25f;
             }
 
             if (!CurrentState.Contains("PUNCH"))
@@ -225,6 +224,9 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
             if (CurrentState == ANIMATION_DESPAWN)
             {
                 Opacity = (5 - CurrentAnimation.FrameRect.Y / (int)CurrentAnimation.FrameSize.Y) * 0.2f;
+
+                XPosOffset += 1;
+                YPosOffset += 0.75f;
 
                 if (CurrentAnimation.Finished)
                     KillStand();
@@ -347,28 +349,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
                 CurrentAnimation.ResetAnimation();
             }
         }
-
-        private const int TIME_STOP_COST = 40;
-
-        public void TimeStop()
-        {
-            if (TimeStopManagement.TimeStopped)
-            {
-                TimeStopManagement.TryResumeTime(TBAPlayer.Get(Owner));
-                Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/StarPlatinum/SP_TimeRestore"));
-                return;
-            }
-
-            if (TBAPlayer.Get(Owner).CheckStaminaCost(TIME_STOP_COST))
-            {
-                if (!TimeStopManagement.TimeStopped)
-                    TBAMod.PlayVoiceLine("Sounds/StarPlatinum/SP_TimeStopCall");
-
-                CurrentState = ANIMATION_IDLE;
-                IsTaunting = false;
-                TimeStopDelay = 25;
-            }
-        }
+        
 
         private void SpawnPunch()
         {
@@ -397,15 +378,12 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
             RushTimer = reader.ReadInt32();
         }
 
+        public override int TimeStopCost => 40;
+
         public override bool CanDie => TimeStopDelay <= 0;
 
 
         public bool IsPunching { get; private set; }
         public bool InPose { get; private set; }
-
-        public int PunchCounter { get; set; }
-        public int PunchCounterReset { get; private set; }
-
-        public int TimeStopDelay { get; private set; }
     }
 }

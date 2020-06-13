@@ -42,6 +42,7 @@ namespace TerrarianBizzareAdventure.Stands
 
         public override void SetDefaults()
         {
+            projectile.ignoreWater = true;
             projectile.aiStyle = -1;
             projectile.penetrate = -1; // stand istelf should almost never hit anything by its own, this serves as fool proof though
             projectile.tileCollide = false; // tile collisions should be done manually
@@ -257,8 +258,21 @@ namespace TerrarianBizzareAdventure.Stands
 
         public float DrawRotation { get; private set; }
 
+        public Vector2 PositionOffset { get; set; }
+
+        public float XPosOffset { get; set; }
+        public float YPosOffset { get; set; }
+
         public static bool DrawStandAura { get; set; }
 
-        public bool InIdleState => CurrentState == ANIMATION_IDLE;
+        public bool InIdleState
+        {
+            get => CurrentState == ANIMATION_IDLE;
+            set
+            {
+                if(value == true)
+                    CurrentState = ANIMATION_IDLE;
+            }
+        }
     }
 }
