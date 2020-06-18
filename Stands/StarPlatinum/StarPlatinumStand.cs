@@ -380,7 +380,7 @@ namespace TerrarianBizzareAdventure.Stands.StarPlatinum
 
         public override int TimeStopCost => 40;
 
-        public override bool CanDie => TimeStopDelay <= 0;
+        public override bool CanDie => TimeStopDelay <= 0 && !CurrentState.Contains("RUSH") && RushTimer <= 0;
 
 
         public bool IsPunching { get; private set; }

@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using Terraria.ModLoader;
-using TerrarianBizzareAdventure.Players;
+﻿using Terraria.ModLoader;
+using Terraria.ID;
 
 namespace TerrarianBizzareAdventure.Items.Armor.Vanity.Vinegar
 {
@@ -26,6 +20,16 @@ namespace TerrarianBizzareAdventure.Items.Armor.Vanity.Vinegar
             item.value = 10000;
             item.rare = -12;
             item.vanity = true;
+        }
+
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(TBAMod.Instance);
+            recipe.AddIngredient(ItemID.PinkThread, 2);
+            recipe.AddIngredient(ItemID.Silk, 20);
+            recipe.AddTile(TileID.Loom);
+            recipe.SetResult(this);
+            recipe.AddRecipe();
         }
     }
 }

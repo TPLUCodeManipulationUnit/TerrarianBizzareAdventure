@@ -110,7 +110,7 @@ namespace TerrarianBizzareAdventure.Stands
                 HasSetAnimations = true;
             }
 
-            if(ShouldDie && CurrentState != ANIMATION_DESPAWN)
+            if(ShouldDie && CanDie && CurrentState != ANIMATION_DESPAWN)
             {
                 CurrentState = ANIMATION_DESPAWN;
             }

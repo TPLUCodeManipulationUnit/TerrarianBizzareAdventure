@@ -49,6 +49,8 @@ namespace TerrarianBizzareAdventure.Stands.SilverChariot
 
         }
 
+        public override bool CanAcquire(TBAPlayer tbaPlayer) => false;
+
         public override void AI()
         {
             base.AI();
