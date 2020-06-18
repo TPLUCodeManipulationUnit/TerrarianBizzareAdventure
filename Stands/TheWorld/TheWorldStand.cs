@@ -326,7 +326,7 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
 
         public override string TimeStopVoiceLinePath => "Sounds/TheWorld/TimeStop";
 
-        public override bool CanDie => TimeStopDelay <= 0;
+        public override bool CanDie => RushTimer <= 0 && TimeStopDelay <= 0;
 
         public override void SendExtraAI(BinaryWriter writer)
         {

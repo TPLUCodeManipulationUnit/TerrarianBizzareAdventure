@@ -321,6 +321,8 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
             }
         }
 
+        public override bool CanDie => RushTimer <= 0;
+
         public bool HasMissedDonut { get; set; }
 
         public bool OwnerCtrlUse { get; set; }

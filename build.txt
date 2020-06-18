@@ -1,6 +1,6 @@
 displayName = Terrarian's Bizarre Adventure - JoJo Mod
 author = HellGoesOn, Webmilio, Skipping
-version = 0.0.2.7
+version = 0.0.2.8
 homepage = https://forums.terraria.org/index.php?threads/terrarian-bizarre-adventure-jojo-mod-for-terraria.87004/
 modReferences = WebmilioCommons@0.1.11.7
 dllReferences = Microsoft.Speech
