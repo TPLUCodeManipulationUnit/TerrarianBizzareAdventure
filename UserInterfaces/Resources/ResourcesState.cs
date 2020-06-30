@@ -1,15 +1,29 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using Terraria;
-using TerrarianBizzareAdventure.TimeSkip;
-using TerrarianBizzareAdventure.Players;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
+using System.Collections.Generic;
+using System.Security.Principal;
+using Terraria;
+using TerrarianBizzareAdventure.Players;
+using TerrarianBizzareAdventure.UserInterfaces.Elements.Misc;
 
 namespace TerrarianBizzareAdventure.UserInterfaces
 {
     public class ResourcesState : TBAUIState
     {
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            for(int i = Entries.Count - 1; i >= 0; i--)
+            {
+                Entries[i].Update();
+                Entries[i].OffsetY = 44 * i;
+                if (Entries[i].Opacity <= 0)
+                    Entries.RemoveAt(i);
+            }
+        }
+
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
             TBAPlayer mPlayer = TBAPlayer.Get(Main.LocalPlayer);
@@ -18,6 +32,11 @@ namespace TerrarianBizzareAdventure.UserInterfaces
             Texture2D bar = Textures.StaminaBar;
             Vector2 position = new Vector2(20, Main.screenHeight - 80);
             Rectangle barSize = new Rectangle((int)position.X, (int)position.Y, border.Width, border.Height);
+
+            for (int i = Entries.Count - 1; i >= 0; i--)
+            {
+                Entries[i].DrawSelf(spriteBatch);
+            }
 
 
             if (mPlayer.StandUser)
@@ -85,5 +104,7 @@ namespace TerrarianBizzareAdventure.UserInterfaces
                         );
             }
         }
+
+        public List<SREKTFeedEntry> Entries { get; } = new List<SREKTFeedEntry>();
     }
 }

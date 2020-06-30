@@ -20,6 +20,11 @@ namespace TerrarianBizzareAdventure
 
             MouseInput = ModContent.GetTexture("TerrarianBizzareAdventure/Textures/Interface/MouseInput");
             KeyboardInput = ModContent.GetTexture("TerrarianBizzareAdventure/Textures/Interface/KeyboardInput");
+
+
+            KillFeedEntry = ModContent.GetTexture("TerrarianBizzareAdventure/Stands/SREKT/SREKTKillFeed");
+
+            SCAREntryIcon = ModContent.GetTexture("TerrarianBizzareAdventure/Stands/SREKT/SREKTFeed");
         }
         public static void Unload()
         {
@@ -34,6 +39,10 @@ namespace TerrarianBizzareAdventure
 
             MouseInput = null;
             KeyboardInput = null;
+
+            KillFeedEntry = null;
+
+            SCAREntryIcon = null;
         }
 
         public static Texture2D StaminaBar { get; private set; }
@@ -47,5 +56,9 @@ namespace TerrarianBizzareAdventure
 
         public static Texture2D MouseInput { get; private set; }
         public static Texture2D KeyboardInput { get; private set; }
+
+        public static Texture2D KillFeedEntry { get; private set; }
+
+        public static Texture2D SCAREntryIcon { get; private set; }
     }
 }

@@ -316,6 +316,7 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
         {
             if (TimeSkipManager.TimeSkippedFor <= 0 && TBAPlayer.Get(Owner).Stamina >= 25)
             {
+                Projectile.NewProjectile(Center, Vector2.Zero, ModContent.ProjectileType<FakeTilesProjectile>(), 0, 0, Owner.whoAmI);
                 TBAPlayer.Get(Owner).Stamina -= 25;
                 TimeSkipManager.SkipTime(TBAPlayer.Get(Owner), Constants.TICKS_PER_SECOND * 10 + 26);
             }

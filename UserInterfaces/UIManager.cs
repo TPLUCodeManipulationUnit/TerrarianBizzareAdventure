@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Mono.Cecil;
 using Terraria.UI;
 using TerrarianBizzareAdventure.UserInterfaces.Special.RATM;
 using TerrarianBizzareAdventure.UserInterfaces.StandCollection;
@@ -36,6 +37,8 @@ namespace TerrarianBizzareAdventure.UserInterfaces
 
             if (StandComboLayer.State.Visible)
                 StandComboLayer.UserInterface.Update(gameTime);
+
+            ResourcesLayer.State.Update(gameTime);
         }
 
         public static RATMState RATMState { get; private set; }

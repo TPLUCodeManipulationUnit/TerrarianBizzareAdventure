@@ -1,13 +1,25 @@
 ﻿using Microsoft.Xna.Framework;
+using Terraria;
 using Terraria.ModLoader;
 using TerrarianBizzareAdventure.Stands.SREKT;
-using TerrarianBizzareAdventure.Stands;
-using Terraria;
+using TerrarianBizzareAdventure.UserInterfaces;
+using TerrarianBizzareAdventure.UserInterfaces.Elements.Misc;
 
 namespace TerrarianBizzareAdventure.Players
 {
     public partial class TBAPlayer : ModPlayer
     {
+        public override void OnHitByProjectile(Projectile proj, int damage, bool crit)
+        {
+            if(proj.modProjectile is SREKTBullet bullet)
+            {
+                if (player.statLife - damage <= 0)
+                {
+                    UIManager.ResourcesLayer?.State?.Entries.Add(new SREKTFeedEntry(bullet.Owner.name, player.name, bullet.NoScope, bullet.Headshot, bullet.WallBang));
+                }
+            }
+        }
+
         public void ModifySCARLayers()
         {
             if (Stand is SREKTStand && StandActive)

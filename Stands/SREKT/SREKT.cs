@@ -2,6 +2,8 @@
 using System.Linq;
 using Terraria;
 using Terraria.ID;
+using Terraria.ModLoader;
+using Terraria.ModLoader.Config;
 using TerrarianBizzareAdventure.Drawing;
 using TerrarianBizzareAdventure.Enums;
 using TerrarianBizzareAdventure.Players;
@@ -56,9 +58,6 @@ namespace TerrarianBizzareAdventure.Stands.SREKT
 
             Owner.heldProj = projectile.whoAmI;
 
-            if (TBAInputs.SummonStand.JustPressed && CurrentState == ANIMATION_IDLE)
-                CurrentState = ANIMATION_DESPAWN;
-
             if (CurrentState == ANIMATION_DESPAWN && CurrentAnimation.Finished)
                 KillStand();
 
@@ -70,19 +69,19 @@ namespace TerrarianBizzareAdventure.Stands.SREKT
             {
                 if (Main.npc.Any(x => x.Distance(Owner.MountedCenter) <= 50 * 16 && 
                 x.CanBeChasedBy(this)
-                && Collision.CanHitLine(Owner.MountedCenter - new Vector2(0, 8), 0, 0, x.position, x.Hitbox.Width, x.Hitbox.Height) 
+                /*&& Collision.CanHitLine(Owner.MountedCenter - new Vector2(0, 8), 0, 0, x.position, x.Hitbox.Width, x.Hitbox.Height) */
                 && TriggerBotCD <= 0))
                 {
                     Main.PlaySound(SoundID.Item70);
                     TriggerBotCD = 16;
 
                     FlickDirection = (Main.npc.First(x => x.Distance(Owner.MountedCenter) <= 50 * 16
-                    && Collision.CanHitLine(Owner.MountedCenter - new Vector2(0, 8), 0, 0, x.position, x.Hitbox.Width, x.Hitbox.Height) 
+                    /*&& Collision.CanHitLine(Owner.MountedCenter - new Vector2(0, 8), 0, 0, x.position, x.Hitbox.Width, x.Hitbox.Height)*/ 
                     && x.CanBeChasedBy(this)).Center - Owner.MountedCenter).SafeNormalize(-Vector2.UnitY) * 16f;
 
                     FlickTicks = 8;
                     projectile.velocity = FlickDirection;
-                    Projectile.NewProjectile(projectile.Center, projectile.velocity * 1.5f, ProjectileID.BulletHighVelocity, 103, 0, Owner.whoAmI);
+                    Projectile.NewProjectile(projectile.Center, projectile.velocity * 1.5f, ModContent.ProjectileType<SREKTBullet>(), 103, 0, Owner.whoAmI);
                 }
                 else
                     projectile.velocity = new Vector2(XDirection, 16.0f);
@@ -93,24 +92,30 @@ namespace TerrarianBizzareAdventure.Stands.SREKT
                 projectile.velocity = new Vector2(XDirection, 16.0f);
             }
 
-            if (TBAInputs.ContextAction.JustPressed)
+            if (Main.LocalPlayer == Owner)
             {
-                TriggerActive = !TriggerActive;
-                if (TriggerActive)
-                    Main.NewText("TRIGGERBOT v34: ON");
-                else
-                    Main.NewText("TRIGGERBOT v34: OFF");
+                if (TBAInputs.SummonStand.JustPressed && CurrentState == ANIMATION_IDLE)
+                    CurrentState = ANIMATION_DESPAWN;
 
-            }
+                if (TBAInputs.ContextAction.JustPressed)
+                {
+                    TriggerActive = !TriggerActive;
+                    if (TriggerActive)
+                        Main.NewText("TRIGGERBOT v34: ON");
+                    else
+                        Main.NewText("TRIGGERBOT v34: OFF");
 
-            if (TBAInputs.ExtraAction01.JustPressed)
-            {
-                Wallhack = !Wallhack;
-                if (Wallhack)
-                    Main.NewText("WALLHACK v1.16: ON");
-                else
-                    Main.NewText("WALLHACK v1.16: OFF");
+                }
 
+                if (TBAInputs.ExtraAction01.JustPressed)
+                {
+                    Wallhack = !Wallhack;
+                    if (Wallhack)
+                        Main.NewText("WALLHACK v1.16: ON");
+                    else
+                        Main.NewText("WALLHACK v1.16: OFF");
+
+                }
             }
 
             if (!TriggerActive && SCARState == SCARStates.Triggerbot)
@@ -128,7 +133,7 @@ namespace TerrarianBizzareAdventure.Stands.SREKT
                    FlickDirection = (Main.MouseWorld - Owner.Center).SafeNormalize(-Vector2.UnitY) * 16f;
                 FlickTicks = 8;
                 projectile.velocity = FlickDirection;
-                Projectile.NewProjectile(projectile.Center, projectile.velocity, ProjectileID.BulletHighVelocity, 103, 0, Owner.whoAmI);
+                Projectile.NewProjectile(projectile.Center, projectile.velocity, ModContent.ProjectileType<SREKTBullet>(), 103, 0, Owner.whoAmI);
                 SCARState = SCARStates.Aggressive;
             }
 

@@ -17,6 +17,7 @@ using TerrarianBizzareAdventure.UserInterfaces;
 using WebmilioCommons.Networking;
 using System.Globalization;
 using System.Linq;
+using TerrarianBizzareAdventure.Stands.KingCrimson;
 
 namespace TerrarianBizzareAdventure
 {
@@ -31,6 +32,11 @@ namespace TerrarianBizzareAdventure
         {
             SteamHelper.Initialize();
 
+            On.Terraria.Main.DrawTiles += Main_DrawTiles;
+
+            On.Terraria.Main.DrawBlack += Main_DrawBlack;
+
+            On.Terraria.Main.DrawWalls += Main_DrawWalls;
 
             //VoiceRecognitionSystem.Load();
             TBAInputs.Load(this);
@@ -59,6 +65,24 @@ namespace TerrarianBizzareAdventure
             }
         }
 
+        private void Main_DrawWalls(On.Terraria.Main.orig_DrawWalls orig, Main self)
+        {
+            if (!DisableTileDraw)
+                orig.Invoke(self);
+        }
+
+        private void Main_DrawBlack(On.Terraria.Main.orig_DrawBlack orig, Main self, bool force)
+        {
+            if (!DisableTileDraw)
+                orig.Invoke(self, force);
+        }
+
+        private void Main_DrawTiles(On.Terraria.Main.orig_DrawTiles orig, Main self, bool solidOnly, int waterStyleOverride)
+        {
+            if(!DisableTileDraw)
+                orig.Invoke(self, solidOnly, waterStyleOverride);
+        }
+
         public override void UpdateMusic(ref int music, ref MusicPriority priority)
         {
             if (Main.myPlayer == -1 || Main.gameMenu || !Main.LocalPlayer.active)
@@ -75,6 +99,10 @@ namespace TerrarianBizzareAdventure
         public override void Unload()
         {
             Instance = null;
+
+            On.Terraria.Main.DrawTiles -= Main_DrawTiles;
+            On.Terraria.Main.DrawBlack -= Main_DrawBlack;
+            On.Terraria.Main.DrawWalls -= Main_DrawWalls;
 
             TBAInputs.Unload();
             TimeStopManagement.Unload();
@@ -132,6 +160,19 @@ namespace TerrarianBizzareAdventure
         {
             if (Main.gameMenu)
                 TimeSkipManager.Init = false;
+            else
+            {
+                DisableTileDraw = false;
+
+                foreach(Projectile proj in Main.projectile)
+                {
+                    if (!proj.active)
+                        continue;
+
+                    if (proj.type == ModContent.ProjectileType<FakeTilesProjectile>())
+                        DisableTileDraw = true;
+                }
+            }
 
 
             UIManager.Update(gameTime);
@@ -146,6 +187,8 @@ namespace TerrarianBizzareAdventure
         }
 
         public bool VoiceLinesEnabled { get; set; }
+
+        public bool DisableTileDraw { get; set; }
 
         public static TBAMod Instance { get; private set; }
 
