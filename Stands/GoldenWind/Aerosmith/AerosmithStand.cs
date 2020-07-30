@@ -8,7 +8,7 @@ using TerrarianBizzareAdventure.Drawing;
 using TerrarianBizzareAdventure.Enums;
 using TerrarianBizzareAdventure.Players;
 
-namespace TerrarianBizzareAdventure.Stands.Aerosmith
+namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
 {
     public sealed class AerosmithStand : Stand
     {
@@ -23,10 +23,10 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
         public override void AddAnimations()
         {
             // kekW dis bad boi will use same animation for everything for now
-            var summon = new SpriteAnimation(mod.GetTexture("Stands/Aerosmith/Idle"), 18, 2);
-            var idle = new SpriteAnimation(mod.GetTexture("Stands/Aerosmith/Idle"), 18, 4, true);
-            var despawn = new SpriteAnimation(mod.GetTexture("Stands/Aerosmith/Idle"), 18, 4);
-            var turnAround = new SpriteAnimation(mod.GetTexture("Stands/Aerosmith/Turn"), 17, 4);
+            var summon = new SpriteAnimation(mod.GetTexture("Stands/GoldenWind/Aerosmith/Idle"), 18, 2);
+            var idle = new SpriteAnimation(mod.GetTexture("Stands/GoldenWind/Aerosmith/Idle"), 18, 4, true);
+            var despawn = new SpriteAnimation(mod.GetTexture("Stands/GoldenWind/Aerosmith/Idle"), 18, 4);
+            var turnAround = new SpriteAnimation(mod.GetTexture("Stands/GoldenWind/Aerosmith/Turn"), 17, 4);
 
             Animations.Add(ANIMATION_SUMMON, summon);
             Animations.Add(ANIMATION_IDLE, idle);
@@ -153,7 +153,7 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
 
                 if (tPlayer.ASAttack && CurrentState == ANIMATION_IDLE && BarrageTime <= 0)
                 {
-                    tPlayer.CheckStaminaCost(2);
+                    tPlayer.CheckStaminaCost(2, true);
                     BarrageTime = 32;
                 }
 
@@ -162,7 +162,7 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
 
                 if (tPlayer.ASBomb && CurrentState == ANIMATION_IDLE && Owner.ownedProjectileCounts[ModContent.ProjectileType<AerosmithBomb>()] <= 0)
                 {
-                    tPlayer.CheckStaminaCost(15);
+                    tPlayer.CheckStaminaCost(15, true);
 
                     Vector2 position = projectile.Center + new Vector2(0, 6);
                     Vector2 velocity = new Vector2(9, 0).RotatedBy(Angle).RotatedByRandom(.12f);

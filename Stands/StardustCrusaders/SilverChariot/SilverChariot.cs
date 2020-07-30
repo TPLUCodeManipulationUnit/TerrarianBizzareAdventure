@@ -7,7 +7,7 @@ using TerrarianBizzareAdventure.Players;
 using TerrarianBizzareAdventure.Helpers;
 using System.Collections.Generic;
 
-namespace TerrarianBizzareAdventure.Stands.SilverChariot
+namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.SilverChariot
 {
     public class SilverChariot : PunchBarragingStand
     {

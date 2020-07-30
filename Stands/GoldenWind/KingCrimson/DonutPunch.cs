@@ -5,7 +5,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using WebmilioCommons.Projectiles;
 
-namespace TerrarianBizzareAdventure.Stands.KingCrimson
+namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
 {
     public class DonutPunch : StandardProjectile
     {

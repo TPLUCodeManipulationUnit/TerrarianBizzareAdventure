@@ -264,6 +264,10 @@ namespace TerrarianBizzareAdventure.Stands
         public float YPosOffset { get; set; }
 
         public static bool DrawStandAura { get; set; }
+		
+		public bool IsDespawning => CurrentState == ANIMATION_DESPAWN;
+
+        public bool IsSpawning => CurrentState == ANIMATION_SUMMON;
 
         public bool InIdleState
         {

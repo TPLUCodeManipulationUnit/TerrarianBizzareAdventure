@@ -9,8 +9,9 @@ using TerrarianBizzareAdventure.Helpers;
 using TerrarianBizzareAdventure.Players;
 using TerrarianBizzareAdventure.Projectiles;
 using TerrarianBizzareAdventure.TimeSkip;
+using WebmilioCommons.Tinq;
 
-namespace TerrarianBizzareAdventure.Stands.KingCrimson
+namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
 {
     public class KingCrimson : PunchBarragingStand
     {
@@ -31,21 +32,22 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
 
         public override void AddAnimations()
         {
+            string basePath = "Stands/GoldenWind/KingCrimson/";
             #region Mandatory
-            Animations.Add(ANIMATION_SUMMON, new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCSpawn"), 7, 4));
-            Animations.Add(ANIMATION_IDLE, new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCIdle"), 5, 22));
-            Animations.Add(ANIMATION_DESPAWN, new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCSpawn"), 7, 4));
+            Animations.Add(ANIMATION_SUMMON, new SpriteAnimation(basePath +"KCSpawn", 7, 4));
+            Animations.Add(ANIMATION_IDLE, new SpriteAnimation(basePath + "KCIdle", 5, 22));
+            Animations.Add(ANIMATION_DESPAWN, new SpriteAnimation(basePath + "KCSpawn", 7, 4));
             #endregion
 
             #region Punch
-            Animations.Add("PUNCH_R", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCPunchRight"), 4, 5));
-            Animations.Add("PUNCH_L", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCPunchLeft"), 4, 5));
+            Animations.Add("PUNCH_R", new SpriteAnimation(basePath + "KCPunchRight", 4, 5));
+            Animations.Add("PUNCH_L", new SpriteAnimation(basePath + "KCPunchLeft", 4, 5));
 
-            Animations.Add("PUNCH_RU", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCPunchRightU"), 4, 5));
-            Animations.Add("PUNCH_LU", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCPunchLeftU"), 4, 5));
+            Animations.Add("PUNCH_RU", new SpriteAnimation(basePath + "KCPunchRightU", 4, 5));
+            Animations.Add("PUNCH_LU", new SpriteAnimation(basePath + "KCPunchLeftU", 4, 5));
 
-            Animations.Add("PUNCH_RD", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCPunchRightD"), 4, 5));
-            Animations.Add("PUNCH_LD", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCPunchLeftD"), 4, 5));
+            Animations.Add("PUNCH_RD", new SpriteAnimation(basePath + "KCPunchRightD", 4, 5));
+            Animations.Add("PUNCH_LD", new SpriteAnimation(basePath + "KCPunchLeftD", 4, 5));
 
             Animations["PUNCH_R"].SetNextAnimation(Animations[ANIMATION_IDLE]);
             Animations["PUNCH_L"].SetNextAnimation(Animations[ANIMATION_IDLE]);
@@ -58,11 +60,11 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
             #endregion
 
             #region Donut
-            Animations.Add("DONUT_PREP", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCDonutPrep"), 15, 4));
-            Animations.Add("DONUT_IDLE", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCDonutIdle"), 7, 15, true));
-            Animations.Add("DONUT_ATT", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCDonutCommit"), 6, 4));
-            Animations.Add("DONUT_UNDO", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCDonutUndo"), 12, 4));
-            Animations.Add("DONUT_MISS", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCDonutMiss"), 7, 4));
+            Animations.Add("DONUT_PREP", new SpriteAnimation(basePath + "KCDonutPrep", 15, 4));
+            Animations.Add("DONUT_IDLE", new SpriteAnimation(basePath + "KCDonutIdle", 7, 15, true));
+            Animations.Add("DONUT_ATT", new SpriteAnimation(basePath + "KCDonutCommit", 6, 4));
+            Animations.Add("DONUT_UNDO", new SpriteAnimation(basePath + "KCDonutUndo", 12, 4));
+            Animations.Add("DONUT_MISS", new SpriteAnimation(basePath + "KCDonutMiss", 7, 4));
 
             Animations["DONUT_PREP"].SetNextAnimation(Animations["DONUT_IDLE"]);
             Animations["DONUT_ATT"].SetNextAnimation(Animations["DONUT_MISS"]);
@@ -70,18 +72,18 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
             Animations["DONUT_MISS"].SetNextAnimation(Animations[ANIMATION_IDLE]);
             #endregion
 
-            Animations.Add("POSE_PREP", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCPoseTransition"), 8, 5));
-            Animations.Add("POSE_END", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCPoseTransition"), 8, 5, false, null, true));
-            Animations.Add("POSE_IDLE", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCPoseIdle"), 10, 22, true));
+            Animations.Add("POSE_PREP", new SpriteAnimation(basePath + "KCPoseTransition", 8, 5));
+            Animations.Add("POSE_END", new SpriteAnimation(basePath + "KCPoseTransition", 8, 5, false, null, true));
+            Animations.Add("POSE_IDLE", new SpriteAnimation(basePath + "KCPoseIdle", 10, 22, true));
 
             Animations["POSE_PREP"].SetNextAnimation(Animations["POSE_IDLE"]);
             Animations["POSE_END"].SetNextAnimation(Animations[ANIMATION_IDLE]);
             Animations["POSE_END"].ReversePlayback = true;
 
             #region Rush
-            Animations.Add("RUSH_MID", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCRush"), 4, 4));
-            Animations.Add("RUSH_UP", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCRushUp"), 4, 4));
-            Animations.Add("RUSH_DOWN", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCRushDown"), 4, 4));
+            Animations.Add("RUSH_MID", new SpriteAnimation(basePath + "KCRush", 4, 4));
+            Animations.Add("RUSH_UP", new SpriteAnimation(basePath + "KCRushUp", 4, 4));
+            Animations.Add("RUSH_DOWN", new SpriteAnimation(basePath + "KCRushDown", 4, 4));
 
             Animations["RUSH_UP"].SetNextAnimation(Animations[ANIMATION_IDLE]);
             Animations["RUSH_MID"].SetNextAnimation(Animations[ANIMATION_IDLE]);
@@ -91,10 +93,10 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
             Animations[ANIMATION_SUMMON].SetNextAnimation(Animations[ANIMATION_IDLE]);
 
             #region Cut
-            Animations.Add("CUT_IDLE", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCCutIdle"), 5, 25, true));
+            Animations.Add("CUT_IDLE", new SpriteAnimation(basePath + "KCCutIdle", 5, 25, true));
 
-            Animations.Add("CUT_PREP", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCCut"), 20, 3));
-            Animations.Add("CUT_ATT", new SpriteAnimation(mod.GetTexture("Stands/KingCrimson/KCYeet"), 13, 3));
+            Animations.Add("CUT_PREP", new SpriteAnimation(basePath + "KCCut", 20, 3));
+            Animations.Add("CUT_ATT", new SpriteAnimation(basePath + "KCYeet", 13, 3));
 
             Animations["CUT_ATT"].SetNextAnimation(Animations[ANIMATION_IDLE]);
             Animations["CUT_PREP"].SetNextAnimation(Animations["CUT_IDLE"]);
@@ -314,11 +316,15 @@ namespace TerrarianBizzareAdventure.Stands.KingCrimson
 
         public void EraseTime()
         {
-            if (TimeSkipManager.TimeSkippedFor <= 0 && TBAPlayer.Get(Owner).Stamina >= 25)
+            if (TimeSkipManager.TimeSkippedFor <= 0 && TBAPlayer.Get(Owner).CheckStaminaCost(25))
             {
                 Projectile.NewProjectile(Center, Vector2.Zero, ModContent.ProjectileType<FakeTilesProjectile>(), 0, 0, Owner.whoAmI);
-                TBAPlayer.Get(Owner).Stamina -= 25;
                 TimeSkipManager.SkipTime(TBAPlayer.Get(Owner), Constants.TICKS_PER_SECOND * 10 + 26);
+            }
+            else if (TimeSkipManager.TimeSkippedFor > 0)
+            {
+                Main.projectile.FirstActive(x => x.modProjectile is FakeTilesProjectile).timeLeft = 30;
+                TimeSkipManager.SkipTime(TBAPlayer.Get(Owner), 36);
             }
         }
 

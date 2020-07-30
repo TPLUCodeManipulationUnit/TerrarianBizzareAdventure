@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 using TerrarianBizzareAdventure.Players;
 using WebmilioCommons.Projectiles;
 
-namespace TerrarianBizzareAdventure.Stands.Aerosmith
+namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
 {
     public class AerosmithBomb : StandardProjectile
     {
@@ -29,7 +29,7 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
             {
                 VelocityRotation = projectile.velocity.ToRotation();
 
-                int dustIndex = Dust.NewDust(projectile.Center, 0, 0, 31, 0f, 0f, 100, default(Color), 2f);
+                int dustIndex = Dust.NewDust(projectile.Center, 0, 0, 31, 0f, 0f, 100, default, 2f);
                 Main.dust[dustIndex].position = projectile.Center;
                 Main.dust[dustIndex].velocity = -projectile.velocity * 0.25f;
                 Main.dust[dustIndex].noGravity = true;
@@ -62,32 +62,32 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
                         #region poop code
                         for (int g = 0; g < 4; g++)
                         {
-                            int goreIndex = Gore.NewGore(projectile.Center, default(Vector2), Main.rand.Next(61, 64), 1f);
+                            int goreIndex = Gore.NewGore(projectile.Center, default, Main.rand.Next(61, 64), 1f);
                             Main.gore[goreIndex].scale = 1.5f;
                             Main.gore[goreIndex].velocity *= 1.5f;
-                            goreIndex = Gore.NewGore(projectile.Center, default(Vector2), Main.rand.Next(61, 64), 1f);
+                            goreIndex = Gore.NewGore(projectile.Center, default, Main.rand.Next(61, 64), 1f);
                             Main.gore[goreIndex].scale = 1.5f;
                             Main.gore[goreIndex].velocity *= 1.5f;
-                            goreIndex = Gore.NewGore(projectile.Center, default(Vector2), Main.rand.Next(61, 64), 1f);
+                            goreIndex = Gore.NewGore(projectile.Center, default, Main.rand.Next(61, 64), 1f);
                             Main.gore[goreIndex].scale = 1.5f;
                             Main.gore[goreIndex].velocity *= 1.5f;
-                            goreIndex = Gore.NewGore(projectile.Center, default(Vector2), Main.rand.Next(61, 64), 1f);
+                            goreIndex = Gore.NewGore(projectile.Center, default, Main.rand.Next(61, 64), 1f);
                             Main.gore[goreIndex].scale = 1.5f;
                             Main.gore[goreIndex].velocity *= 1.5f;
                         }
                         // Smoke Dust spawn
                         for (int i = 0; i < 100; i++)
                         {
-                            int dustIndex = Dust.NewDust(projectile.Center, 0, 0, 31, 0f, 0f, 100, default(Color), 2f);
+                            int dustIndex = Dust.NewDust(projectile.Center, 0, 0, 31, 0f, 0f, 100, default, 2f);
                             Main.dust[dustIndex].velocity *= Main.rand.NextFloat(5f, 9f);
                         }
                         // Fire Dust spawn
                         for (int i = 0; i < 160; i++)
                         {
-                            int dustIndex = Dust.NewDust(projectile.Center, 0, 0, 6, 0f, 0f, 100, default(Color), 3f);
+                            int dustIndex = Dust.NewDust(projectile.Center, 0, 0, 6, 0f, 0f, 100, default, 3f);
                             Main.dust[dustIndex].noGravity = true;
                             Main.dust[dustIndex].velocity *= Main.rand.NextFloat(3f, 12f);
-                            dustIndex = Dust.NewDust(projectile.Center, 0, 0, 6, 0f, 0f, 100, default(Color), 2f);
+                            dustIndex = Dust.NewDust(projectile.Center, 0, 0, 6, 0f, 0f, 100, default, 2f);
                             Main.dust[dustIndex].velocity *= Main.rand.NextFloat(3f, 12f);
                         }
                         #endregion
@@ -180,6 +180,6 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
 
         public Vector2 Offset { get; private set; }
 
-        public override string Texture => "TerrarianBizzareAdventure/Stands/Aerosmith/Bomb";
+        public override string Texture => "TerrarianBizzareAdventure/Stands/GoldenWind/Aerosmith/Bomb";
     }
 }

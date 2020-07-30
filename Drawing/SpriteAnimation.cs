@@ -29,7 +29,7 @@ namespace TerrarianBizzareAdventure.Drawing
 
         public SpriteAnimation(string texture, int frameCount, int frameSpeed, bool autoLoop = false, SpriteAnimation nextAnimation = null, bool reverseNextAnimation = false)
         {
-            SpriteSheet = ModContent.GetTexture(texture);
+            SpriteSheet = ModContent.GetTexture("TerrarianBizzareAdventure/" + texture);
             FrameCount = frameCount;
             FrameSpeed = frameSpeed;
 

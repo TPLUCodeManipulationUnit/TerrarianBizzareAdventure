@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
-using TerrarianBizzareAdventure.Stands.Aerosmith;
+using TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith;
 using TerrarianBizzareAdventure.States;
 using TerrarianBizzareAdventure.TimeSkip;
 using TerrarianBizzareAdventure.TimeStop;

@@ -80,8 +80,10 @@ namespace TerrarianBizzareAdventure.UserInterfaces
                 return;
             }
 
-            if (CurrentStand != LastStand && CurrentStand != null)
+            if (NeedsToUpdateAutopsyReport && CurrentStand != null)
             {
+				NeedsToUpdateAutopsyReport = false;
+				
                 StandComboGrid.Clear();
 
                 CurrentCombos.Clear();
@@ -147,6 +149,8 @@ namespace TerrarianBizzareAdventure.UserInterfaces
         public UIScrollbar SCGridScrollBar { get; private set; }
 
         public UIPanel MainPanel { get; private set; }
+		
+		public bool NeedsToUpdateAutopsyReport { get; set; }
 
         public List<StandCombo> CurrentCombos { get; private set; }
     }

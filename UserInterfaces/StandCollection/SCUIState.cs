@@ -94,6 +94,7 @@ namespace TerrarianBizzareAdventure.UserInterfaces.StandCollection
 
                 UIManager.StandComboLayer.State.Visible = true;
                 UIManager.StandComboLayer.State.CurrentStand = StandLoader.Instance.FindGeneric(x => x.StandName.ToString() == card.StandDisplayName);
+				UIManager.StandComboLayer.State.NeedsToUpdateAutopsyReport = true;
             }
         }
 

@@ -1,6 +1,6 @@
 ﻿using TerrarianBizzareAdventure.Projectiles;
 
-namespace TerrarianBizzareAdventure.Stands.SilverChariot
+namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.SilverChariot
 {
     public class ChariotBarrage : PunchBarrage
     {

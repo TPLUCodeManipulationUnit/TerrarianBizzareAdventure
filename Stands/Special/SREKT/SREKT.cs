@@ -8,7 +8,7 @@ using TerrarianBizzareAdventure.Drawing;
 using TerrarianBizzareAdventure.Enums;
 using TerrarianBizzareAdventure.Players;
 
-namespace TerrarianBizzareAdventure.Stands.SREKT
+namespace TerrarianBizzareAdventure.Stands.Special.SREKT
 {
     public class SREKTStand : Stand
     {
@@ -23,9 +23,9 @@ namespace TerrarianBizzareAdventure.Stands.SREKT
 
             XDirection = -16.5f;
 
-            SpriteAnimation scarTexture = new SpriteAnimation(mod.GetTexture("Stands/SREKT/SREKT"), 1, 20);
-            SpriteAnimation scarTexture3 = new SpriteAnimation(mod.GetTexture("Stands/SREKT/SREKT"), 1, 0);
-            SpriteAnimation scarTexture2 = new SpriteAnimation(mod.GetTexture("Stands/SREKT/SREKT"), 1, 0, true);
+            SpriteAnimation scarTexture = new SpriteAnimation("Stands/Special/SREKT/SREKT", 1, 20);
+            SpriteAnimation scarTexture3 = new SpriteAnimation("Stands/Special/SREKT", 1, 0);
+            SpriteAnimation scarTexture2 = new SpriteAnimation("Stands/Special/SREKT", 1, 0, true);
 
             Animations.Add(ANIMATION_SUMMON, scarTexture);
             Animations.Add(ANIMATION_DESPAWN, scarTexture3);

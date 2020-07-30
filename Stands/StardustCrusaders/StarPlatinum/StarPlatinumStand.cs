@@ -11,12 +11,12 @@ using TerrarianBizzareAdventure.Projectiles;
 using TerrarianBizzareAdventure.Projectiles.Misc;
 using TerrarianBizzareAdventure.TimeStop;
 
-namespace TerrarianBizzareAdventure.Stands.StarPlatinum
+namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.StarPlatinum
 {
     public class StarPlatinumStand : TimeStoppingStand
     {
         private const string
-            TEXPATH = "Stands/StarPlatinum/",
+            TEXPATH = "Stands/StardustCrusaders/StarPlatinum/",
             PUNCH = "SPPunch_",
             LEFTHAND = "_LeftHand",
             RIGHTHAND = "_RightHand";

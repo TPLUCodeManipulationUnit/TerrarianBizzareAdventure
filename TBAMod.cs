@@ -1,27 +1,23 @@
-using System.Collections.Generic;
-using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ModLoader;
 using Terraria.UI;
 using TerrarianBizzareAdventure.Helpers;
-using TerrarianBizzareAdventure.Players;
 using TerrarianBizzareAdventure.Stands;
-using TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio;
+using TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson;
 using TerrarianBizzareAdventure.TimeSkip;
 using TerrarianBizzareAdventure.TimeStop;
 using TerrarianBizzareAdventure.UserInterfaces;
 using WebmilioCommons.Networking;
-using System.Globalization;
-using System.Linq;
-using TerrarianBizzareAdventure.Stands.KingCrimson;
 
 namespace TerrarianBizzareAdventure
 {
-	public class TBAMod : Mod
+    public class TBAMod : Mod
 	{
 		public TBAMod()
 		{
@@ -41,7 +37,6 @@ namespace TerrarianBizzareAdventure
             //VoiceRecognitionSystem.Load();
             TBAInputs.Load(this);
             TimeStopManagement.Load();
-            TimeSkipManager.Load();
 
             if (!Main.dedServ)
             {
@@ -158,9 +153,7 @@ namespace TerrarianBizzareAdventure
 
         public override void UpdateUI(GameTime gameTime)
         {
-            if (Main.gameMenu)
-                TimeSkipManager.Init = false;
-            else
+            if(!Main.gameMenu)
             {
                 DisableTileDraw = false;
 

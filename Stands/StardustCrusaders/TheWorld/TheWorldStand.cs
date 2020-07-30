@@ -16,7 +16,7 @@ using System.IO;
 using TerrarianBizzareAdventure.Enums;
 using Terraria.ID;
 
-namespace TerrarianBizzareAdventure.Stands.TheWorld
+namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.TheWorld
 {
     public class TheWorldStand : TimeStoppingStand
     {
@@ -34,7 +34,7 @@ namespace TerrarianBizzareAdventure.Stands.TheWorld
 
         public override void AddAnimations()
         {
-            string path = "Stands/TheWorld/TheWorld";
+            string path = "Stands/StardustCrusaders/TheWorld/TheWorld";
 
             Animations.Add(ANIMATION_SUMMON, new SpriteAnimation(mod.GetTexture(path + "Spawn"), 7, 5));
 

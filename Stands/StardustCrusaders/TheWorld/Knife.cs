@@ -4,7 +4,7 @@ using Terraria;
 using TerrarianBizzareAdventure.TimeStop;
 using WebmilioCommons.Projectiles;
 
-namespace TerrarianBizzareAdventure.Stands.TheWorld
+namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.TheWorld
 {
     public class Knife : StandardProjectile, IProjectileHasImmunityToTimeStop
     {

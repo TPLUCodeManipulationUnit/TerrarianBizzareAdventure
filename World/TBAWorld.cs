@@ -1,14 +1,10 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
+﻿using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using TerrarianBizzareAdventure.Players;
-using TerrarianBizzareAdventure.Projectiles;
-using TerrarianBizzareAdventure.Stands.StarPlatinum;
-using TerrarianBizzareAdventure.Stands.TheWorld;
+using TerrarianBizzareAdventure.Stands.StardustCrusaders.StarPlatinum;
+using TerrarianBizzareAdventure.Stands.StardustCrusaders.TheWorld;
 using TerrarianBizzareAdventure.TimeSkip;
 using TerrarianBizzareAdventure.TimeStop;
 

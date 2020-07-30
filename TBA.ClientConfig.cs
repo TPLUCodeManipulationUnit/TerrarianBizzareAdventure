@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using Terraria.ModLoader.Config;
 using TerrarianBizzareAdventure.Stands;
-using TerrarianBizzareAdventure.Tiles;
 
 namespace TerrarianBizzareAdventure
 {
@@ -9,10 +8,6 @@ namespace TerrarianBizzareAdventure
     {
         public override ConfigScope Mode => ConfigScope.ClientSide;
         [Header("Visuals")]
-
-        [Label("Time Skip VFX for tiles")]
-        [DefaultValue(true)]
-        public bool TimeSkipShader { get; set; }
 
         [Label("Enable Stand Aura")]
         [DefaultValue(false)]
@@ -26,9 +21,6 @@ namespace TerrarianBizzareAdventure
 
         public override void OnChanged()
         {
-            TBAGlobalTile.ShaderEnabled = TimeSkipShader;
-            TBAGlobalWall.ShaderEnabled = TimeSkipShader;
-
             Stand.DrawStandAura = DrawStandAura;
 
             TBAMod.Instance.VoiceLinesEnabled = EnableVA;
@@ -36,9 +28,6 @@ namespace TerrarianBizzareAdventure
 
         public override void OnLoaded()
         {
-            TBAGlobalTile.ShaderEnabled = TimeSkipShader;
-            TBAGlobalWall.ShaderEnabled = TimeSkipShader;
-
             Stand.DrawStandAura = DrawStandAura;
 
             TBAMod.Instance.VoiceLinesEnabled = EnableVA;

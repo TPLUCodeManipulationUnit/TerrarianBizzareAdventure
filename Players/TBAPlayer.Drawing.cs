@@ -16,6 +16,7 @@ namespace TerrarianBizzareAdventure.Players
     {
         public override void ModifyDrawLayers(List<PlayerLayer> layers)
         {
+            ModifyEmperorLayers();
             ModifySCARLayers();
 
             layers.Insert(0, standAuraLayer);

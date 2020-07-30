@@ -1,10 +1,6 @@
-﻿using Terraria.ModLoader;
+﻿using Terraria;
+using Terraria.ModLoader;
 using TerrarianBizzareAdventure.Players;
-using TerrarianBizzareAdventure.Stands;
-using System.Linq;
-using Terraria;
-using TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio;
-using TerrarianBizzareAdventure.Stands.SREKT;
 
 namespace TerrarianBizzareAdventure.Commands
 {

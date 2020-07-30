@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
-using TerrarianBizzareAdventure.Stands.Aerosmith;
+using TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith;
 
 namespace TerrarianBizzareAdventure.Players
 {
@@ -10,8 +10,8 @@ namespace TerrarianBizzareAdventure.Players
         public override void ModifyScreenPosition()
         {
             if(StandActive && ActiveStandProjectile is AerosmithStand stand)
-            {
-                if(stand.CurrentState != "SUMMON")
+            {	
+                if(!stand.IsDespawning && stand.CurrentState != "SUMMON")
                     Main.screenPosition = stand.Center - new Vector2(Main.screenWidth, Main.screenHeight) * 0.5f;
             }
 

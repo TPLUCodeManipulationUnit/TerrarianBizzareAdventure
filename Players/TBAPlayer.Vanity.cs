@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using Terraria.ModLoader;
-using TerrarianBizzareAdventure.Items.Armor.Vanity.Vinegar;
-using TerrarianBizzareAdventure.Stands.KingCrimson;
+﻿using Terraria.ModLoader;
+using TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson;
 
 namespace TerrarianBizzareAdventure.Players
 {

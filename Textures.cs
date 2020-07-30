@@ -22,9 +22,9 @@ namespace TerrarianBizzareAdventure
             KeyboardInput = ModContent.GetTexture("TerrarianBizzareAdventure/Textures/Interface/KeyboardInput");
 
 
-            KillFeedEntry = ModContent.GetTexture("TerrarianBizzareAdventure/Stands/SREKT/SREKTKillFeed");
+            KillFeedEntry = ModContent.GetTexture("TerrarianBizzareAdventure/Stands/Special/SREKT/SREKTKillFeed");
 
-            SCAREntryIcon = ModContent.GetTexture("TerrarianBizzareAdventure/Stands/SREKT/SREKTFeed");
+            SCAREntryIcon = ModContent.GetTexture("TerrarianBizzareAdventure/Stands/Special/SREKT/SREKTFeed");
         }
         public static void Unload()
         {

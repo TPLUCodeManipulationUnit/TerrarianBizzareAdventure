@@ -4,7 +4,7 @@ using Terraria;
 using Terraria.ModLoader;
 using TerrarianBizzareAdventure.Helpers;
 using TerrarianBizzareAdventure.Players;
-using TerrarianBizzareAdventure.Stands.SREKT;
+using TerrarianBizzareAdventure.Stands.Special.SREKT;
 using TerrarianBizzareAdventure.UserInterfaces;
 using TerrarianBizzareAdventure.UserInterfaces.Elements.Misc;
 

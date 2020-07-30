@@ -12,11 +12,11 @@ using TerrarianBizzareAdventure.Helpers;
 using Terraria.ID;
 
 
-namespace TerrarianBizzareAdventure.Stands.TheWorld
+namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.TheWorld
 {
     public class RoadRoller : ModProjectile, IProjectileHasImmunityToTimeStop
     {
-        private const int MAX_DAMAGE = 6969;
+       // private const int MAX_DAMAGE = 6969;
 
         public bool IsNativelyImmuneToTimeStop() => projectile.timeLeft > 4;
 

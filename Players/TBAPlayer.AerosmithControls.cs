@@ -1,5 +1,5 @@
 ﻿using Terraria.ModLoader;
-using TerrarianBizzareAdventure.Stands.Aerosmith;
+using TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith;
 
 namespace TerrarianBizzareAdventure.Players
 {
@@ -7,8 +7,9 @@ namespace TerrarianBizzareAdventure.Players
     {
         public void SetAerosmithControls()
         {
-            if (Stand is AerosmithStand && StandActive)
+            if (StandActive && ActiveStandProjectile is AerosmithStand aero && !aero.IsDespawning)
             {
+				
                 ASHover = player.controlJump;
 
                 ASAngleUp = player.controlUp;

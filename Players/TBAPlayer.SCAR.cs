@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
-using TerrarianBizzareAdventure.Stands.SREKT;
+using TerrarianBizzareAdventure.Stands.Special.SREKT;
 using TerrarianBizzareAdventure.UserInterfaces;
 using TerrarianBizzareAdventure.UserInterfaces.Elements.Misc;
 

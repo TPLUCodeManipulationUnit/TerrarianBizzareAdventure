@@ -9,7 +9,7 @@ namespace TerrarianBizzareAdventure.Items.Tools
 {
     public class StandArrow : TBAItem
     {
-        public StandArrow() : base("Bizzare Arrow", "Arrow forged from Meteorite.\nYou feel dizzy from just holding it.\nSelf harm is not recommended", new Vector2(40, 40), 0, ItemRarityID.Expert)
+        public StandArrow() : base("Bizarre Arrow", "Arrow forged from Meteorite.\nYou feel dizzy from just holding it.\nSelf harm is not recommended", new Vector2(40, 40), 0, ItemRarityID.Expert)
         {
         }
 

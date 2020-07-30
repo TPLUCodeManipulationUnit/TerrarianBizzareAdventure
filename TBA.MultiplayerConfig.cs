@@ -2,7 +2,6 @@
 using Terraria.ModLoader.Config;
 using TerrarianBizzareAdventure.Items.Tools;
 using TerrarianBizzareAdventure.Stands;
-using TerrarianBizzareAdventure.Tiles;
 
 namespace TerrarianBizzareAdventure
 {

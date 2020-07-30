@@ -10,7 +10,7 @@ using WebmilioCommons.Networking;
 using WebmilioCommons.Extensions;
 using System.IO;
 
-namespace TerrarianBizzareAdventure.Stands.SREKT
+namespace TerrarianBizzareAdventure.Stands.Special.SREKT
 {
     public class SREKTBullet : StandardProjectile
     {

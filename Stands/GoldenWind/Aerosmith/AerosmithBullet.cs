@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 using TerrarianBizzareAdventure.Players;
 using WebmilioCommons.Projectiles;
 
-namespace TerrarianBizzareAdventure.Stands.Aerosmith
+namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
 {
     public class AerosmithBullet : StandardProjectile
     {
@@ -43,6 +43,6 @@ namespace TerrarianBizzareAdventure.Stands.Aerosmith
             spriteBatch.Draw(texture, position, null, Color.White * opacity, rotation, new Vector2(1), 1f, SpriteEffects.None, 1f);
         }
 
-        public override string Texture => "TerrarianBizzareAdventure/Stands/Aerosmith/Bullet";
+        public override string Texture => "TerrarianBizzareAdventure/Stands/GoldenWind/Aerosmith/Bullet";
     }
 }
