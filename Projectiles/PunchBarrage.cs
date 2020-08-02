@@ -108,7 +108,7 @@ namespace TerrarianBizzareAdventure.Projectiles
                     }
                 }
             }*/
-
+             /*
             if (CanClash)
             {
                 foreach (Projectile proj in Main.projectile)
@@ -163,7 +163,7 @@ namespace TerrarianBizzareAdventure.Projectiles
 
                     }
                 }
-            }
+            }*/
         }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)

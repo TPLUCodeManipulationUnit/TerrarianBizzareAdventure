@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using Terraria.ModLoader;
+using TerrarianBizzareAdventure.Buffs;
 
 namespace TerrarianBizzareAdventure.Players
 {
@@ -10,7 +11,6 @@ namespace TerrarianBizzareAdventure.Players
         {
             var staminaDebuff = 0;
 
-
             if (StandActive)
                 staminaDebuff -= 8 * Constants.TICKS_PER_SECOND;
 
@@ -18,21 +18,21 @@ namespace TerrarianBizzareAdventure.Players
 
             if (StaminaRegenTicks >= StaminaRegenTickRate)
             {
-                Stamina += 1;
+                Stamina += StaminaGain;
                 StaminaRegenTicks = 0;
             }
 
             if (Stamina >= MaxStamina)
                 StaminaRegenTicks = 0;
 
-            int bonus = (player.statLifeMax - 200) + (player.statLife - player.statLifeMax) + StaminaRegenBuff;
+            int bonus = (player.statLifeMax - 200) + (player.statLife - player.statLifeMax);
 
             if (bonus > 210)
                 bonus = 210;
 
-            StaminaRegenBuff = 0;
+            ResultingRegen = bonus + staminaDebuff + StaminaRegenBuff;
 
-            ResultingRegen = bonus + staminaDebuff;
+            StaminaRegenBuff = 0;
 
             if (IsDebugging)
                 Stamina = MaxStamina;
@@ -45,6 +45,15 @@ namespace TerrarianBizzareAdventure.Players
 
             if (forceSpend)
             {
+                int cStamina = Stamina;
+                int duration = cStamina - cost;
+
+                if (duration < 0)
+                {
+                    player.AddBuff(ModContent.BuffType<TiredDebuff>(), (1 + Math.Abs(duration)) * Constants.TICKS_PER_SECOND);
+                    player.AddBuff(ModContent.BuffType<ExhaustedDebuff>(), (1 + Math.Abs(duration)) * Constants.TICKS_PER_SECOND);
+                }
+
                 Stamina -= cost;
                 return true;
             }
@@ -56,6 +65,15 @@ namespace TerrarianBizzareAdventure.Players
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Adds "Tired" debuff to player
+        /// </summary>
+        /// <param name="Duration">Duration in seconds</param>
+        public void TirePlayer(int Duration)
+        {
+            player.AddBuff(ModContent.BuffType<TiredDebuff>(), Duration * Constants.TICKS_PER_SECOND);
         }
 
         private int _stamina;
@@ -78,6 +96,10 @@ namespace TerrarianBizzareAdventure.Players
         public int StaminaRegenBuff { get; set; }
 
         public int ResultingRegen { get; set; }
+
+        public int StaminaGain => 1 + StaminaGainBonus;
+
+        public int StaminaGainBonus { get; set; }
 
         public bool IsDebugging { get; set; }
     }

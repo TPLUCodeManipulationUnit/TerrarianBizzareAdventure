@@ -4,11 +4,20 @@ using Terraria.ModLoader;
 using TerrarianBizzareAdventure.Players;
 using TerrarianBizzareAdventure.Projectiles;
 using TerrarianBizzareAdventure.TimeStop;
+using System.Collections.Generic;
 
 namespace TerrarianBizzareAdventure.Items
 {
     public sealed class TBAInstanciatedGlobalItem : GlobalItem
     {
+        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
+        {
+            if(item.buffType == BuffID.WellFed)
+            {
+                tooltips.Add(new TooltipLine(TBAMod.Instance, "StaminaGainLine", "Increases Stamina Gain by 1"));
+            }
+        }
+
         public override void Update(Item item, ref float gravity, ref float maxFallSpeed)
         {
             if (TimeStopManagement.TimeStopped && !TimeStopManagement.IsImmune(item))
@@ -41,6 +50,11 @@ namespace TerrarianBizzareAdventure.Items
                 if(!TBAMod.Instance.TimeStopImmuneProjectiles.Contains(item.shoot))
                     TBAMod.Instance.TimeStopImmuneProjectiles.Add(item.shoot);
             }
+
+            TBAPlayer tPlayer = TBAPlayer.Get(player);
+
+            if (tPlayer.StandActive && tPlayer.ActiveStandProjectile.StopsItemUse)
+                return false;
 
             return base.CanUseItem(item, player);
         }

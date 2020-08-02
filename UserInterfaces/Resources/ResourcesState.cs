@@ -48,7 +48,7 @@ namespace TerrarianBizzareAdventure.UserInterfaces
                 string result = string.Format("{0}.{1}", regen, mPlayer.StaminaRegenTickRate % 60);
 
                 if (barSize.Contains(Main.MouseScreen.ToPoint()))
-                    Main.hoverItemName = "You restore 1 stamina over " + result + " seconds";
+                    Main.hoverItemName = "You restore " + mPlayer.StaminaGain + " stamina over " + result + " seconds";
 
                 spriteBatch.Draw(
                     border,

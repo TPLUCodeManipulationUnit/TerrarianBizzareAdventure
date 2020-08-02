@@ -7,6 +7,8 @@ namespace TerrarianBizzareAdventure.Stands
 {
     public abstract class TimeStoppingStand : PunchBarragingStand
     {
+        public const string TIMESTOP_ANIMATION = "TIMESTOP_PREPARE";
+
         protected TimeStoppingStand(string unlocalizedName, string name) : base(unlocalizedName, name)
         {
         }
@@ -20,16 +22,35 @@ namespace TerrarianBizzareAdventure.Stands
                 return;
             }
 
-            if (TBAPlayer.Get(Owner).CheckStaminaCost(TimeStopCost))
+            if (!TBAPlayer.Get(Owner).ShatteredTime && TBAPlayer.Get(Owner).CheckStaminaCost(TimeStopCost))
             {
+                TBAPlayer.Get(Owner).TirePlayer(15);
+
                 if (!TimeStopManagement.TimeStopped)
                     TBAMod.PlayVoiceLine(TimeStopVoiceLinePath);
 
-                CurrentState = ANIMATION_IDLE;
-                IsTaunting = false;
-                TimeStopDelay = 25;
+                CurrentState = TIMESTOP_ANIMATION;
             }
         }
+
+        public override void PostAI()
+        {
+            base.PostAI();
+
+            if (CurrentState == TIMESTOP_ANIMATION)
+            {
+                if(CurrentAnimation.CurrentFrame == 10)
+                    TimeStopDelay = 4;
+
+                if (CurrentAnimation.Finished)
+                {
+                    CurrentAnimation.ResetAnimation();
+                    CurrentState = ANIMATION_IDLE;
+                }
+            }
+        }
+
+        public override bool StopsItemUse => !Main.SmartCursorEnabled;
 
         public virtual int TimeStopCost => 20;
 

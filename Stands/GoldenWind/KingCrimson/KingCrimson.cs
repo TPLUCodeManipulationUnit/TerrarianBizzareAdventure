@@ -158,67 +158,70 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
                     CurrentState = "POSE_PREP";
                 }
 
-                if (PunchCounter < 2)
+                if (StopsItemUse)
                 {
-                    projectile.netUpdate = true;
-                    if (TBAPlayer.Get(Owner).MouseOneTimeReset > 0)
+                    if (PunchCounter < 2)
                     {
-                        if (TBAPlayer.Get(Owner).MouseOneTime < 15 && !Owner.controlUseItem)
+                        projectile.netUpdate = true;
+                        if (TBAPlayer.Get(Owner).MouseOneTimeReset > 0)
                         {
-                            TBAPlayer.Get(Owner).Stamina -= 2;
-                            Owner.direction = Main.MouseWorld.X < Owner.Center.X ? -1 : 1;
+                            if (TBAPlayer.Get(Owner).MouseOneTime < 15 && !Owner.controlUseItem)
+                            {
+                                TBAPlayer.Get(Owner).Stamina -= 2;
+                                Owner.direction = Main.MouseWorld.X < Owner.Center.X ? -1 : 1;
 
-                            if (Main.MouseWorld.Y > Owner.Center.Y + 60)
-                                CurrentState = "PUNCH_" + (Main.rand.NextBool() ? "R" : "L") + "D";
-                            else if (Main.MouseWorld.Y < Owner.Center.Y - 60)
-                                CurrentState = "PUNCH_" + (Main.rand.NextBool() ? "R" : "L") + "U";
-                            else
-                                CurrentState = "PUNCH_" + (Main.rand.NextBool() ? "R" : "L");
+                                if (Main.MouseWorld.Y > Owner.Center.Y + 60)
+                                    CurrentState = "PUNCH_" + (Main.rand.NextBool() ? "R" : "L") + "D";
+                                else if (Main.MouseWorld.Y < Owner.Center.Y - 60)
+                                    CurrentState = "PUNCH_" + (Main.rand.NextBool() ? "R" : "L") + "U";
+                                else
+                                    CurrentState = "PUNCH_" + (Main.rand.NextBool() ? "R" : "L");
 
-                            PunchCounter++;
+                                PunchCounter++;
 
-                            PunchCounterReset = 28;
+                                PunchCounterReset = 28;
 
-                            Projectile.NewProjectile(projectile.Center, VectorHelpers.DirectToMouse(projectile.Center, 22f), ModContent.ProjectileType<Punch>(), 60, 3.5f, Owner.whoAmI, projectile.whoAmI);
+                                Projectile.NewProjectile(projectile.Center, VectorHelpers.DirectToMouse(projectile.Center, 22f), ModContent.ProjectileType<Punch>(), 60, 3.5f, Owner.whoAmI, projectile.whoAmI);
 
-                        }
+                            }
 
-                        if (TBAPlayer.Get(Owner).MouseOneTime >= 15)
-                        {
-                            TBAPlayer.Get(Owner).Stamina -= 10;
-                            Owner.direction = Main.MouseWorld.X < Owner.Center.X ? -1 : 1;
-                            CurrentState = "CUT_PREP";
+                            if (TBAPlayer.Get(Owner).MouseOneTime >= 15)
+                            {
+                                TBAPlayer.Get(Owner).Stamina -= 10;
+                                Owner.direction = Main.MouseWorld.X < Owner.Center.X ? -1 : 1;
+                                CurrentState = "CUT_PREP";
+                            }
                         }
                     }
-                }
-                else if(Owner.controlUseItem)
-                {
-                    projectile.netUpdate = true;
-
-                    TBAPlayer.Get(Owner).Stamina -= 16;
-
-                    if (Main.MouseWorld.Y > Owner.Center.Y + 60)
-                        CurrentState = "RUSH_DOWN";
-
-                    else if (Main.MouseWorld.Y < Owner.Center.Y - 60)
-                        CurrentState = "RUSH_UP";
-
-                    else
-                        CurrentState = "RUSH_MID";
-
-                    RushTimer = 180;
-
-                    PunchRushDirection = VectorHelpers.DirectToMouse(projectile.Center, 18f);
-
-                    TBAPlayer.Get(Owner).AttackDirectionResetTimer = RushTimer;
-                    TBAPlayer.Get(Owner).AttackDirection = Main.MouseWorld.X < projectile.Center.X ? -1 : 1;
-                    
-                    int barrage = Projectile.NewProjectile(projectile.Center, PunchRushDirection, ModContent.ProjectileType<CrimsonBarrage>(), 60, 0, Owner.whoAmI);
-
-                    if (Main.projectile[barrage].modProjectile is CrimsonBarrage crimsonBarrage)
+                    else if (Owner.controlUseItem)
                     {
-                        crimsonBarrage.RushDirection = PunchRushDirection;
-                        crimsonBarrage.ParentProjectile = projectile.whoAmI;
+                        projectile.netUpdate = true;
+
+                        TBAPlayer.Get(Owner).CheckStaminaCost(16, true);
+
+                        if (Main.MouseWorld.Y > Owner.Center.Y + 60)
+                            CurrentState = "RUSH_DOWN";
+
+                        else if (Main.MouseWorld.Y < Owner.Center.Y - 60)
+                            CurrentState = "RUSH_UP";
+
+                        else
+                            CurrentState = "RUSH_MID";
+
+                        RushTimer = 180;
+
+                        PunchRushDirection = VectorHelpers.DirectToMouse(projectile.Center, 18f);
+
+                        TBAPlayer.Get(Owner).AttackDirectionResetTimer = RushTimer;
+                        TBAPlayer.Get(Owner).AttackDirection = Main.MouseWorld.X < projectile.Center.X ? -1 : 1;
+
+                        int barrage = Projectile.NewProjectile(projectile.Center, PunchRushDirection, ModContent.ProjectileType<CrimsonBarrage>(), 60, 0, Owner.whoAmI);
+
+                        if (Main.projectile[barrage].modProjectile is CrimsonBarrage crimsonBarrage)
+                        {
+                            crimsonBarrage.RushDirection = PunchRushDirection;
+                            crimsonBarrage.ParentProjectile = projectile.whoAmI;
+                        }
                     }
                 }
             }
@@ -250,9 +253,9 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
             }
             #endregion
 
-            if(TBAPlayer.Get(Owner).MouseTwoTime > 20 && InIdleState)
+            if (StopsItemUse && TBAPlayer.Get(Owner).MouseTwoTime > 20 && InIdleState)
             {
-                TBAPlayer.Get(Owner).Stamina -= 10;
+                TBAPlayer.Get(Owner).CheckStaminaCost(10, true);
                 CurrentState = "DONUT_PREP";
             }
 
@@ -318,6 +321,7 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
         {
             if (TimeSkipManager.TimeSkippedFor <= 0 && TBAPlayer.Get(Owner).CheckStaminaCost(25))
             {
+                TBAPlayer.Get(Owner).TirePlayer(15);
                 Projectile.NewProjectile(Center, Vector2.Zero, ModContent.ProjectileType<FakeTilesProjectile>(), 0, 0, Owner.whoAmI);
                 TimeSkipManager.SkipTime(TBAPlayer.Get(Owner), Constants.TICKS_PER_SECOND * 10 + 26);
             }
@@ -327,6 +331,8 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
                 TimeSkipManager.SkipTime(TBAPlayer.Get(Owner), 36);
             }
         }
+
+        public override bool StopsItemUse => !Main.SmartCursorEnabled;
 
         public override bool CanDie => RushTimer <= 0;
 

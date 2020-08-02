@@ -269,6 +269,8 @@ namespace TerrarianBizzareAdventure.Stands
 
         public bool IsSpawning => CurrentState == ANIMATION_SUMMON;
 
+        public virtual bool StopsItemUse => false;
+
         public bool InIdleState
         {
             get => CurrentState == ANIMATION_IDLE;

@@ -6,6 +6,7 @@ using Terraria.GameInput;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
+using TerrarianBizzareAdventure.Buffs;
 using TerrarianBizzareAdventure.Helpers;
 using TerrarianBizzareAdventure.Items.Weapons.Rewards;
 using TerrarianBizzareAdventure.Networking;
@@ -59,6 +60,17 @@ namespace TerrarianBizzareAdventure.Players
             /*bool isStandReal = ActiveStandProjectileId != ACTIVE_STAND_PROJECTILE_INACTIVE_ID && Main.projectile[ActiveStandProjectileId].modProjectile is Stand;
             if (!isStandReal)
                 ActiveStandProjectileId = ACTIVE_STAND_PROJECTILE_INACTIVE_ID;*/
+
+            if(TimeStopManagement.TimeStopper != null && TimeStopManagement.TimeStopper.player.whoAmI == player.whoAmI && !TimeStopManagement.TimeStopped)
+                player.AddBuff<TimeStopCDDebuff>(6 * Constants.TICKS_PER_SECOND);
+
+            StaminaGainBonus = 0;
+
+            if (player.wellFed)
+                StaminaGainBonus += 1;
+
+            if (player.statLife >= player.statLifeMax2)
+                StaminaGainBonus += 1;
         }
 
         public override void PostUpdate()
@@ -69,6 +81,7 @@ namespace TerrarianBizzareAdventure.Players
         public override void ResetEffects()
         {
             ResetDrawingEffects();
+            ResetBuffEffects();
             ResetStaminaEffects();
 
             if (AttackDirection != 0)
@@ -167,7 +180,7 @@ namespace TerrarianBizzareAdventure.Players
 
             //ProcessVoiceControls();
 
-            if (TBAInputs.SummonStand.JustPressed)
+            if (TBAInputs.SummonStand.JustPressed && !Exhausted)
             {
                 if (ActiveStandProjectile == null) // Minimal value for a DAT in SHENZEN.IO :haha:
                 {
@@ -230,6 +243,19 @@ namespace TerrarianBizzareAdventure.Players
                 player.controlThrow = false;
                 player.controlMount = false;
                 player.controlHook = false;
+            }
+        }
+
+        public override void Hurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit)
+        {
+            if (StandActive && ActiveStandProjectile is TimeStoppingStand stand)
+            {
+                if (stand.CurrentState == TimeStoppingStand.TIMESTOP_ANIMATION)
+                {
+                    player.AddBuff<TimeStopCDDebuff>(6 * Constants.TICKS_PER_SECOND);
+                    stand.CurrentAnimation.ResetAnimation();
+                    stand.CurrentState = Stand.ANIMATION_IDLE;
+                }
             }
         }
 

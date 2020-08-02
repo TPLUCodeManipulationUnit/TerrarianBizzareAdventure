@@ -111,6 +111,12 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.TheEmperor
             }
         }
 
+        public override bool StopsItemUse => true;
+
+        //public override bool CanAcquire(TBAPlayer tbaPlayer) => false;
+
+        public override bool CanDie => BarrageTime < 0;
+
         public float MaxDistance => 11f;
 
         public float Distance { get; set; }

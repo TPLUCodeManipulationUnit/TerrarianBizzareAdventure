@@ -3,6 +3,7 @@ using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using TerrarianBizzareAdventure.Buffs;
 using TerrarianBizzareAdventure.Extensions;
 using TerrarianBizzareAdventure.Players;
 using TerrarianBizzareAdventure.Stands;
@@ -172,6 +173,7 @@ namespace TerrarianBizzareAdventure.TimeStop
 
 
             TimeStoppedFor = 0;
+            TimeStopper.player.AddBuff(ModContent.BuffType<TimeStopCDDebuff>(), 6 * Constants.TICKS_PER_SECOND);
             TimeStopper = null;
         }
 

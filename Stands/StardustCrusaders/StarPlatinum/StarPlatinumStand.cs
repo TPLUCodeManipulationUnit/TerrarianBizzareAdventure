@@ -33,37 +33,37 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.StarPlatinum
             combos.Add(new StandCombo("Punch", MouseClick.LeftClick.ToString()));
             combos.Add(new StandCombo("Jaw Breaker", MouseClick.LeftHold.ToString()));
             combos.Add(new StandCombo("Punch Barrage", MouseClick.LeftClick.ToString(), MouseClick.LeftClick.ToString(), MouseClick.LeftClick.ToString()));
-            combos.Add(new StandCombo("Star Platinum: The World", TBAInputs.StandPose.GetAssignedKeys()[0].ToString(), TBAInputs.ContextAction.GetAssignedKeys()[0].ToString()));
+            combos.Add(new StandCombo("Star Platinum: The World", TBAInputs.ContextAction.GetAssignedKeys()[0].ToString()));
         }
 
         public override void AddAnimations()
         {
 
-            Animations.Add(ANIMATION_SUMMON, new SpriteAnimation(mod.GetTexture(TEXPATH + "SPSummon"), 10, 4));
-            Animations.Add(ANIMATION_IDLE, new SpriteAnimation(mod.GetTexture(TEXPATH + "SPIdle"), 14, 4, true));
+            Animations.Add(ANIMATION_SUMMON, new SpriteAnimation(TEXPATH + "SPSummon", 10, 4));
+            Animations.Add(ANIMATION_IDLE, new SpriteAnimation(TEXPATH + "SPIdle", 14, 4, true));
 
             Animations[ANIMATION_SUMMON].SetNextAnimation(Animations[ANIMATION_IDLE]);
 
-            Animations.Add("MIDDLEPUNCH_LEFTHAND", new SpriteAnimation(mod.GetTexture(TEXPATH + PUNCH + "Middle" + LEFTHAND), 3, 5, false, Animations[ANIMATION_IDLE]) );
-            Animations.Add("MIDDLEPUNCH_RIGHTHAND", new SpriteAnimation(mod.GetTexture(TEXPATH + PUNCH + "Middle" + RIGHTHAND), 3, 5, false, Animations[ANIMATION_IDLE]) );
+            Animations.Add("MIDDLEPUNCH_LEFTHAND", new SpriteAnimation(TEXPATH + PUNCH + "Middle" + LEFTHAND, 3, 5, false, Animations[ANIMATION_IDLE]) );
+            Animations.Add("MIDDLEPUNCH_RIGHTHAND", new SpriteAnimation(TEXPATH + PUNCH + "Middle" + RIGHTHAND, 3, 5, false, Animations[ANIMATION_IDLE]) );
 
-            Animations.Add("DOWNPUNCH_LEFTHAND", new SpriteAnimation(mod.GetTexture(TEXPATH + PUNCH + "Down" + LEFTHAND), 3, 5, false, Animations[ANIMATION_IDLE]) );
-            Animations.Add("DOWNPUNCH_RIGHTHAND", new SpriteAnimation(mod.GetTexture(TEXPATH + PUNCH + "Down" + RIGHTHAND), 3, 5, false, Animations[ANIMATION_IDLE]) );
+            Animations.Add("DOWNPUNCH_LEFTHAND", new SpriteAnimation(TEXPATH + PUNCH + "Down" + LEFTHAND, 3, 5, false, Animations[ANIMATION_IDLE]) );
+            Animations.Add("DOWNPUNCH_RIGHTHAND", new SpriteAnimation(TEXPATH + PUNCH + "Down" + RIGHTHAND, 3, 5, false, Animations[ANIMATION_IDLE]) );
 
-            Animations.Add("UPPUNCH_LEFTHAND", new SpriteAnimation(mod.GetTexture(TEXPATH + PUNCH + "Up" + LEFTHAND), 3, 5, false, Animations[ANIMATION_IDLE]) );
-            Animations.Add("UPPUNCH_RIGHTHAND", new SpriteAnimation(mod.GetTexture(TEXPATH + PUNCH + "Up" + RIGHTHAND), 3, 5, false, Animations[ANIMATION_IDLE]) );
+            Animations.Add("UPPUNCH_LEFTHAND", new SpriteAnimation(TEXPATH + PUNCH + "Up" + LEFTHAND, 3, 5, false, Animations[ANIMATION_IDLE]) );
+            Animations.Add("UPPUNCH_RIGHTHAND", new SpriteAnimation(TEXPATH + PUNCH + "Up" + RIGHTHAND, 3, 5, false, Animations[ANIMATION_IDLE]) );
 
-            Animations.Add("POSE_TRANSITION", new SpriteAnimation(mod.GetTexture(TEXPATH + "SPPose_Transition"), 15, 4));
-            Animations.Add("POSE_TRANSITION_REVERSE", new SpriteAnimation(mod.GetTexture(TEXPATH + "SPPose_Transition"), 15, 4, false, Animations[ANIMATION_IDLE]));
-            Animations.Add("POSE_IDLE", new SpriteAnimation(mod.GetTexture(TEXPATH + "SPPose_Idle"), 11, 6, true, Animations[ANIMATION_IDLE]));
+            Animations.Add("POSE_TRANSITION", new SpriteAnimation(TEXPATH + "SPPose_Transition", 15, 4));
+            Animations.Add("POSE_TRANSITION_REVERSE", new SpriteAnimation(TEXPATH + "SPPose_Transition", 15, 4, false, Animations[ANIMATION_IDLE]));
+            Animations.Add("POSE_IDLE", new SpriteAnimation(TEXPATH + "SPPose_Idle", 11, 6, true, Animations[ANIMATION_IDLE]));
 
             Animations["POSE_TRANSITION"].SetNextAnimation(Animations["POSE_IDLE"]);
 
-            Animations.Add("RUSH_UP", new SpriteAnimation(mod.GetTexture(TEXPATH + "SPRush_Up"), 4, 4));
-            Animations.Add("RUSH_DOWN", new SpriteAnimation(mod.GetTexture(TEXPATH + "SPRush_Down"), 4, 4));
-            Animations.Add("RUSH_MIDDLE", new SpriteAnimation(mod.GetTexture(TEXPATH + "SPRush_Middle"), 4, 4));
+            Animations.Add("RUSH_UP", new SpriteAnimation(TEXPATH + "SPRush_Up", 4, 4));
+            Animations.Add("RUSH_DOWN", new SpriteAnimation(TEXPATH + "SPRush_Down", 4, 4));
+            Animations.Add("RUSH_MIDDLE", new SpriteAnimation(TEXPATH + "SPRush_Middle", 4, 4));
 
-            Animations.Add("BLOCK_IDLE", new SpriteAnimation(mod.GetTexture(TEXPATH + "SPBlockIdle"), 7, 6, true));
+            Animations.Add("BLOCK_IDLE", new SpriteAnimation(TEXPATH + "SPBlockIdle", 7, 6, true));
 
             Animations.Add("BLOCK_TRANSITION", new SpriteAnimation(mod.GetTexture(TEXPATH + "SPBlockTransition"), 11, 3, false, Animations["BLOCK_IDLE"]));
 
@@ -73,7 +73,7 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.StarPlatinum
 
             Animations.Add(ANIMATION_DESPAWN, new SpriteAnimation(mod.GetTexture(TEXPATH + "SPDespawn"), 6, 4));
 
-
+            Animations.Add(TIMESTOP_ANIMATION, new SpriteAnimation(mod.GetTexture(TEXPATH + "SPPose_Transition"), 15, 4));
 
             Animations.Add("DONUT_IDLE", new SpriteAnimation(mod.GetTexture(TEXPATH + "SPDonutIdle"), 4, 6, true));
             Animations.Add("DONUT_PREP", new SpriteAnimation(mod.GetTexture(TEXPATH + "SPDonutTransition"), 13, 5));
@@ -150,7 +150,7 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.StarPlatinum
                 if (TBAInputs.SummonStand.JustPressed && CurrentState == ANIMATION_IDLE)
                     CurrentState = ANIMATION_DESPAWN;
 
-                if (TBAInputs.ContextAction.JustPressed && CurrentState.Contains("POSE"))
+                if (TBAInputs.ContextAction.JustPressed && InIdleState)
                 {
                     TimeStop();
                 }
@@ -160,13 +160,14 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.StarPlatinum
                 RushTimer > 0 || 
                 CurrentState.Contains("POSE") || 
                 CurrentState == "DONUT_PUNCH" ||
-                CurrentState == "DONUT_PULL")
+                CurrentState == "DONUT_PULL"
+                || CurrentState == TIMESTOP_ANIMATION)
             {
                 XPosOffset = 34;
             }
 
 
-            if(CurrentState == "DONUT_PUNCH" || CurrentState == "DONUT_PULL")
+            if(CurrentState == "DONUT_PUNCH" || CurrentState == "DONUT_PULL" || CurrentState == TIMESTOP_ANIMATION)
                 Owner.heldProj = projectile.whoAmI;
 
 
@@ -213,6 +214,7 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.StarPlatinum
 
 
             #region Punch
+            if(StopsItemUse)
             if (InIdleState && TBAPlayer.Get(Owner).MouseOneTimeReset > 0 && TBAPlayer.Get(Owner).MouseOneTime < 15 && !Owner.controlUseItem)
             {
                 projectile.netUpdate = true;
@@ -272,9 +274,9 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.StarPlatinum
                 CurrentState = ANIMATION_IDLE;
             }
 
-            if (TBAPlayer.Get(Owner).MouseOneTime >= 20 && InIdleState)
+            if (StopsItemUse && TBAPlayer.Get(Owner).MouseOneTime >= 20 && InIdleState)
             {
-                TBAPlayer.Get(Owner).CheckStaminaCost(15);
+                TBAPlayer.Get(Owner).CheckStaminaCost(15, true);
                 CurrentState = "DONUT_PREP";
             }
 
@@ -378,9 +380,7 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.StarPlatinum
             RushTimer = reader.ReadInt32();
         }
 
-        public override int TimeStopCost => 40;
-
-        public override bool CanDie => TimeStopDelay <= 0 && !CurrentState.Contains("RUSH") && RushTimer <= 0;
+        public override bool CanDie => !CurrentState.Contains("DONUT") && CurrentState != TIMESTOP_ANIMATION && !CurrentState.Contains("RUSH") && RushTimer <= 0;
 
 
         public bool IsPunching { get; private set; }

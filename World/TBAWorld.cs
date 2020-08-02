@@ -2,11 +2,13 @@
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using TerrarianBizzareAdventure.Buffs;
 using TerrarianBizzareAdventure.Players;
 using TerrarianBizzareAdventure.Stands.StardustCrusaders.StarPlatinum;
 using TerrarianBizzareAdventure.Stands.StardustCrusaders.TheWorld;
 using TerrarianBizzareAdventure.TimeSkip;
 using TerrarianBizzareAdventure.TimeStop;
+using WebmilioCommons.Extensions;
 
 namespace TerrarianBizzareAdventure.World
 {
@@ -38,7 +40,6 @@ namespace TerrarianBizzareAdventure.World
             {
                 if (plr.StandUser)
                 {
-
                     if (plr.Stand is TheWorldStand)
                     {
                         TBAMod.PlayVoiceLine("Sounds/TheWorld/TimeResume");
