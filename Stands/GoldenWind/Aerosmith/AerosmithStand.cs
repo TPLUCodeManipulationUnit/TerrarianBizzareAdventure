@@ -27,11 +27,13 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
             var idle = new SpriteAnimation(mod.GetTexture("Stands/GoldenWind/Aerosmith/Idle"), 18, 4, true);
             var despawn = new SpriteAnimation(mod.GetTexture("Stands/GoldenWind/Aerosmith/Idle"), 18, 4);
             var turnAround = new SpriteAnimation(mod.GetTexture("Stands/GoldenWind/Aerosmith/Turn"), 17, 4);
+            var returnAuto = new SpriteAnimation(mod.GetTexture("Stands/GoldenWind/Aerosmith/Idle"), 18, 4, true);
 
             Animations.Add(ANIMATION_SUMMON, summon);
             Animations.Add(ANIMATION_IDLE, idle);
             Animations.Add(ANIMATION_DESPAWN, despawn);
             Animations.Add("TURN", turnAround);
+            Animations.Add("RETURN", returnAuto);
 
             Animations[ANIMATION_SUMMON].SetNextAnimation(Animations[ANIMATION_IDLE]);
         }
@@ -53,8 +55,8 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
             Owner.heldProj = projectile.whoAmI;
 
 
-            if(Vector2.Distance(Center, Owner.Center) >= 16 * 300)
-                CurrentState = ANIMATION_DESPAWN;
+            if(Vector2.Distance(Center, Owner.Center) >= 16 * 100)
+                CurrentState = "RETURN";
 
             if (CurrentAnimation != null)
             {
@@ -85,13 +87,13 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
 
             TBAPlayer tPlayer = TBAPlayer.Get(Owner);
 
-            if (CurrentState == ANIMATION_SUMMON)
+            if (IsSpawning)
                 if (Opacity < 1f)
                     Opacity += 0.04f;
 
             
 
-            if (CurrentState == ANIMATION_DESPAWN || CurrentState == ANIMATION_SUMMON)
+            if (IsDespawning || IsSpawning)
             {
                 for (int i = 0; i < 5; i++)
                 {
@@ -100,7 +102,7 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
                 }
             }
 
-            if (CurrentState == ANIMATION_DESPAWN)
+            if (IsDespawning)
             {
                 if (Opacity > 0f)
                 {
@@ -123,6 +125,17 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
 
             #region controls
 
+            if(IsReturning)
+            {
+                Speed = 8.0f;
+                tPlayer.ASHover = false;
+                if (Vector2.Distance(Owner.Center, projectile.Center) <= 16 * 10)
+                    CurrentState = ANIMATION_DESPAWN;
+
+                Angle = (Owner.Center - Center).SafeNormalize(-Vector2.UnitY).ToRotation();
+
+                Velocity = new Vector2(Speed, 0).RotatedBy(Angle);
+            }
 
             if (Owner.whoAmI == Main.myPlayer)
             {
@@ -131,47 +144,60 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
                     Speed = .000000001f;
                 }
 
-                if (IsFlipped && tPlayer.ASTurnLeft && CurrentState == ANIMATION_IDLE && !tPlayer.ASAngleUp && !tPlayer.ASAngleDown)
+                if (InIdleState)
                 {
-                    CurrentState = "TURN";
-                }
+                    float angle = (Main.MouseWorld - Center).SafeNormalize(-Vector2.UnitY).ToRotation();
 
-                if (!IsFlipped && tPlayer.ASTurnRight && CurrentState == ANIMATION_IDLE && !tPlayer.ASAngleUp && !tPlayer.ASAngleDown)
-                {
-                    CurrentState = "TURN";
-                }
+                    Angle = Utils.AngleLerp(Angle, angle, 0.05f);
 
-                if (tPlayer.ASAngleUp && CurrentState == ANIMATION_IDLE)
-                {
-                    Angle = projectile.velocity.RotatedBy(0.06f).ToRotation();
-                }
+                    float omegaAngle = Utils.AngleLerp(Angle, angle, 0.5f);
+                    /*
+                    if (IsFlipped && tPlayer.ASTurnLeft && !tPlayer.ASAngleUp && !tPlayer.ASAngleDown)
+                    {
+                        CurrentState = "TURN";
+                    }
 
-                if (tPlayer.ASAngleDown && CurrentState == ANIMATION_IDLE)
-                {
-                    Angle = projectile.velocity.RotatedBy(-0.06f).ToRotation();
-                }
+                    if (!IsFlipped && tPlayer.ASTurnRight && !tPlayer.ASAngleUp && !tPlayer.ASAngleDown)
+                    {
+                        CurrentState = "TURN";
+                    }
+                    if (tPlayer.ASAngleUp && InIdleState)
+                    {
+                        Angle = projectile.velocity.RotatedBy(0.06f).ToRotation();
+                    }
 
-                if (tPlayer.ASAttack && CurrentState == ANIMATION_IDLE && BarrageTime <= 0)
-                {
-                    tPlayer.CheckStaminaCost(2, true);
-                    BarrageTime = 32;
-                }
+                    if (tPlayer.ASAngleDown)
+                    {
+                        Angle = projectile.velocity.RotatedBy(-0.06f).ToRotation();
+                    }
+                    */
+                    if (tPlayer.ASAttack && BarrageTime <= 0)
+                    {
+                        tPlayer.CheckStaminaCost(2, true);
+                        BarrageTime = 16;
+                    }
 
-                if (TBAInputs.SummonStand.JustPressed && CurrentState == ANIMATION_IDLE && Vector2.Distance(Owner.Center, projectile.Center) <= 16 * 10)
-                    CurrentState = ANIMATION_DESPAWN;
+                    if (TBAInputs.SummonStand.JustPressed)
+                    {
+                        if (Vector2.Distance(Owner.Center, projectile.Center) <= 16 * 10)
+                            CurrentState = ANIMATION_DESPAWN;
+                        else
+                            CurrentState = "RETURN";
+                    }
 
-                if (tPlayer.ASBomb && CurrentState == ANIMATION_IDLE && Owner.ownedProjectileCounts[ModContent.ProjectileType<AerosmithBomb>()] <= 0)
-                {
-                    tPlayer.CheckStaminaCost(15, true);
+                    if (tPlayer.ASBomb && Owner.ownedProjectileCounts[ModContent.ProjectileType<AerosmithBomb>()] <= 0)
+                    {
+                        tPlayer.CheckStaminaCost(15, true);
 
-                    Vector2 position = projectile.Center + new Vector2(0, 6);
-                    Vector2 velocity = new Vector2(9, 0).RotatedBy(Angle).RotatedByRandom(.12f);
-                    int type = ModContent.ProjectileType<AerosmithBomb>();
-                    int damage = 1;
+                        Vector2 position = projectile.Center + new Vector2(0, 6);
+                        Vector2 velocity = new Vector2(9, 0).RotatedBy(Angle).RotatedByRandom(.12f);
+                        int type = ModContent.ProjectileType<AerosmithBomb>();
+                        int damage = 1;
 
-                    Main.PlaySound(SoundID.Item1, projectile.position);
+                        Main.PlaySound(SoundID.Item1, projectile.position);
 
-                    Projectile.NewProjectile(position, velocity, type, damage, 0, Owner.whoAmI);
+                        Projectile.NewProjectile(position, velocity, type, damage, 0, Owner.whoAmI);
+                    }
                 }
 
             }
@@ -188,7 +214,7 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
                     Vector2 position = Center;
                     Vector2 velocity = new Vector2(16, 0).RotatedBy(Angle);
                     int type = ModContent.ProjectileType<AerosmithBullet>();
-                    int damage = 60;
+                    int damage = 40;
 
                     float offX = -24;
                     float offY = 12;
@@ -234,6 +260,8 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
         public int BarrageTime { get; set; }
 
         public bool SetVel { get; set; }
+
+        public bool IsReturning => CurrentState == "RETURN";
 
 
         public float Speed

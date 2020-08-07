@@ -243,7 +243,7 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.TheWorld
                     Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/TheWorld/TheWorld_ZaWarudoSFX"));
                 }
 
-                TimeStopManagement.ToggleTimeStopIfStopper(TBAPlayer.Get(Owner), 9 * Constants.TICKS_PER_SECOND);
+                TimeStopManagement.ToggleTimeStopIfStopper(TBAPlayer.Get(Owner), 11 * Constants.TICKS_PER_SECOND);
                 TimeStopDelay--;
             }
 

@@ -93,7 +93,7 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
                         #endregion
 
 
-                        Damage = 400;
+                        Damage = 200;
 
                         projectile.friendly = true;
                         ExplosionDelay += 2;

@@ -263,7 +263,7 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.StarPlatinum
                     Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/StarPlatinum/SP_TimeStopSignal"));
                 }
 
-                TimeStopManagement.ToggleTimeStopIfStopper(TBAPlayer.Get(Owner), 5 * Constants.TICKS_PER_SECOND);
+                TimeStopManagement.ToggleTimeStopIfStopper(TBAPlayer.Get(Owner), 7 * Constants.TICKS_PER_SECOND);
                 TimeStopDelay--;
             }
 

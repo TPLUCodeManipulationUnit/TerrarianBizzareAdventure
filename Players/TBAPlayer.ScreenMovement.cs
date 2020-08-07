@@ -11,7 +11,7 @@ namespace TerrarianBizzareAdventure.Players
         {
             if(StandActive && ActiveStandProjectile is AerosmithStand stand)
             {	
-                if(!stand.IsDespawning && stand.CurrentState != "SUMMON")
+                if(!stand.IsDespawning && !stand.IsSpawning && !stand.IsReturning)
                     Main.screenPosition = stand.Center - new Vector2(Main.screenWidth, Main.screenHeight) * 0.5f;
             }
 
