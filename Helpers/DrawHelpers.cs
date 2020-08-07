@@ -26,7 +26,7 @@ namespace TerrarianBizzareAdventure.Helpers
 
         public static void DrawInputButtonMouse(SpriteBatch spriteBatch, Vector2 position, int frame = 0, string description = "")
         {
-            spriteBatch.Draw(Textures.MouseInput, position, new Rectangle(0, 72 * frame, 48, 72), Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
+            spriteBatch.Draw(Textures.MouseInput, position, new Rectangle(0, 76 * frame, 48, 72), Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
             Utils.DrawBorderString(spriteBatch, description, position + new Vector2(50, 36), Color.Yellow);
         }
 

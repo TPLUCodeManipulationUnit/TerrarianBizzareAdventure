@@ -38,12 +38,6 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
             Animations[ANIMATION_SUMMON].SetNextAnimation(Animations[ANIMATION_IDLE]);
         }
 
-        public override void AddCombos(List<StandCombo> combos)
-        {
-            combos.Add(new StandCombo("Bullet Hell", MouseClick.LeftClick.ToString()));
-            combos.Add(new StandCombo("500lb 'Gift'", MouseClick.RightClick.ToString()));
-        }
-
         public override void AI()
         {
             base.AI();

@@ -1,4 +1,5 @@
 ﻿using Terraria.ModLoader;
+using Microsoft.Xna.Framework.Input;
 
 namespace TerrarianBizzareAdventure
 {
@@ -32,13 +33,39 @@ namespace TerrarianBizzareAdventure
         }
 
 
+        public static KeyboardState CurrentState => Keyboard.GetState();
+
+        public static KeyboardState LastState { get; set; }
+
         public static ModHotKey SummonStand { get; private set; }
         public static ModHotKey StandPose { get; private set; }
+
         public static ModHotKey ContextAction { get; private set; }
+        public static string CABind(int index = 0)
+        {
+            if (ContextAction == null)
+                return "";
+
+            return ContextAction.GetAssignedKeys()[index].ToString();
+        }
 
         public static ModHotKey ExtraAction01 { get; private set; }
-        public static ModHotKey ExtraAction02 { get; private set; }
+        public static string EA1Bind(int index = 0)
+        {
+            if (ExtraAction01 == null)
+                return "";
 
+            return ExtraAction01.GetAssignedKeys()[index].ToString();
+        }
+
+        public static ModHotKey ExtraAction02 { get; private set; }
+        public static string EA2Bind(int index = 0)
+        {
+            if (ExtraAction02 == null)
+                return "";
+
+            return ExtraAction02.GetAssignedKeys()[index].ToString();
+        }
         public static ModHotKey VoiceRec { get; private set; }
 
         public static ModHotKey OpenCollection { get; private set; }

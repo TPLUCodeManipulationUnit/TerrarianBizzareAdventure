@@ -80,15 +80,6 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.TheWorld
             Animations["RUSH_DOWN"].SetNextAnimation(Animations[ANIMATION_IDLE]);
         }
 
-        public override void AddCombos(List<StandCombo> combos)
-        {
-            combos.Add(new StandCombo("Punch", MouseClick.LeftClick.ToString()));
-            combos.Add(new StandCombo("Punch Barrage", MouseClick.LeftClick.ToString(), MouseClick.LeftClick.ToString(), MouseClick.LeftClick.ToString()));
-            combos.Add(new StandCombo("ZA WARUDO", TBAInputs.ContextAction.GetAssignedKeys()[0].ToString()));
-            combos.Add(new StandCombo("Earth Flattener", TBAInputs.ExtraAction01.GetAssignedKeys()[0].ToString()));
-            combos.Add(new StandCombo("Sick Throw", TBAInputs.ExtraAction02.GetAssignedKeys()[0].ToString()));
-        }
-
         public override void AI()
         {
             base.AI();
@@ -350,6 +341,11 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.TheWorld
             RoadRollerID = reader.ReadInt32();
             BeganAscending = reader.ReadBoolean();
             RushTimer = reader.ReadInt32();
+        }
+
+        public override bool CanAcquire(TBAPlayer tbaPlayer)
+        {
+            return false;
         }
 
         public int RoadRollerID { get; private set; }

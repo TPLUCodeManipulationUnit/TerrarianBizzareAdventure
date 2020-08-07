@@ -17,7 +17,7 @@ namespace TerrarianBizzareAdventure.UserInterfaces.Elements
             ButtonID = type;
             MaxFrames = heldFor;
             Width.Set(48, 0);
-            Height.Set(72, 0);
+            Height.Set(76, 0);
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)

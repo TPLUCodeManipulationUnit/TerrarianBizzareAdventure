@@ -27,7 +27,10 @@ namespace TerrarianBizzareAdventure.UserInterfaces.Elements
                 foreach(UIElement e in inputs)
                 {
                     e.Left.Set(2 + 54 * inputs.FindIndex(x => x == e), 0);
-                    e.Top.Set(38, 0);
+                    if(e is UIButtonPress)
+                    e.Top.Set(46, 0);
+                    else
+                        e.Top.Set(34, 0);
                     this.Append(e);
                 }
 

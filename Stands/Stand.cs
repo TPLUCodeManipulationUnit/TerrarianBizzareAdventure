@@ -30,8 +30,6 @@ namespace TerrarianBizzareAdventure.Stands
             CurrentState = ANIMATION_SUMMON; // first animation *must* be have a key of "SUMMMON"
 
             Animations = new Dictionary<string, SpriteAnimation>();
-
-            StandCombos = new List<StandCombo>();
         }
 
 
@@ -47,9 +45,6 @@ namespace TerrarianBizzareAdventure.Stands
             projectile.penetrate = -1; // stand istelf should almost never hit anything by its own, this serves as fool proof though
             projectile.tileCollide = false; // tile collisions should be done manually
         }
-
-
-        public virtual void AddCombos(List<StandCombo> combos) { }
 
 
         public abstract void AddAnimations();
@@ -254,8 +249,6 @@ namespace TerrarianBizzareAdventure.Stands
 
         public bool ReverseOffset { get; private set; }
 
-        public List<StandCombo> StandCombos { get; private set; }
-
         public float DrawRotation { get; private set; }
 
         public Vector2 PositionOffset { get; set; }
@@ -280,5 +273,7 @@ namespace TerrarianBizzareAdventure.Stands
                     CurrentState = ANIMATION_IDLE;
             }
         }
+
+        public Dictionary<string, StandCombo> Combos { get; } = new Dictionary<string, StandCombo>();
     }
 }

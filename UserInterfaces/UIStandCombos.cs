@@ -21,7 +21,7 @@ namespace TerrarianBizzareAdventure.UserInterfaces
 
         public override void OnInitialize()
         {
-            CurrentCombos = new List<StandCombo>();
+            CurrentCombos = new Dictionary<string, StandCombo>();
 
             MainPanel = new UIPanel();
             MainPanel.Width.Set(PANEL_WIDTH, 0);
@@ -87,16 +87,19 @@ namespace TerrarianBizzareAdventure.UserInterfaces
                 StandComboGrid.Clear();
 
                 CurrentCombos.Clear();
-                CurrentStand.AddCombos(CurrentCombos);
-
-                foreach (StandCombo combo in CurrentCombos)
+                foreach(var kvp in CurrentStand.Combos)
                 {
-                    if (combo.Inputs.Count <= 0)
+                    CurrentCombos.Add(kvp.Key, kvp.Value);
+                }
+
+                foreach (var combo in CurrentCombos)
+                {
+                    if (combo.Value.Inputs.Count <= 0)
                         continue;
 
                     List<UIElement> inputElements = new List<UIElement>();
 
-                    foreach(string s in combo.Inputs)
+                    foreach(string s in combo.Value.Inputs)
                     {
                         if (s == MouseClick.LeftClick.ToString())
                             inputElements.Add(new UIMouseClick((int)MouseClick.LeftClick, 10));
@@ -117,7 +120,7 @@ namespace TerrarianBizzareAdventure.UserInterfaces
                             inputElements.Add(new UIButtonPress(s));
                     }
 
-                    ComboPanel comboPanel = new ComboPanel(combo.ComboName, inputElements);
+                    ComboPanel comboPanel = new ComboPanel(combo.Key, inputElements);
 
                     StandComboGrid.Add(comboPanel);
 
@@ -152,6 +155,6 @@ namespace TerrarianBizzareAdventure.UserInterfaces
 		
 		public bool NeedsToUpdateAutopsyReport { get; set; }
 
-        public List<StandCombo> CurrentCombos { get; private set; }
+        public Dictionary<string, StandCombo> CurrentCombos { get; private set; }
     }
 }

@@ -28,14 +28,6 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.StarPlatinum
             AuraColor = new Color(1f, 0f, 1f);//new Color(210, 101, 198);//new Color(203, 85, 195);
         }
 
-        public override void AddCombos(List<StandCombo> combos)
-        {
-            combos.Add(new StandCombo("Punch", MouseClick.LeftClick.ToString()));
-            combos.Add(new StandCombo("Jaw Breaker", MouseClick.LeftHold.ToString()));
-            combos.Add(new StandCombo("Punch Barrage", MouseClick.LeftClick.ToString(), MouseClick.LeftClick.ToString(), MouseClick.LeftClick.ToString()));
-            combos.Add(new StandCombo("Star Platinum: The World", TBAInputs.ContextAction.GetAssignedKeys()[0].ToString()));
-        }
-
         public override void AddAnimations()
         {
 
@@ -378,6 +370,11 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.StarPlatinum
 
             IsTaunting = reader.ReadBoolean();
             RushTimer = reader.ReadInt32();
+        }
+
+        public override bool CanAcquire(TBAPlayer tbaPlayer)
+        {
+            return false;
         }
 
         public override bool CanDie => !CurrentState.Contains("DONUT") && CurrentState != TIMESTOP_ANIMATION && !CurrentState.Contains("RUSH") && RushTimer <= 0;

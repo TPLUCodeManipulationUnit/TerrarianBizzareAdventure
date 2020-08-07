@@ -80,6 +80,7 @@ namespace TerrarianBizzareAdventure.Players
 
         public override void ResetEffects()
         {
+            ResetInputs();
             ResetDrawingEffects();
             ResetBuffEffects();
             ResetStaminaEffects();
@@ -177,6 +178,8 @@ namespace TerrarianBizzareAdventure.Players
         public override void ProcessTriggers(TriggersSet triggersSet)
         {
             if (!StandUser) return;
+
+            ProcessComboTriggers();
 
             //ProcessVoiceControls();
 
