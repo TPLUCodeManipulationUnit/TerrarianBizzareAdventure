@@ -20,6 +20,9 @@ namespace TerrarianBizzareAdventure.Players
             if(EligibleKeys.Count <= 0)
             GetEligibleKeys();
 
+            if (Inputs.Count > 12)
+                Inputs.RemoveAt(0);
+
             var keys = kState.GetPressedKeys();
 
             if (keys.Length > TBAInputs.LastState.GetPressedKeys().Length
@@ -30,18 +33,19 @@ namespace TerrarianBizzareAdventure.Players
                 Inputs.Add(new ComboInput(keys[keys.GetUpperBound(0)].ToString()));
             }
 
-            if(MouseOneTimeReset > 0 && MouseOneTime < 2)
+            if(MouseOneTimeReset > 2 && !player.controlUseItem)
             {
                 ComboResetTimer = 60;
                 Inputs.Add(new ComboInput(MouseClick.LeftClick.ToString()));
             }
 
-            string ech = "";
+            if (MouseTwoTimeReset > 2 && !player.controlUseTile)
+            {
+                ComboResetTimer = 60;
+                Inputs.Add(new ComboInput(MouseClick.RightClick.ToString()));
+            }
 
-            foreach (ComboInput s in Inputs)
-                ech += s.Key;
-            
-            Main.NewText(ech);
+            Main.NewText(Inputs.Count);
 
             TBAInputs.LastState = Keyboard.GetState();
         }
@@ -88,6 +92,6 @@ namespace TerrarianBizzareAdventure.Players
         public int ComboResetTimer { get; set; }
 
         public List<string> EligibleKeys { get; } = new List<string>();
-        public List<ComboInput> Inputs { get; } = new List<ComboInput>();
+        public List<ComboInput> Inputs { get; } = new List<ComboInput>(10);
     }
 }

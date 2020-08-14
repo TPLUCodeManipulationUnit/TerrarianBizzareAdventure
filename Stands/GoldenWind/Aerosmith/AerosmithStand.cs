@@ -35,7 +35,11 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
             Animations.Add("TURN", turnAround);
             Animations.Add("RETURN", returnAuto);
 
+
             Animations[ANIMATION_SUMMON].SetNextAnimation(Animations[ANIMATION_IDLE]);
+
+            Speed = 8.0f;
+
         }
 
         public override void AI()
@@ -48,8 +52,7 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
 
             Owner.heldProj = projectile.whoAmI;
 
-
-            if(Vector2.Distance(Center, Owner.Center) >= 16 * 100)
+            if(Vector2.Distance(Center, Owner.Center) >= 16 * 175)
                 CurrentState = "RETURN";
 
             if (CurrentAnimation != null)
@@ -69,9 +72,6 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
                 Center = Owner.Center - new Vector2(120 * Owner.direction, 24);
                 SetVel = true;
             }
-            
-
-            Speed = 8.0f;
 
             if (CurrentState == "TURN" && CurrentAnimation.CurrentFrame <= 8)
                 Speed = 9 - MathHelper.Clamp(CurrentAnimation.CurrentFrame, 0, 8);
@@ -128,43 +128,25 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
 
                 Angle = (Owner.Center - Center).SafeNormalize(-Vector2.UnitY).ToRotation();
 
+                IsEngineOn = true;
+
                 Velocity = new Vector2(Speed, 0).RotatedBy(Angle);
             }
 
             if (Owner.whoAmI == Main.myPlayer)
             {
-                if (tPlayer.ASHover)
-                {
-                    Speed = .000000001f;
-                }
-
                 if (InIdleState)
                 {
+
+                    if (TBAInputs.ContextAction.JustPressed)
+                        IsEngineOn = !IsEngineOn;
+
                     float angle = (Main.MouseWorld - Center).SafeNormalize(-Vector2.UnitY).ToRotation();
 
-                    Angle = Utils.AngleLerp(Angle, angle, 0.05f);
+                    Angle = Utils.AngleLerp(Angle, angle, 0.07f);
 
                     float omegaAngle = Utils.AngleLerp(Angle, angle, 0.5f);
-                    /*
-                    if (IsFlipped && tPlayer.ASTurnLeft && !tPlayer.ASAngleUp && !tPlayer.ASAngleDown)
-                    {
-                        CurrentState = "TURN";
-                    }
 
-                    if (!IsFlipped && tPlayer.ASTurnRight && !tPlayer.ASAngleUp && !tPlayer.ASAngleDown)
-                    {
-                        CurrentState = "TURN";
-                    }
-                    if (tPlayer.ASAngleUp && InIdleState)
-                    {
-                        Angle = projectile.velocity.RotatedBy(0.06f).ToRotation();
-                    }
-
-                    if (tPlayer.ASAngleDown)
-                    {
-                        Angle = projectile.velocity.RotatedBy(-0.06f).ToRotation();
-                    }
-                    */
                     if (tPlayer.ASAttack && BarrageTime <= 0)
                     {
                         tPlayer.CheckStaminaCost(2, true);
@@ -229,12 +211,43 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
             if (CurrentState != "TURN")
             {
 
-                projectile.rotation = projectile.velocity.ToRotation() + (IsFlipped ? 0 : (float)MathHelper.Pi);
+                projectile.rotation = Angle + (IsFlipped ? 0 : (float)MathHelper.Pi);
 
                 IsFlipped = projectile.velocity.X > 0;
             }
 
-            Velocity = new Vector2(Speed, 0).RotatedBy(Angle);
+            if (IsEngineOn)
+            {
+                FlightVector = new Vector2(1, 0).RotatedBy(Angle);
+
+                if (Speed < 8.0f)
+                    Speed += 0.2f;
+
+                if (YSpeed > 0)
+                    YSpeed -= 0.12f;
+            }
+            else
+            {
+                if (Speed > 0)
+                    Speed -= 0.025f;
+
+                if (YSpeed < 12f)
+                    YSpeed += 0.06f;
+
+                if(CurrentAnimation != null)
+                CurrentAnimation.CurrentFrame = 0;
+            }
+
+            Velocity = FlightVector * Speed + new Vector2(0, YSpeed);
+
+            if(!IsReturning && !IsDespawning)
+            Velocity = Collision.TileCollision(Center - new Vector2(10, 10), Velocity, 20, 20, false, false, 1);
+
+            if(Velocity.Y == 0 && !IsEngineOn)
+            {
+                if (Speed > 0)
+                    Speed = MathHelper.Clamp(Speed - 0.15f, 0, 8f);
+            }
         }
 
         public override void SendExtraAI(BinaryWriter writer)
@@ -267,6 +280,12 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
                 projectile.netUpdate = true;
             }
         }
+
+        public float YSpeed { get; set; }
+
+        public Vector2 FlightVector { get; set; }
+
+        public bool IsEngineOn { get; set; } = true;
 
 
         public float Angle 

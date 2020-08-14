@@ -20,7 +20,31 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
             CallSoundPath = "Sounds/KingCrimson/KC_Call";
             AuraColor = new Color(189, 0, 85);
 
-            Combos.Add("Heart Ripper", new StandCombo(TBAInputs.EA1Bind(), TBAInputs.EA1Bind(), TBAInputs.CABind(), MouseClick.LeftClick.ToString()));
+            Combos.Add("Heart Ripper",
+                new StandCombo(
+                    MouseClick.LeftClick.ToString(),
+                    TBAInputs.EA1Bind(),
+                    TBAInputs.CABind(),
+                    MouseClick.RightClick.ToString()
+                    )
+                );
+
+            Combos.Add("Slice N' Dice",
+                new StandCombo(
+                    MouseClick.RightClick.ToString(),
+                    MouseClick.RightClick.ToString(),
+                    Main.cUp,
+                    MouseClick.LeftClick.ToString()
+                    )
+                );
+
+            Combos.Add("Barrage",
+                new StandCombo(
+                    MouseClick.LeftClick.ToString(),
+                    MouseClick.RightClick.ToString(),
+                    TBAInputs.CABind()
+                    )
+                );
         }
 
         public override void AddAnimations()
@@ -95,7 +119,7 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
             Animations.Add("CUT_ATT", new SpriteAnimation(basePath + "KCYeet", 13, 3));
 
             Animations["CUT_ATT"].SetNextAnimation(Animations[ANIMATION_IDLE]);
-            Animations["CUT_PREP"].SetNextAnimation(Animations["CUT_IDLE"]);
+            Animations["CUT_PREP"].SetNextAnimation(Animations["CUT_ATT"]);
             Animations["CUT_IDLE"].SetNextAnimation(Animations["CUT_ATT"]);
             #endregion
         }
@@ -108,8 +132,7 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
             if (Animations.Count <= 0)
                 return;
 
-            PositionOffset = Owner.Center + new Vector2(-16 * Owner.direction, -24 + Owner.gfxOffY);
-            Center = Vector2.Lerp(Center, PositionOffset, 0.26f);
+            TBAPlayer tPlayer = TBAPlayer.Get(Owner);
 
             OwnerCtrlUse = Owner.controlUseTile;
 
@@ -122,25 +145,139 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
             projectile.timeLeft = 200;
             projectile.friendly = true;
 
-            Opacity = 1f;
+            if (IsSpawning)
+            {
+                PositionOffset = Owner.Center + new Vector2(-16 * Owner.direction, -24 + Owner.gfxOffY);
+                Opacity = CurrentAnimation.FrameRect.Y / CurrentAnimation.FrameRect.Height * 0.25f;
+            }
 
             if (InIdleState)
             {
+                PositionOffset = Owner.Center + new Vector2(-16 * Owner.direction, -24 + Owner.gfxOffY);
+
                 if (Main.myPlayer == Owner.whoAmI)
                 {
                     if (TBAInputs.SummonStand.JustPressed)
                         CurrentState = ANIMATION_DESPAWN;
                 }
 
+                Damage = 0;
+
                 if (Combos["Heart Ripper"].CheckCombo(TBAPlayer.Get(Owner)))
                     CurrentState = "DONUT_PREP";
+
+                if (Combos["Slice N' Dice"].CheckCombo(TBAPlayer.Get(Owner)))
+                    CurrentState = "CUT_PREP";
+
+                if (Combos["Barrage"].CheckCombo(TBAPlayer.Get(Owner)))
+                {
+                    Vector2 startPos = Owner.Center - new Vector2(-32 * Owner.direction, 16);
+                    CurrentState = "PUNCH_" + (CurrentState == "PUNCH_R" ? "L" : "R");
+
+                    PunchRushDirection = GetRange(startPos, Main.MouseWorld);
+
+                    PositionOffset = startPos + PunchRushDirection;
+                    BarrageTime = 180;
+                }
             }
 
-            if(IsDespawning)
+            if (PunchCounterReset > 0)
             {
+                Owner.heldProj = projectile.whoAmI;
+
+                PositionOffset = Owner.Center + new Vector2(8 * Owner.direction, -24 + Owner.gfxOffY);
+            }
+
+            if (IsPunching)
+            {
+                if (!IsBarraging)
+                {
+                    CurrentAnimation.FrameSpeed = 5;
+                    if (CurrentAnimation.CurrentFrame == 1)
+                        Damage = 60;
+
+                    Owner.heldProj = projectile.whoAmI;
+                }
+                Owner.direction = Center.X < Owner.Center.X ? -1 : 1;
+
+                IsFlipped = Owner.direction == 1;
+
+                PositionOffset = Owner.Center - new Vector2(-8 * Owner.direction, 16) + PunchRushDirection;
+            }
+
+            if (CanPunch)
+            {
+                if ((tPlayer.MouseOneTimeReset > 0 || tPlayer.MouseTwoTimeReset > 0) && !Owner.controlUseItem && !Owner.controlUseTile)
+                {
+                    ImmuneTime = 20;
+
+                    Owner.direction = Main.MouseWorld.X < Owner.Center.X ? -1 : 1;
+
+                    Vector2 startPos = Owner.Center - new Vector2(-32 * Owner.direction, 16);
+
+                    PunchRushDirection = GetRange(startPos, Main.MouseWorld);
+
+                    PositionOffset = startPos + PunchRushDirection;
+
+                    if (Main.MouseWorld.Y > Owner.Center.Y + 90)
+                        CurrentState = "PUNCH_" + (tPlayer.MouseTwoTimeReset > 0 ? "L" : "R") + "D";
+                    else if (Main.MouseWorld.Y < Owner.Center.Y - 90)
+                        CurrentState = "PUNCH_" + (tPlayer.MouseTwoTimeReset > 0 ? "L" : "R") + "U";
+                    else
+                        CurrentState = "PUNCH_" + (tPlayer.MouseTwoTimeReset > 0 ? "L" : "R");
+
+                    PunchCounterReset = 90;
+                }
+            }
+
+            if (IsBarraging)
+            {
+                PunchCounterReset = 0;
+                if (BarrageTime >= 180)
+                {
+                    int barrage = Projectile.NewProjectile(projectile.Center, VectorHelpers.DirectToMouse(projectile.Center, 18f), ModContent.ProjectileType<CrimsonBarrage>(), 60, 0, Owner.whoAmI);
+
+                    if (Main.projectile[barrage].modProjectile is CrimsonBarrage Barrage)
+                    {
+                        Barrage.RushDirection = VectorHelpers.DirectToMouse(projectile.Center, 18f);
+                        Barrage.ParentProjectile = projectile.whoAmI;
+                    }
+                }
+
+                if (CurrentAnimation.CurrentFrame > 2)
+                {
+                    CurrentAnimation.ResetAnimation();
+
+                    if (Center.Y > Owner.Center.Y + 16)
+                        CurrentState = "PUNCH_" + (CurrentState == "PUNCH_RD" ? "LD" : "RD");
+                    else if (Center.Y < Owner.Center.Y - 40)
+                        CurrentState = "PUNCH_" + (CurrentState == "PUNCH_RU" ? "LU" : "RU");
+                    else
+                        CurrentState = "PUNCH_" + (CurrentState == "PUNCH_R" ? "L" : "R");
+
+                    CurrentAnimation.FrameSpeed = 4;
+                    
+                    CurrentAnimation.CurrentFrame = 1;
+                }
+
+                BarrageTime--;
+            }
+
+            if (IsDespawning)
+            {
+                Opacity = (5 - CurrentAnimation.FrameRect.Y / (int)CurrentAnimation.FrameSize.Y) * 0.2f;
+
                 if (CurrentAnimation.Finished)
                     KillStand();
+
+                Owner.heldProj = projectile.whoAmI;
+
+                Center = Vector2.Lerp(Center, PositionOffset, 0.4f);
+
+                PositionOffset = Owner.Center - new Vector2(0, 12);
             }
+
+            Center = Vector2.Lerp(Center, PositionOffset, 0.26f);
         }
 
         public override void SendExtraAI(BinaryWriter writer)
@@ -173,6 +310,8 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
                 TimeSkipManager.SkipTime(TBAPlayer.Get(Owner), 36);
             }
         }
+
+        public bool IsPunching => CurrentState.Contains("PUNCH");
 
         public bool CanPunch => InIdleState || (CurrentState.Contains("PUNCH") && CurrentAnimation.CurrentFrame >= 3); 
 

@@ -104,7 +104,7 @@ namespace TerrarianBizzareAdventure.Drawing
         // Animation's texture
         public Texture2D SpriteSheet { get; }
         
-        public int CurrentFrame { get; private set; }
+        public int CurrentFrame { get; set; }
 
         ///<summary>Determines the dimensions of a single frame.</summary>
         public Vector2 FrameSize => new Vector2((int)SpriteSheet.Width, (int)(SpriteSheet.Height / FrameCount));
