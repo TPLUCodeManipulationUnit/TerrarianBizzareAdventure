@@ -10,6 +10,8 @@ using Terraria.ID;
 using System.Linq;
 using TerrarianBizzareAdventure.Players;
 using TerrarianBizzareAdventure.Stands;
+using System;
+using TerrarianBizzareAdventure.Helpers;
 
 namespace TerrarianBizzareAdventure.Projectiles
 {
@@ -50,9 +52,20 @@ namespace TerrarianBizzareAdventure.Projectiles
             Velocity = RushDirection;
 
             if (TimeLeft > 188)
+            {
+                TBAPlayer.Get(Owner).PointOfInterest = Owner.Center;
                 projectile.netUpdate = true;
+            }
 
+            Vector2 pov = TBAPlayer.Get(Owner).PointOfInterest;
+
+            if(TimeLeft > 12)
+            TBAPlayer.Get(Owner).PointOfInterest = Vector2.Lerp(pov, Center + RandomScreenOffset, 0.25f);
+            else
+                TBAPlayer.Get(Owner).PointOfInterest = Vector2.Lerp(pov, Owner.Center + RandomScreenOffset, 0.25f);
             Center = Main.projectile[ParentProjectile].Center + Velocity;
+
+            RandomScreenOffset = Vector2.Lerp(RandomScreenOffset, Vector2.Zero, 0.12f);
 
             if (!(Parent.modProjectile is Stand))
                 projectile.Kill();
@@ -166,11 +179,29 @@ namespace TerrarianBizzareAdventure.Projectiles
             }*/
         }
 
+        public override void Kill(int timeLeft)
+        {
+            TBAPlayer.Get(Owner).PointOfInterest = Vector2.Zero;
+        }
+
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
             target.immune[Owner.whoAmI] = 6;
 
-            Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Punch" + Main.rand.Next(1, 5)).WithVolume(.2f));
+            RandomScreenOffset = new Vector2(Main.rand.Next(-20, 20), Main.rand.Next(-40, 30));
+
+            for (int i = 0; i < 2; i++)
+            {
+                int rand = Main.rand.Next(FrontPunches.Count);
+
+                var punch = FrontPunches[rand];
+
+                Vector2 randomVector = new Vector2(punch.X, punch.Y);
+
+                DrawHelpers.CircleDust(target.Center + randomVector * Owner.direction, Velocity, DustID.AncientLight, 2, 8, 0.85f);
+            }
+
+            Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Punch" + Main.rand.Next(1, 5)).WithVolume(.4f));
         }
 
         // In ideal world, i wouldn't need to sync things, but we live in a shitty world so rip
@@ -235,6 +266,8 @@ namespace TerrarianBizzareAdventure.Projectiles
         public List<Vector3> FrontPunches { get; } = new List<Vector3>();
 
         public List<Vector3> BackPunches { get; } = new List<Vector3>();
+
+        public Vector2 RandomScreenOffset { get; set; }
 
         // We'll also need to know where stand is barraging towards
         public Vector2 RushDirection { get; set; }

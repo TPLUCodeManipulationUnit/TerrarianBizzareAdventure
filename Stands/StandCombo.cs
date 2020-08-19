@@ -1,7 +1,6 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
+using TerrarianBizzareAdventure.Helpers;
 using TerrarianBizzareAdventure.Players;
 
 namespace TerrarianBizzareAdventure.Stands
@@ -35,7 +34,10 @@ namespace TerrarianBizzareAdventure.Stands
             }
 
             if (currentMatches >= RequiredMatches)
+            {
+                DrawHelpers.CircleDust(player.player.Center, Vector2.Zero, 6, 8, 8, 1.85f);
                 player.Inputs.Clear();
+            }
 
             return currentMatches >= RequiredMatches;
         }

@@ -45,8 +45,6 @@ namespace TerrarianBizzareAdventure.Players
                 Inputs.Add(new ComboInput(MouseClick.RightClick.ToString()));
             }
 
-            Main.NewText(Inputs.Count);
-
             TBAInputs.LastState = Keyboard.GetState();
         }
 

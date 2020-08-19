@@ -1,5 +1,6 @@
 ﻿using Terraria.ModLoader;
 using Microsoft.Xna.Framework.Input;
+using Terraria;
 
 namespace TerrarianBizzareAdventure
 {
@@ -69,5 +70,15 @@ namespace TerrarianBizzareAdventure
         public static ModHotKey VoiceRec { get; private set; }
 
         public static ModHotKey OpenCollection { get; private set; }
+
+        public static string Up => Main.cUp;
+
+        public static string Down => Main.cDown;
+
+        public static string Left => Main.cLeft;
+
+        public static string Right => Main.cRight;
+
+        public static string Jump => Main.cJump;
     }
 }

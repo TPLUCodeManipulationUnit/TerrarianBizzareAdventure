@@ -33,7 +33,15 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
                 new StandCombo(
                     MouseClick.RightClick.ToString(),
                     MouseClick.RightClick.ToString(),
-                    Main.cUp,
+                    TBAInputs.Up,
+                    MouseClick.LeftClick.ToString()
+                    )
+                );
+
+            Combos.Add("Cheap Trick",
+                new StandCombo(
+                    TBAInputs.Down,
+                    TBAInputs.CABind(),
                     MouseClick.LeftClick.ToString()
                     )
                 );
@@ -84,7 +92,9 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
             Animations.Add("DONUT_UNDO", new SpriteAnimation(basePath + "KCDonutUndo", 12, 4));
             Animations.Add("DONUT_MISS", new SpriteAnimation(basePath + "KCDonutMiss", 7, 4));
 
-            Animations.Add("BLIND", new SpriteAnimation(basePath + "KCBlind", 11, 4));
+            Animations.Add("BLIND", new SpriteAnimation(basePath + "KCBlind", 11, 3));
+            Animations["BLIND"].SetNextAnimation(Animations[ANIMATION_IDLE]);
+            DrawInFrontStates.Add("BLIND");
 
             Animations["DONUT_PREP"].SetNextAnimation(Animations["DONUT_ATT"]);
             Animations["DONUT_ATT"].SetNextAnimation(Animations["DONUT_MISS"]);
@@ -122,6 +132,11 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
             Animations["CUT_PREP"].SetNextAnimation(Animations["CUT_ATT"]);
             Animations["CUT_IDLE"].SetNextAnimation(Animations["CUT_ATT"]);
             #endregion
+
+            DrawInFrontStates.Add("DONUT_PREP");
+            DrawInFrontStates.Add("DONUT_ATT");
+            DrawInFrontStates.Add("DONUT_UNDO");
+            DrawInFrontStates.Add(ANIMATION_DESPAWN);
         }
 
 
@@ -163,11 +178,20 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
 
                 Damage = 0;
 
+                if (Combos["Cheap Trick"].CheckCombo(TBAPlayer.Get(Owner)))
+                {
+                    CurrentState = "BLIND";
+                }
+
                 if (Combos["Heart Ripper"].CheckCombo(TBAPlayer.Get(Owner)))
+                {
                     CurrentState = "DONUT_PREP";
+                }
 
                 if (Combos["Slice N' Dice"].CheckCombo(TBAPlayer.Get(Owner)))
+                {
                     CurrentState = "CUT_PREP";
+                }
 
                 if (Combos["Barrage"].CheckCombo(TBAPlayer.Get(Owner)))
                 {
@@ -270,12 +294,13 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
                 if (CurrentAnimation.Finished)
                     KillStand();
 
-                Owner.heldProj = projectile.whoAmI;
-
                 Center = Vector2.Lerp(Center, PositionOffset, 0.4f);
 
                 PositionOffset = Owner.Center - new Vector2(0, 12);
             }
+
+            if(DrawInFront)
+                Owner.heldProj = projectile.whoAmI;
 
             Center = Vector2.Lerp(Center, PositionOffset, 0.26f);
         }
@@ -313,7 +338,7 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
 
         public bool IsPunching => CurrentState.Contains("PUNCH");
 
-        public bool CanPunch => InIdleState || (CurrentState.Contains("PUNCH") && CurrentAnimation.CurrentFrame >= 3); 
+        public bool CanPunch => InIdleState; 
 
         public override bool StopsItemUse => !Main.SmartCursorEnabled;
 

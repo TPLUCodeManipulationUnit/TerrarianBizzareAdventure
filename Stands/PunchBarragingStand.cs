@@ -69,6 +69,10 @@ namespace TerrarianBizzareAdventure.Stands
         public bool IsBarraging => BarrageTime > 0;
         public int BarrageTime { get; set; }
 
+        public List<string> DrawInFrontStates { get; } = new List<string>();
+
+        public bool DrawInFront => DrawInFrontStates.Contains(CurrentState);
+
         public virtual float AttackRange => 2f;
     }
 }
