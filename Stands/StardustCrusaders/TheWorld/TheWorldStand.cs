@@ -345,7 +345,7 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.TheWorld
 
         public override bool CanAcquire(TBAPlayer tbaPlayer)
         {
-            return false;
+            return true;
         }
 
         public int RoadRollerID { get; private set; }

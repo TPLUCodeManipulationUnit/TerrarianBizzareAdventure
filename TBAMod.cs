@@ -28,11 +28,8 @@ namespace TerrarianBizzareAdventure
         {
             SteamHelper.Initialize();
 
-            On.Terraria.Main.DrawTiles += Main_DrawTiles;
 
-            On.Terraria.Main.DrawBlack += Main_DrawBlack;
-
-            On.Terraria.Main.DrawWalls += Main_DrawWalls;
+            OnEdits.Instance.LoadEdits();
 
             //VoiceRecognitionSystem.Load();
             TBAInputs.Load(this);
@@ -60,24 +57,6 @@ namespace TerrarianBizzareAdventure
             }
         }
 
-        private void Main_DrawWalls(On.Terraria.Main.orig_DrawWalls orig, Main self)
-        {
-            if (!DisableTileDraw)
-                orig.Invoke(self);
-        }
-
-        private void Main_DrawBlack(On.Terraria.Main.orig_DrawBlack orig, Main self, bool force)
-        {
-            if (!DisableTileDraw)
-                orig.Invoke(self, force);
-        }
-
-        private void Main_DrawTiles(On.Terraria.Main.orig_DrawTiles orig, Main self, bool solidOnly, int waterStyleOverride)
-        {
-            if(!DisableTileDraw)
-                orig.Invoke(self, solidOnly, waterStyleOverride);
-        }
-
         public override void UpdateMusic(ref int music, ref MusicPriority priority)
         {
             if (Main.myPlayer == -1 || Main.gameMenu || !Main.LocalPlayer.active)
@@ -95,18 +74,15 @@ namespace TerrarianBizzareAdventure
         {
             Instance = null;
 
-            On.Terraria.Main.DrawTiles -= Main_DrawTiles;
-            On.Terraria.Main.DrawBlack -= Main_DrawBlack;
-            On.Terraria.Main.DrawWalls -= Main_DrawWalls;
-
             TBAInputs.Unload();
             TimeStopManagement.Unload();
+
+            OnEdits.Instance.UnloadEdits();
 
             Textures.Unload();
 
             StandLoader.Instance.Unload();
         }
-
 
         public override void HandlePacket(BinaryReader reader, int whoAmI)
         {
@@ -184,8 +160,5 @@ namespace TerrarianBizzareAdventure
         public bool DisableTileDraw { get; set; }
 
         public static TBAMod Instance { get; private set; }
-
-
-        public List<int> TimeStopImmuneProjectiles = new List<int>();
     }
 }

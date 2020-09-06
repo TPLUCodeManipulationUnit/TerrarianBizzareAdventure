@@ -47,8 +47,8 @@ namespace TerrarianBizzareAdventure.Items
         {
             if(item.channel && item.shoot != ProjectileID.None)
             {
-                if(!TBAMod.Instance.TimeStopImmuneProjectiles.Contains(item.shoot))
-                    TBAMod.Instance.TimeStopImmuneProjectiles.Add(item.shoot);
+                if(!TimeStopManagement.TimeStopImmuneProjectiles.Contains(item.shoot))
+                    TimeStopManagement.TimeStopImmuneProjectiles.Add(item.shoot);
             }
 
             TBAPlayer tPlayer = TBAPlayer.Get(player);

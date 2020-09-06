@@ -43,8 +43,6 @@ namespace TerrarianBizzareAdventure.Projectiles
             TimeLeft = 190;
             projectile.friendly = true;
             projectile.tileCollide = false;
-
-            CanClash = true;
         }
 
         public override void AI()
@@ -104,81 +102,6 @@ namespace TerrarianBizzareAdventure.Projectiles
             }
         }
 
-        public override void PostAI()
-        {/*
-            if (CanDeflectProjectiles)
-            {
-                foreach (Projectile proj in Main.projectile)
-                {
-                    if (!proj.active || proj == projectile || (proj.friendly && proj.owner == Owner.whoAmI))
-                        continue;
-
-                    if (proj.Hitbox.Intersects(projectile.Hitbox))
-                    {
-                        proj.velocity = -proj.velocity;
-                        proj.friendly = true;
-                        proj.hostile = false;
-                    }
-                }
-            }*/
-             /*
-            if (CanClash)
-            {
-                foreach (Projectile proj in Main.projectile)
-                {
-                    if (!proj.active || proj == projectile || proj.owner == Owner.whoAmI || !(proj.modProjectile is PunchBarrage))
-                        continue;
-
-                    if (proj.Hitbox.Intersects(projectile.Hitbox))
-                    {
-                        CanClash = false;
-
-                        ClashingWith = proj.whoAmI;
-                    }
-                }
-            }
-
-            if(ClashingWith != -1)
-            {
-                projectile.timeLeft = 4;
-
-                if(TBAPlayer.Get(Owner).ActiveStandProjectile is PunchBarragingStand punchyBoi)
-                {
-                    punchyBoi.RushTimer = 4;
-                }
-
-                if(Main.myPlayer == Owner.whoAmI && TBAInputs.ContextAction.JustPressed)
-                {
-                    projectile.netUpdate = true;
-                    ClashPower++;
-                }
-
-                if (Main.projectile[ClashingWith].modProjectile is PunchBarrage enemyBarrage)
-                {
-                    RushDirection = (enemyBarrage.Parent.Center - Center).SafeNormalize(-Vector2.UnitY) * 16f;
-
-                    if (ClashPower > 5)
-                    {
-                        enemyBarrage.Kill(0);
-
-                        TBAPlayer.Get(enemyBarrage.Owner).Stamina -= 25;
-                        TBAPlayer.Get(enemyBarrage.Owner).ActiveStandProjectile.CurrentState = "DESPAWN";
-                        ClashingWith = -1;
-                    }
-
-                    if(enemyBarrage.ClashPower > 5)
-                    {
-                        projectile.Kill();
-
-                        TBAPlayer.Get(Owner).Stamina -= 25;
-                        TBAPlayer.Get(Owner).ActiveStandProjectile.CurrentState = "DESPAWN";
-                        ClashingWith = -1;
-
-                    }
-                }
-            }*/
-        }
-
         public override void Kill(int timeLeft)
         {
             TBAPlayer.Get(Owner).PointOfInterest = Vector2.Zero;
@@ -211,12 +134,6 @@ namespace TerrarianBizzareAdventure.Projectiles
             writer.Write(RushDirection.Y);
 
             writer.Write(ParentProjectile);
-
-            writer.Write(CanClash);
-
-            writer.Write(ClashingWith);
-
-            writer.Write(ClashPower);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader)
@@ -224,12 +141,6 @@ namespace TerrarianBizzareAdventure.Projectiles
             RushDirection = new Vector2(reader.ReadSingle(), reader.ReadSingle());
 
             ParentProjectile = reader.ReadInt32();
-
-            CanClash = reader.ReadBoolean();
-
-            ClashingWith = reader.ReadInt32();
-
-            ClashPower = reader.ReadInt32();
         }
 
         // Have I ever told you guys that vanilla drawing sucks balls? Well it does :)
@@ -282,25 +193,6 @@ namespace TerrarianBizzareAdventure.Projectiles
 
         public string TexturePath { get; }
         public string SecondaryPath { get; }
-
-        private bool _canClash;
-        public bool CanClash 
-        {
-            get => _canClash;
-            set
-            {
-                if (_canClash != value)
-                    projectile.netUpdate = true;
-
-                _canClash = value;
-            }
-        }
-
-        public int ClashingWith { get; set; } = -1;
-
-        public int ClashPower { get; set; }
-
-        public virtual bool CanDeflectProjectiles => true;
 
         // We do not need the texture really, but terraria is a boomer and makes a fuss
         public override string Texture => "TerrarianBizzareAdventure/Textures/EmptyPixel";

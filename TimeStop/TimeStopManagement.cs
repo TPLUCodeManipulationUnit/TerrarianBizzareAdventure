@@ -105,7 +105,7 @@ namespace TerrarianBizzareAdventure.TimeStop
             {
                 Projectile projectile = Main.projectile[i];
 
-                if (TBAMod.Instance.TimeStopImmuneProjectiles.Contains(projectile.type))
+                if (TimeStopImmuneProjectiles.Contains(projectile.type))
                     continue;
 
                 if (!projectile.active || projectile.modProjectile is IProjectileHasImmunityToTimeStop phitts && phitts.IsNativelyImmuneToTimeStop())
@@ -299,5 +299,7 @@ namespace TerrarianBizzareAdventure.TimeStop
 
         public static double MainTime { get; internal set; }
         public static int MainRainTimer { get; internal set; }
+
+        public static List<int> TimeStopImmuneProjectiles = new List<int>();
     }
 }

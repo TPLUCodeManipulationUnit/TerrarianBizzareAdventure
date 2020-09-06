@@ -21,7 +21,7 @@ namespace TerrarianBizzareAdventure.Projectiles
         public override bool PreAI(Projectile projectile)
         {
             int tickLimit = TimeStopManagement.TimeStopped && projectile.owner == TimeStopManagement.TimeStopper.player.whoAmI ? 10 : 1;
-            IsStopped = !TBAMod.Instance.TimeStopImmuneProjectiles.Contains(projectile.type) && TimeStopManagement.TimeStopped && !(projectile.modProjectile is IProjectileHasImmunityToTimeStop iisitts && iisitts.IsNativelyImmuneToTimeStop()) && RanForTicks > tickLimit && (!(projectile.modProjectile is Stand) && projectile.owner == TimeStopManagement.TimeStopper.player.whoAmI);
+            IsStopped = !TimeStopManagement.TimeStopImmuneProjectiles.Contains(projectile.type) && TimeStopManagement.TimeStopped && !(projectile.modProjectile is IProjectileHasImmunityToTimeStop iisitts && iisitts.IsNativelyImmuneToTimeStop()) && RanForTicks > tickLimit;
 
             var IsTimeSkipped = TimeSkipManager.IsTimeSkipped && projectile.hostile;
 
@@ -39,11 +39,11 @@ namespace TerrarianBizzareAdventure.Projectiles
 
                 TimeStopManagement.projectileStates[projectile].PreAI(projectile);
 
-                projectile.frameCounter = 0;
+                if (Main.projPet[projectile.type])
+                    projectile.timeLeft++;
 
                 return false;
             }
-
 
             return true;
         }
