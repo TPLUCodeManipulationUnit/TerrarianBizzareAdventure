@@ -77,11 +77,11 @@ namespace TerrarianBizzareAdventure.Players
                 return;
             }*/
 
-            EligibleKeys.Add(Main.cLeft);
-            EligibleKeys.Add(Main.cRight);
-            EligibleKeys.Add(Main.cUp);
-            EligibleKeys.Add(Main.cDown);
-            EligibleKeys.Add(Main.cJump);
+            EligibleKeys.Add(TBAInputs.Left);
+            EligibleKeys.Add(TBAInputs.Right);
+            EligibleKeys.Add(TBAInputs.Up);
+            EligibleKeys.Add(TBAInputs.Down);
+            EligibleKeys.Add(TBAInputs.Jump);
             EligibleKeys.Add(TBAInputs.CABind());
             EligibleKeys.Add(TBAInputs.EA1Bind());
             EligibleKeys.Add(TBAInputs.EA2Bind());
