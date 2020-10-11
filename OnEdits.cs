@@ -1,4 +1,5 @@
 ﻿using Terraria;
+using TerrarianBizzareAdventure.NPCs;
 using TerrarianBizzareAdventure.Projectiles;
 using TerrarianBizzareAdventure.TimeStop;
 
@@ -146,7 +147,24 @@ namespace TerrarianBizzareAdventure
 
         private void NPC_UpdateNPC(On.Terraria.NPC.orig_UpdateNPC orig, NPC self, int i)
         {
-            if (!TimeStopped || TimeStopManagement.IsNPCImmune(self))
+            TBAGlobalNPC tbaNPC = self.active ? TBAGlobalNPC.GetFor(self) : null;
+
+            if (tbaNPC != null)
+            {
+                if (!tbaNPC.IsStunned && tbaNPC.HasRotationToRestore)
+                {
+                    self.rotation = tbaNPC.RotationToRestore;
+                    tbaNPC.RotationToRestore = -999.0f;
+                }
+
+                if (tbaNPC.IsStunned)
+                    tbaNPC.StunDuration--;
+            }
+
+            bool isStunned = tbaNPC != null && tbaNPC.IsStunned;
+            bool isTimeStopped = TimeStopped && !TimeStopManagement.IsNPCImmune(self);
+
+            if (!isTimeStopped && !isStunned)
                 orig.Invoke(self, i);
             else
             {

@@ -12,6 +12,7 @@ using TerrarianBizzareAdventure.Players;
 using TerrarianBizzareAdventure.Stands;
 using System;
 using TerrarianBizzareAdventure.Helpers;
+using TerrarianBizzareAdventure.NPCs;
 
 namespace TerrarianBizzareAdventure.Projectiles
 {
@@ -100,6 +101,10 @@ namespace TerrarianBizzareAdventure.Projectiles
                 if (BackPunches[i].X >= 16f)
                     BackPunches.RemoveAt(i);
             }
+
+            for(int n = HitNPCs.Count - 1; n > 0; n--)
+                if (!TBAGlobalNPC.GetFor(HitNPCs[n]).IsStunned)
+                    HitNPCs.RemoveAt(n);
         }
 
         public override void Kill(int timeLeft)
@@ -123,6 +128,18 @@ namespace TerrarianBizzareAdventure.Projectiles
 
                 DrawHelpers.CircleDust(target.Center + randomVector * Owner.direction, Velocity, DustID.AncientLight, 2, 8, 0.85f);
             }
+
+            TBAGlobalNPC.GetFor(target).StunDuration = 8;
+
+            if (!HitNPCs.Contains(target))
+            {
+                TBAGlobalNPC.GetFor(target).RotationToRestore = target.rotation;
+                HitNPCs.Add(target);
+            }
+
+            int multiplier = Main.rand.NextBool() ? -1 : 1;
+
+            target.rotation = RushDirection.ToRotation() + MathHelper.PiOver2 + Main.rand.NextFloat(45.0f) * 0.01f * multiplier;
 
             Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Punch" + Main.rand.Next(1, 5)).WithVolume(.4f));
         }
@@ -193,6 +210,8 @@ namespace TerrarianBizzareAdventure.Projectiles
 
         public string TexturePath { get; }
         public string SecondaryPath { get; }
+
+        public List<NPC> HitNPCs { get; } = new List<NPC>();
 
         // We do not need the texture really, but terraria is a boomer and makes a fuss
         public override string Texture => "TerrarianBizzareAdventure/Textures/EmptyPixel";

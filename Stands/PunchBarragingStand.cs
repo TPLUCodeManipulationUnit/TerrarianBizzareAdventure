@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using TerrarianBizzareAdventure.Helpers;
+using TerrarianBizzareAdventure.NPCs;
 
 namespace TerrarianBizzareAdventure.Stands
 {
@@ -40,6 +41,7 @@ namespace TerrarianBizzareAdventure.Stands
         {
             HitNPCs.Add(new HitNPCData(target, ImmuneTime));
             projectile.penetrate += 1;
+            TBAGlobalNPC.GetFor(target).StunDuration = 10;
         }
 
         public Vector2 GetRange(Vector2 startPos, Vector2 endPos)

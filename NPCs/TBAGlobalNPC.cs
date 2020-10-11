@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using Terraria;
 using Terraria.ModLoader;
 using TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith;
@@ -94,6 +95,17 @@ namespace TerrarianBizzareAdventure.NPCs
 
         public bool IsStopped { get; private set; }
 
+
+        // Time that NPCs is stunned for after getting brain damaged
+        public int StunDuration { get; set; }
+
+        public bool IsStunned => StunDuration > 0;
+
+        public static TBAGlobalNPC GetFor(NPC npc) => npc.GetGlobalNPC<TBAGlobalNPC>();
+
         public override bool InstancePerEntity => true;
+
+        public float RotationToRestore { get; set; } = -999.0f;
+        public bool HasRotationToRestore => RotationToRestore != -999.0f;
     }
 }
