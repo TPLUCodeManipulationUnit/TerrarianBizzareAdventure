@@ -10,7 +10,7 @@ namespace TerrarianBizzareAdventure
         [Header("Visuals")]
 
         [Label("Enable Stand Aura")]
-        [DefaultValue(false)]
+        [DefaultValue(true)]
         public bool DrawStandAura { get; set; }
 
         [Header("Other")]

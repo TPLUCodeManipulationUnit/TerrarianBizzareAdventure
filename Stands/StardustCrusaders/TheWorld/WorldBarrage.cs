@@ -4,7 +4,7 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.TheWorld
 {
     public class WorldBarrage : PunchBarrage
     {
-        public WorldBarrage() : base("Stands/StardustCrusaders/TheWorld/TWRush", "Stands/StardustCrusaders/TheWorld/TWRushBack")
+        public WorldBarrage() : base("TWRush", "TWRushBack")
         {
         }
     }

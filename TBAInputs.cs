@@ -47,7 +47,7 @@ namespace TerrarianBizzareAdventure
             if (ContextAction == null)
                 return "";
 
-            return ContextAction.GetAssignedKeys()[index].ToString();
+            return ContextAction.GetAssignedKeys()[index];
         }
 
         public static ModHotKey ExtraAction01 { get; private set; }
@@ -56,7 +56,7 @@ namespace TerrarianBizzareAdventure
             if (ExtraAction01 == null)
                 return "";
 
-            return ExtraAction01.GetAssignedKeys()[index].ToString();
+            return ExtraAction01.GetAssignedKeys()[index];
         }
 
         public static ModHotKey ExtraAction02 { get; private set; }
@@ -65,11 +65,12 @@ namespace TerrarianBizzareAdventure
             if (ExtraAction02 == null)
                 return "";
 
-            return ExtraAction02.GetAssignedKeys()[index].ToString();
+            return ExtraAction02.GetAssignedKeys()[index];
         }
-        public static ModHotKey VoiceRec { get; private set; }
 
+        public static ModHotKey VoiceRec { get; private set; }
         public static ModHotKey OpenCollection { get; private set; }
+
 
         public static string Up => Main.cUp;
 
