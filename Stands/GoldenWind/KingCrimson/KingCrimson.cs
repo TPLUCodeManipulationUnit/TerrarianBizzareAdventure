@@ -41,7 +41,7 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
                     )
                 );
 
-            Combos.Add("Cheap Trick",
+            Combos.Add("Tomato Sauce Special",
                 new StandCombo(
                     TBAInputs.Down,
                     TBAInputs.CABind(),
