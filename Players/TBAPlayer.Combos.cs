@@ -26,14 +26,31 @@ namespace TerrarianBizzareAdventure.Players
             var keys = kState.GetPressedKeys();
 
             if (keys.Length > TBAInputs.LastState.GetPressedKeys().Length
-                && EligibleKeys.Contains(keys[keys.GetUpperBound(0)].ToString())
-                )
+                && EligibleKeys.Contains(keys[keys.GetUpperBound(0)].ToString()))
             {
                 ComboResetTimer = 60;
                 Inputs.Add(new ComboInput(keys[keys.GetUpperBound(0)].ToString()));
             }
 
-            if(MouseOneTimeReset > 2 && !player.controlUseItem)
+            if(TBAInputs.ContextAction.JustPressed)
+            {
+                ComboResetTimer = 60;
+                Inputs.Add(new ComboInput(TBAInputs.CABind()));
+            }
+
+            if (TBAInputs.ExtraAction01.JustPressed)
+            {
+                ComboResetTimer = 60;
+                Inputs.Add(new ComboInput(TBAInputs.EA1Bind()));
+            }
+
+            if (TBAInputs.ExtraAction02.JustPressed)
+            {
+                ComboResetTimer = 60;
+                Inputs.Add(new ComboInput(TBAInputs.EA2Bind()));
+            }
+
+            if (MouseOneTimeReset > 2 && !player.controlUseItem)
             {
                 ComboResetTimer = 60;
                 Inputs.Add(new ComboInput(MouseClick.LeftClick.ToString()));
@@ -61,30 +78,15 @@ namespace TerrarianBizzareAdventure.Players
 
         public void GetEligibleKeys()
         {
-            /*var inputMode = PlayerInput.CurrentInputMode;
-
-            if (inputMode == InputMode.XBoxGamepad || inputMode == InputMode.XBoxGamepadUI)
-            {
-                inputMode = InputMode.XBoxGamepad;
-            }
-            else
-            {
-                inputMode = InputMode.Keyboard;
-            }
-
-            if (!PlayerInput.CurrentProfile.InputModes.TryGetValue(inputMode, out var keyConf))
-            {
-                return;
-            }*/
-
+            EligibleKeys.Clear();
             EligibleKeys.Add(TBAInputs.Left);
             EligibleKeys.Add(TBAInputs.Right);
             EligibleKeys.Add(TBAInputs.Up);
             EligibleKeys.Add(TBAInputs.Down);
             EligibleKeys.Add(TBAInputs.Jump);
-            EligibleKeys.Add(TBAInputs.CABind());
-            EligibleKeys.Add(TBAInputs.EA1Bind());
-            EligibleKeys.Add(TBAInputs.EA2Bind());
+
+            Stand?.Combos.Clear();
+            Stand?.AddCombos();
         }
 
         public int ComboResetTimer { get; set; }

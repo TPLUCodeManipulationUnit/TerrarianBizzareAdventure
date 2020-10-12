@@ -116,8 +116,6 @@ namespace TerrarianBizzareAdventure
 
         #endregion*/
 
-
-
         public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
         {
             layers.Insert(0, new RATMLayer(UIManager.RATMState));

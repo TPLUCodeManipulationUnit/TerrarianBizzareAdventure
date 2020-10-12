@@ -102,22 +102,36 @@ namespace TerrarianBizzareAdventure.UserInterfaces
                     foreach(string s in combo.Value.Inputs)
                     {
                         if (s == MouseClick.LeftClick.ToString())
+                        { 
                             inputElements.Add(new UIMouseClick((int)MouseClick.LeftClick, 10));
+                            continue;
+                        }
 
                         if (s == MouseClick.RightClick.ToString())
+                        { 
                             inputElements.Add(new UIMouseClick((int)MouseClick.RightClick, 10));
+                            continue;
+                        }
 
                         if (s == MouseClick.MiddleClick.ToString())
+                        { 
                             inputElements.Add(new UIMouseClick((int)MouseClick.MiddleClick, 10));
+                            continue;
+                        }
 
                         if (s == MouseClick.LeftHold.ToString())
+                        { 
                             inputElements.Add(new UIMouseClick((int)MouseClick.LeftClick, 120));
+                            continue;
+                        }
 
                         if (s == MouseClick.RightHold.ToString())
+                        {
                             inputElements.Add(new UIMouseClick((int)MouseClick.RightClick, 120));
+                            continue;
+                        }
 
-                        if (s.Length == 1)
-                            inputElements.Add(new UIButtonPress(s));
+                        inputElements.Add(new UIButtonPress(s));
                     }
 
                     ComboPanel comboPanel = new ComboPanel(combo.Key, inputElements);

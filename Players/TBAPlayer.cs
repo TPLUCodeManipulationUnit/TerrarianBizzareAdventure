@@ -185,6 +185,7 @@ namespace TerrarianBizzareAdventure.Players
 
             if (TBAInputs.SummonStand.JustPressed && !Exhausted)
             {
+                GetEligibleKeys();
                 if (ActiveStandProjectile == null) // Minimal value for a DAT in SHENZEN.IO :haha:
                 {
                     ActiveStandProjectile = Main.projectile[Projectile.NewProjectile(player.Center, Vector2.Zero, mod.ProjectileType(Stand.GetType().Name), 0, 0, player.whoAmI)].modProjectile as Stand;

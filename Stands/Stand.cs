@@ -30,6 +30,9 @@ namespace TerrarianBizzareAdventure.Stands
             CurrentState = ANIMATION_SUMMON; // first animation *must* be have a key of "SUMMMON"
 
             Animations = new Dictionary<string, SpriteAnimation>();
+
+            Combos.Clear();
+            AddCombos();
         }
 
 
@@ -46,6 +49,7 @@ namespace TerrarianBizzareAdventure.Stands
             projectile.tileCollide = false; // tile collisions should be done manually
         }
 
+        public virtual void AddCombos() { }
 
         public abstract void AddAnimations();
 

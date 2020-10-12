@@ -19,15 +19,18 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
         {
             CallSoundPath = "Sounds/KingCrimson/KC_Call";
             AuraColor = new Color(189, 0, 85);
+        }
 
+        public override void AddCombos()
+        {
             Combos.Add("Heart Ripper",
-                new StandCombo(
-                    MouseClick.LeftClick.ToString(),
-                    TBAInputs.EA1Bind(),
-                    TBAInputs.CABind(),
-                    MouseClick.RightClick.ToString()
-                    )
-                );
+                   new StandCombo(
+                       MouseClick.LeftClick.ToString(),
+                       TBAInputs.EA1Bind(),
+                       TBAInputs.CABind(),
+                       MouseClick.RightClick.ToString()
+                       )
+                   );
 
             Combos.Add("Slice N' Dice",
                 new StandCombo(
@@ -54,6 +57,7 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
                     )
                 );
         }
+
 
         public override void AddAnimations()
         {
