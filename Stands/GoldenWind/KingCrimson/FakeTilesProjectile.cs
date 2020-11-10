@@ -56,37 +56,19 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
             if (TimeLeft == 575)
             {
                 foreach (FakeTileData fakes in FakeTiles)
-                {
-                    fakes.Velocity = new Vector2(Main.rand.Next(-4, 4), -Main.rand.NextFloat(2));
-                    fakes.RotationDirection = Main.rand.NextBool() ? -1 : 1;
-                    fakes.RotationSpeed = (float)(Main.rand.Next(12, 64)) * 0.001f;
-                }
+                    fakes.SetData();
 
                 foreach (FakeTileData fakes in FakeWalls)
-                {
-                    fakes.Velocity = new Vector2(Main.rand.Next(-4, 4), -Main.rand.NextFloat(2));
-                    fakes.RotationDirection = Main.rand.NextBool() ? -1 : 1;
-                    fakes.RotationSpeed = (float)(Main.rand.Next(12, 64)) * 0.001f;
-                }
+                    fakes.SetData();
             }
 
             if (TimeLeft < 575)
             {
                 foreach (FakeTileData fakes in FakeTiles)
-                {
-                    fakes.Position += fakes.Velocity;
-                    fakes.Rotation += fakes.RotationSpeed * fakes.RotationDirection;
-                    fakes.Opacity -= 0.0075f;
-					fakes.Color = Color.Lerp(fakes.Color, Color.White, 0.04f);
-                }
+                    fakes.Update();
 
                 foreach (FakeTileData fakes in FakeWalls)
-                {
-                    fakes.Position += fakes.Velocity;
-                    fakes.Rotation += fakes.RotationSpeed * fakes.RotationDirection;
-                    fakes.Opacity -= 0.0075f;
-					fakes.Color = Color.Lerp(fakes.Color, Color.White, 0.04f);
-                }
+                    fakes.Update();
             }
 
             if (TimeLeft > 575 && TimeLeft < 600)

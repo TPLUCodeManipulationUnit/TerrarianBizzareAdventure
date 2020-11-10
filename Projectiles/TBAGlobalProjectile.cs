@@ -23,14 +23,9 @@ namespace TerrarianBizzareAdventure.Projectiles
             int tickLimit = TimeStopManagement.TimeStopped && projectile.owner == TimeStopManagement.TimeStopper.player.whoAmI ? 10 : 1;
             IsStopped = !TimeStopManagement.TimeStopImmuneProjectiles.Contains(projectile.type) && TimeStopManagement.TimeStopped && !(projectile.modProjectile is IProjectileHasImmunityToTimeStop iisitts && iisitts.IsNativelyImmuneToTimeStop()) && RanForTicks > tickLimit;
 
-            var IsTimeSkipped = TimeSkipManager.IsTimeSkipped && projectile.hostile;
-
             RanForTicks++;
 
             PreTimeSkipAI(projectile);
-
-            if (IsTimeSkipped && RanForTicks > 2 && RanForTicks < 60)
-                return false;
 
             if (IsStopped)
             {
@@ -46,10 +41,6 @@ namespace TerrarianBizzareAdventure.Projectiles
             }
 
             return true;
-        }
-
-        public override void OnHitNPC(Projectile projectile, NPC target, int damage, float knockback, bool crit)
-        {
         }
 
         public override void ModifyHitNPC(Projectile projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
@@ -74,7 +65,7 @@ namespace TerrarianBizzareAdventure.Projectiles
 
         public override bool ShouldUpdatePosition(Projectile projectile)
         {
-            bool notMove = TimeSkipManager.IsTimeSkipped && RanForTicks > 2 && RanForTicks < 60;
+            bool notMove = IsAffectedByKC(projectile) && RanForTicks > 2 && RanForTicks < 60;
 
             if (notMove)
                 return false;

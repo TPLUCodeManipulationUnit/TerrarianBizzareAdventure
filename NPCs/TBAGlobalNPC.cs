@@ -97,9 +97,9 @@ namespace TerrarianBizzareAdventure.NPCs
 
 
         // Time that NPCs is stunned for after getting brain damaged
-        public int StunDuration { get; set; }
+        public int CombatLockTimer { get; set; }
 
-        public bool IsStunned => StunDuration > 0;
+        public bool IsCombatLocked => CombatLockTimer > 0;
 
         public static TBAGlobalNPC GetFor(NPC npc) => npc.GetGlobalNPC<TBAGlobalNPC>();
 

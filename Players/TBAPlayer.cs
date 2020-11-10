@@ -7,6 +7,7 @@ using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
 using TerrarianBizzareAdventure.Buffs;
+using TerrarianBizzareAdventure.Enums;
 using TerrarianBizzareAdventure.Helpers;
 using TerrarianBizzareAdventure.Items.Weapons.Rewards;
 using TerrarianBizzareAdventure.Networking;
@@ -84,6 +85,16 @@ namespace TerrarianBizzareAdventure.Players
             ResetDrawingEffects();
             ResetBuffEffects();
             ResetStaminaEffects();
+            ResetMouse();
+
+            if (IsCombatLocked)
+                CombatLockTimer--;
+
+            if(IsCombatLocked)
+            {
+                player.position = player.oldPosition;
+                player.velocity = player.oldVelocity;
+            }
 
             if (AttackDirection != 0)
             {
@@ -92,6 +103,19 @@ namespace TerrarianBizzareAdventure.Players
                 player.direction = AttackDirection;
             }
 
+            CanTransform = false;
+
+            if (Stand is TheWorldStand)
+                player.noFallDmg = true;
+
+            if (AttackDirectionResetTimer > 0)
+                AttackDirectionResetTimer--;
+            else
+                AttackDirection = 0;
+        }
+
+        public void ResetMouse()
+        {
             if (player.controlUseItem)
             {
                 MouseOneTimeReset = 3;
@@ -121,16 +145,6 @@ namespace TerrarianBizzareAdventure.Players
 
             if (MouseTwoTimeReset <= 0)
                 MouseTwoTime = 0;
-
-            CanTransform = false;
-
-            if (Stand is TheWorldStand)
-                player.noFallDmg = true;
-
-            if (AttackDirectionResetTimer > 0)
-                AttackDirectionResetTimer--;
-            else
-                AttackDirection = 0;
         }
 
         public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
@@ -324,6 +338,9 @@ namespace TerrarianBizzareAdventure.Players
         public int MouseTwoTime { get; private set; }
 
         public int MouseTwoTimeReset { get; private set; }
+
+        public bool IsCombatLocked => CombatLockTimer > 0;
+        public int CombatLockTimer { get; set; }
 
         public bool KnifeGangMember => SteamHelper.KnifeGangMembers.Count(x => x.SteamId64 == SteamHelper.SteamId64) > 0;
 

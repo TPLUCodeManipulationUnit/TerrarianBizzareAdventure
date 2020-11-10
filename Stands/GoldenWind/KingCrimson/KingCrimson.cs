@@ -56,6 +56,15 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
                     TBAInputs.CABind()
                     )
                 );
+
+            Combos.Add("Time Erase",
+                new StandCombo(
+                    TBAInputs.Up,
+                    TBAInputs.Down,
+                    TBAInputs.Down,
+                    TBAInputs.CABind()
+                    )
+                );
         }
 
 
@@ -182,7 +191,7 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
 
                 Damage = 0;
 
-                if (Combos["Cheap Trick"].CheckCombo(TBAPlayer.Get(Owner)))
+                if (Combos["Tomato Sauce Special"].CheckCombo(TBAPlayer.Get(Owner)))
                 {
                     CurrentState = "BLIND";
                 }
@@ -206,6 +215,12 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
 
                     PositionOffset = startPos + PunchRushDirection;
                     BarrageTime = 180;
+                }
+
+                if(Combos["Time Erase"].CheckCombo(TBAPlayer.Get(Owner)))
+                {
+                    TBAMod.PlayVoiceLine("Sounds/KingCrimson/KC_Call");
+                    EraseTime();
                 }
             }
 

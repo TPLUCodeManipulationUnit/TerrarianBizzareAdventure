@@ -10,9 +10,7 @@ namespace TerrarianBizzareAdventure.Projectiles
     {
         public void PreTimeSkipAI(Projectile projectile)
         {
-            var IsTimeSkipped = TimeSkipManager.IsTimeSkipped && projectile.hostile && !(projectile.modProjectile is PunchBarrage);
-
-            if (IsTimeSkipped)
+            if (IsAffectedByKC(projectile))
             {
                 if (TimeSkipManager.TimeSkippedFor % 4 == 0)
                 {
@@ -28,7 +26,7 @@ namespace TerrarianBizzareAdventure.Projectiles
                 TimeSkipStates.RemoveAt(0);
 
 
-            if (IsTimeSkipped && TimeSkipManager.TimeSkippedFor <= 2 && TimeSkipStates.Count > 0)
+            if (IsAffectedByKC(projectile) && TimeSkipManager.TimeSkippedFor <= 2 && TimeSkipStates.Count > 0)
             {
                 projectile.Center = TimeSkipStates[0].Position;
                 projectile.ai = TimeSkipStates[0].AI;
@@ -37,15 +35,14 @@ namespace TerrarianBizzareAdventure.Projectiles
             }
         }
 
+        public bool IsAffectedByKC(Projectile projectile) => TimeSkipManager.IsTimeSkipped && projectile.hostile && !(projectile.modProjectile is PunchBarrage);
+
 
 #pragma warning disable IDE0060 // Remove unused parameter
         public void PostTimeSkipDraw(Projectile projectile, SpriteBatch spriteBatch, Color lightColor)
 #pragma warning restore IDE0060 // Remove unused parameter
         {
-            var timeSkipped = TimeSkipManager.IsTimeSkipped && projectile.hostile;
-
-
-            if (timeSkipped)
+            if (IsAffectedByKC(projectile))
             {
                 lightColor = Color.Red;
 

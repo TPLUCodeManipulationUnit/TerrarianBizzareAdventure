@@ -52,7 +52,7 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
 
             Owner.heldProj = projectile.whoAmI;
 
-            if(Vector2.Distance(Center, Owner.Center) >= 16 * 175)
+            if(Vector2.Distance(Center, Owner.Center) >= 16 * 75)
                 CurrentState = "RETURN";
 
             if (CurrentAnimation != null)
@@ -72,12 +72,6 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
                 Center = Owner.Center - new Vector2(120 * Owner.direction, 24);
                 SetVel = true;
             }
-
-            if (CurrentState == "TURN" && CurrentAnimation.CurrentFrame <= 8)
-                Speed = 9 - MathHelper.Clamp(CurrentAnimation.CurrentFrame, 0, 8);
-            else if (CurrentState == "TURN" && CurrentAnimation.CurrentFrame >= 8)
-                Speed = 0 - MathHelper.Clamp(8 - (CurrentAnimation.CurrentFrame - CurrentAnimation.FrameCount), 0, 8);
-
 
             TBAPlayer tPlayer = TBAPlayer.Get(Owner);
 
@@ -107,15 +101,6 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
                     KillStand();
                 }
             }
-
-
-            if (CurrentState == "TURN" && CurrentAnimation.Finished)
-            {
-                CurrentAnimation.ResetAnimation();
-                CurrentState = ANIMATION_IDLE;
-                Angle += (float)MathHelper.Pi;
-            }
-
 
             #region controls
 
@@ -190,7 +175,7 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
                     Vector2 position = Center;
                     Vector2 velocity = new Vector2(16, 0).RotatedBy(Angle);
                     int type = ModContent.ProjectileType<AerosmithBullet>();
-                    int damage = 40;
+                    int damage = 5;
 
                     float offX = -24;
                     float offY = 12;
@@ -220,7 +205,7 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
             {
                 FlightVector = new Vector2(1, 0).RotatedBy(Angle);
 
-                if (Speed < 8.0f)
+                if (Speed < 4.0f)
                     Speed += 0.2f;
 
                 if (YSpeed > 0)

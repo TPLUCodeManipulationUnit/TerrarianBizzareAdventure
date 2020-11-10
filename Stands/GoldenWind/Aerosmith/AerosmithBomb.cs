@@ -93,16 +93,16 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
                         #endregion
 
 
-                        Damage = 200;
+                        Damage = 50;
 
                         projectile.friendly = true;
                         ExplosionDelay += 2;
                         TimeLeft = 2;
 
-                        Width = 400;
-                        Height = 400;
+                        Width = 100;
+                        Height = 100;
 
-                        Position -= new Vector2(200);
+                        Position -= new Vector2(50);
                     }
 
                     Main.PlaySound(SoundID.Item14, projectile.position);

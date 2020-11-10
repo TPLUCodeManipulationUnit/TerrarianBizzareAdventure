@@ -1,5 +1,6 @@
 ﻿using Terraria;
 using TerrarianBizzareAdventure.NPCs;
+using TerrarianBizzareAdventure.Players;
 using TerrarianBizzareAdventure.Projectiles;
 using TerrarianBizzareAdventure.TimeStop;
 
@@ -23,7 +24,6 @@ namespace TerrarianBizzareAdventure
         public void LoadEdits()
         {
             On.Terraria.Main.DrawTiles += Main_DrawTiles;
-
             On.Terraria.Main.DrawBlack += Main_DrawBlack;
 
             On.Terraria.Main.DrawWalls += Main_DrawWalls;
@@ -151,17 +151,17 @@ namespace TerrarianBizzareAdventure
 
             if (tbaNPC != null)
             {
-                if (!tbaNPC.IsStunned && tbaNPC.HasRotationToRestore)
+                if (!tbaNPC.IsCombatLocked && tbaNPC.HasRotationToRestore)
                 {
                     self.rotation = tbaNPC.RotationToRestore;
                     tbaNPC.RotationToRestore = -999.0f;
                 }
 
-                if (tbaNPC.IsStunned)
-                    tbaNPC.StunDuration--;
+                if (tbaNPC.IsCombatLocked)
+                    tbaNPC.CombatLockTimer--;
             }
 
-            bool isStunned = tbaNPC != null && tbaNPC.IsStunned;
+            bool isStunned = tbaNPC != null && tbaNPC.IsCombatLocked;
             bool isTimeStopped = TimeStopped && !TimeStopManagement.IsNPCImmune(self);
 
             if (!isTimeStopped && !isStunned)

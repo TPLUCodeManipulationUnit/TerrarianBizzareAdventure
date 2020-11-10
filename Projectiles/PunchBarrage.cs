@@ -104,7 +104,7 @@ namespace TerrarianBizzareAdventure.Projectiles
             }
 
             for(int n = HitNPCs.Count - 1; n > 0; n--)
-                if (!TBAGlobalNPC.GetFor(HitNPCs[n]).IsStunned)
+                if (!TBAGlobalNPC.GetFor(HitNPCs[n]).IsCombatLocked)
                     HitNPCs.RemoveAt(n);
         }
 
@@ -129,7 +129,9 @@ namespace TerrarianBizzareAdventure.Projectiles
                 DrawHelpers.CircleDust(target.Center + randomVector * Owner.direction, Velocity, DustID.AncientLight, 2, 8, 0.85f);
             }
 
-            TBAGlobalNPC.GetFor(target).StunDuration = 8;
+            TBAGlobalNPC.GetFor(target).CombatLockTimer = 8;
+
+            TBAPlayer.Get(Owner).CombatLockTimer = 8;
 
             if (!HitNPCs.Contains(target))
             {
