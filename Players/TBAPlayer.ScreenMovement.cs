@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
+using TerrarianBizzareAdventure.Helpers;
 using TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith;
 
 namespace TerrarianBizzareAdventure.Players
@@ -11,8 +12,8 @@ namespace TerrarianBizzareAdventure.Players
         {
             if(StandActive && ActiveStandProjectile is AerosmithStand stand)
             {	
-                if(!stand.IsDespawning && !stand.IsSpawning && !stand.IsReturning)
-                    Main.screenPosition = stand.Center - new Vector2(Main.screenWidth, Main.screenHeight) * 0.5f;
+                if(!stand.IsDespawning && !stand.IsSpawning && !stand.IsReturning && !stand.IsPatroling)
+                    Main.screenPosition = stand.Center + VectorHelpers.DirectToMouse(stand.Center, 16) - new Vector2(Main.screenWidth, Main.screenHeight) * 0.5f;
             }
 
             if(PointOfInterest != Vector2.Zero)

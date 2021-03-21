@@ -41,18 +41,17 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.TheWorld
             if (!HasNoTarget)
             {
                 projectile.velocity = Vector2.Zero;
-                projectile.Center = Target.Center - new Vector2(0, Target.height - YOffset);
-
-                if (projectile.timeLeft % 10 == 0 && YOffset < 40)
-                    YOffset++;
+                YOffset = Target.height > 50 ? -10 : 10;
+                projectile.Center = Target.Center - new Vector2(0, YOffset);
             }
 
             if (projectile.timeLeft <= 1)
             {
                 projectile.penetrate = -1;
-                projectile.damage = 1600;
+                projectile.damage = ExplosionDamage;
                 projectile.friendly = true;
             }
+
             if (HasNoTarget && projectile.velocity.Y < 16f)
                 projectile.velocity.Y += 0.18f;
 
@@ -185,6 +184,8 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.TheWorld
         public bool HasNoTarget => Target == null && TargetType == -1; 
 
         public bool HasTouchedGround { get; private set; }
+
+        public int ExplosionDamage { get; set; }
 
         public float YOffset { get; private set; }
     }

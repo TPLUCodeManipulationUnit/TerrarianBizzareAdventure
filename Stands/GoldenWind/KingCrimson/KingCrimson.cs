@@ -6,6 +6,7 @@ using Terraria.ModLoader;
 using TerrarianBizzareAdventure.Drawing;
 using TerrarianBizzareAdventure.Enums;
 using TerrarianBizzareAdventure.Helpers;
+using TerrarianBizzareAdventure.NPCs;
 using TerrarianBizzareAdventure.Players;
 using TerrarianBizzareAdventure.Projectiles;
 using TerrarianBizzareAdventure.TimeSkip;
@@ -24,7 +25,7 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
         public override void AddCombos()
         {
             Combos.Add("Heart Ripper",
-                   new StandCombo(
+                   new StandCombo("Forced Heart Surgery",
                        MouseClick.LeftClick.ToString(),
                        TBAInputs.EA1Bind(),
                        TBAInputs.CABind(),
@@ -33,7 +34,7 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
                    );
 
             Combos.Add("Slice N' Dice",
-                new StandCombo(
+                new StandCombo("Slicing Strike",
                     MouseClick.RightClick.ToString(),
                     MouseClick.RightClick.ToString(),
                     TBAInputs.Up,
@@ -42,15 +43,14 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
                 );
 
             Combos.Add("Tomato Sauce Special",
-                new StandCombo(
+                new StandCombo("Tomato Sauce Special",
                     TBAInputs.Down,
-                    TBAInputs.CABind(),
-                    MouseClick.LeftClick.ToString()
+                    TBAInputs.CABind()
                     )
                 );
 
             Combos.Add("Barrage",
-                new StandCombo(
+                new StandCombo("Emperial Barrage",
                     MouseClick.LeftClick.ToString(),
                     MouseClick.RightClick.ToString(),
                     TBAInputs.CABind()
@@ -58,9 +58,19 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
                 );
 
             Combos.Add("Time Erase",
-                new StandCombo(
+                new StandCombo("Court of the Crimson King",
                     TBAInputs.Up,
                     TBAInputs.Down,
+                    TBAInputs.Down,
+                    TBAInputs.CABind()
+                    )
+                );
+
+            Combos.Add("Fated Death",
+                new StandCombo("Fated Death",
+                    TBAInputs.Up,
+                    TBAInputs.CABind(),
+                    TBAInputs.EA1Bind(),
                     TBAInputs.Down,
                     TBAInputs.CABind()
                     )
@@ -105,7 +115,7 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
             Animations.Add("DONUT_UNDO", new SpriteAnimation(basePath + "KCDonutUndo", 12, 4));
             Animations.Add("DONUT_MISS", new SpriteAnimation(basePath + "KCDonutMiss", 7, 4));
 
-            Animations.Add("BLIND", new SpriteAnimation(basePath + "KCBlind", 11, 3));
+            Animations.Add("BLIND", new SpriteAnimation(basePath + "KCBlind", 11, 4));
             Animations["BLIND"].SetNextAnimation(Animations[ANIMATION_IDLE]);
             DrawInFrontStates.Add("BLIND");
 
@@ -164,6 +174,10 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
 
             OwnerCtrlUse = Owner.controlUseTile;
 
+            if (BaseDamage <= 0)
+                GetBaseDamage(DamageClass.Melee, Owner);
+
+
 
             projectile.width = (int)CurrentAnimation.FrameSize.X;
             projectile.height = (int)CurrentAnimation.FrameSize.Y;
@@ -179,8 +193,32 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
                 Opacity = CurrentAnimation.FrameRect.Y / CurrentAnimation.FrameRect.Height * 0.25f;
             }
 
-            if (InIdleState)
+            if (CurrentState == "BLIND" && CurrentAnimation.CurrentFrame == 6)
             {
+                Projectile.NewProjectile(Center, VectorHelpers.DirectToMouse(Center, 12), ModContent.ProjectileType<BloodSplat>(), 1, 0, Owner.whoAmI);
+                CurrentAnimation.CurrentFrame++;
+            }
+            if(CurrentState == "DONUT_ATT" && Owner.ownedProjectileCounts[ModContent.ProjectileType<DonutPunch>()] <= 1 && CurrentAnimation.CurrentFrame == 3)
+            {
+                int proj = Projectile.NewProjectile(Center, Vector2.Zero, ModContent.ProjectileType<DonutPunch>(), DonutImpactDamage, 0, Owner.whoAmI, projectile.whoAmI, -1);
+                DonutPunch dPunch = Main.projectile[proj].modProjectile as DonutPunch;
+                dPunch.UnpullDamage = DonutUnpullDamage;
+            }
+
+            if (CurrentState == "DONUT_ATT" && !HasMissedDonut)
+                CurrentState = "DONUT_UNDO";
+
+            if(CurrentState == "DONUT_UNDO")
+            {
+                if (CurrentAnimation.CurrentFrame < 6)
+                    CurrentAnimation.FrameSpeed = 8;
+                else
+                    CurrentAnimation.FrameSpeed = 5;
+            }
+
+            if (IsIdling)
+            {
+                ImmuneTime = 20;
                 PositionOffset = Owner.Center + new Vector2(-16 * Owner.direction, -24 + Owner.gfxOffY);
 
                 if (Main.myPlayer == Owner.whoAmI)
@@ -189,27 +227,24 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
                         CurrentState = ANIMATION_DESPAWN;
                 }
 
-                Damage = 0;
+                HasMissedDonut = true;
 
-                if (Combos["Tomato Sauce Special"].CheckCombo(TBAPlayer.Get(Owner)))
-                {
-                    CurrentState = "BLIND";
-                }
+                TBAPlayer t = TBAPlayer.Get(Owner);
 
-                if (Combos["Heart Ripper"].CheckCombo(TBAPlayer.Get(Owner)))
+                if (Combos["Heart Ripper"].CheckCombo(t))
                 {
                     CurrentState = "DONUT_PREP";
                 }
 
-                if (Combos["Slice N' Dice"].CheckCombo(TBAPlayer.Get(Owner)))
+                if (Combos["Slice N' Dice"].CheckCombo(t))
                 {
                     CurrentState = "CUT_PREP";
                 }
 
-                if (Combos["Barrage"].CheckCombo(TBAPlayer.Get(Owner)))
+                if (Combos["Barrage"].CheckCombo(t))
                 {
                     Vector2 startPos = Owner.Center - new Vector2(-32 * Owner.direction, 16);
-                    CurrentState = "PUNCH_" + (CurrentState == "PUNCH_R" ? "L" : "R");
+                    StateQueue.Add("PUNCH_" + (CurrentState == "PUNCH_R" ? "L" : "R"));
 
                     PunchRushDirection = GetRange(startPos, Main.MouseWorld);
 
@@ -217,68 +252,72 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
                     BarrageTime = 180;
                 }
 
-                if(Combos["Time Erase"].CheckCombo(TBAPlayer.Get(Owner)))
+                if (Combos["Time Erase"].CheckCombo(t))
                 {
                     TBAMod.PlayVoiceLine("Sounds/KingCrimson/KC_Call");
                     EraseTime();
+                    TimeSkipManager.HasToPlayVFX = true;
                 }
-            }
 
-            if (PunchCounterReset > 0)
-            {
-                Owner.heldProj = projectile.whoAmI;
-
-                PositionOffset = Owner.Center + new Vector2(8 * Owner.direction, -24 + Owner.gfxOffY);
-            }
-
-            if (IsPunching)
-            {
-                if (!IsBarraging)
+                if (Combos["Fated Death"].CheckCombo(t))
                 {
-                    CurrentAnimation.FrameSpeed = 5;
-                    if (CurrentAnimation.CurrentFrame == 1)
-                        Damage = 60;
-
-                    Owner.heldProj = projectile.whoAmI;
+                    HasQueuedOffensiveTimeSkip = true;
                 }
-                Owner.direction = Center.X < Owner.Center.X ? -1 : 1;
 
-                IsFlipped = Owner.direction == 1;
-
-                PositionOffset = Owner.Center - new Vector2(-8 * Owner.direction, 16) + PunchRushDirection;
-            }
-
-            if (CanPunch)
-            {
-                if ((tPlayer.MouseOneTimeReset > 0 || tPlayer.MouseTwoTimeReset > 0) && !Owner.controlUseItem && !Owner.controlUseTile)
+                if (Combos["Tomato Sauce Special"].CheckCombo(t))
                 {
-                    ImmuneTime = 20;
-
-                    Owner.direction = Main.MouseWorld.X < Owner.Center.X ? -1 : 1;
-
-                    Vector2 startPos = Owner.Center - new Vector2(-32 * Owner.direction, 16);
-
-                    PunchRushDirection = GetRange(startPos, Main.MouseWorld);
-
-                    PositionOffset = startPos + PunchRushDirection;
-
-                    if (Main.MouseWorld.Y > Owner.Center.Y + 90)
-                        CurrentState = "PUNCH_" + (tPlayer.MouseTwoTimeReset > 0 ? "L" : "R") + "D";
-                    else if (Main.MouseWorld.Y < Owner.Center.Y - 90)
-                        CurrentState = "PUNCH_" + (tPlayer.MouseTwoTimeReset > 0 ? "L" : "R") + "U";
-                    else
-                        CurrentState = "PUNCH_" + (tPlayer.MouseTwoTimeReset > 0 ? "L" : "R");
-
-                    PunchCounterReset = 90;
+                    CurrentState = "BLIND";
                 }
             }
+            
+
+            if (HasQueuedOffensiveTimeSkip)
+            {
+                foreach (NPC n in Main.npc)
+                {
+                    if (!n.active)
+                        continue;
+
+                    if (n.Hitbox.Contains(Main.MouseWorld.ToPoint()))
+                    {
+                        QueuedTarget = n;
+                        break;
+                    }
+                }
+
+                if (QueuedTarget != null && !Owner.controlUseTile && tPlayer.MouseTwoTimeReset > 0)
+                {
+                    StateQueue.Clear();
+                    TBAMod.PlayVoiceLine("Sounds/KingCrimson/KC_Call");
+                    CurrentState = ANIMATION_IDLE;
+                    TimeSkipManager.HasToPlayVFX = true;
+                    DonutDelay = 30;
+                    TBAGlobalNPC.GetFor(QueuedTarget).CL_LockTimer = 60;
+                }
+            }
+            else
+            {
+                QueuedTarget = null;
+            }
+
+            if(DonutDelay == 3)
+            {
+                Main.PlaySound(TBAMod.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/StandAbilityEffects/TimeSkip"));
+                Owner.direction = QueuedTarget.direction;
+                Owner.Teleport(QueuedTarget.Center - new Vector2(Owner.width * 0.5f + 56 * QueuedTarget.direction, Owner.height * 0.5f), 1);
+                tPlayer.CombatLockTimer = 80;
+                HasQueuedOffensiveTimeSkip = false;
+            }
+
+            if (DonutDelay == 1) 
+                CurrentState = "DONUT_ATT";
 
             if (IsBarraging)
             {
                 PunchCounterReset = 0;
                 if (BarrageTime >= 180)
                 {
-                    int barrage = Projectile.NewProjectile(projectile.Center, VectorHelpers.DirectToMouse(projectile.Center, 18f), ModContent.ProjectileType<CrimsonBarrage>(), 60, 0, Owner.whoAmI);
+                    int barrage = Projectile.NewProjectile(projectile.Center, VectorHelpers.DirectToMouse(projectile.Center, 18f), ModContent.ProjectileType<CrimsonBarrage>(), BarrageDamage, 0, Owner.whoAmI);
 
                     if (Main.projectile[barrage].modProjectile is CrimsonBarrage Barrage)
                     {
@@ -306,6 +345,9 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
                 BarrageTime--;
             }
 
+            if (DonutDelay > 0)
+                DonutDelay--;
+
             if (IsDespawning)
             {
                 Opacity = (5 - CurrentAnimation.FrameRect.Y / (int)CurrentAnimation.FrameSize.Y) * 0.2f;
@@ -320,6 +362,20 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
 
             if(DrawInFront)
                 Owner.heldProj = projectile.whoAmI;
+
+
+            if (CurrentState == "CUT_ATT")
+            {
+                Owner.direction = Main.MouseWorld.X < Owner.Center.X ? -1 : 1;
+
+                Vector2 startPos = Owner.Center - new Vector2(-32 * Owner.direction, 16);
+
+                PunchRushDirection = GetRange(startPos, Main.MouseWorld);
+
+                PositionOffset = startPos + PunchRushDirection;
+
+                Damage = CutAttackDamage;
+            }
 
             Center = Vector2.Lerp(Center, PositionOffset, 0.26f);
         }
@@ -355,10 +411,6 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
             }
         }
 
-        public bool IsPunching => CurrentState.Contains("PUNCH");
-
-        public bool CanPunch => InIdleState; 
-
         public override bool StopsItemUse => !Main.SmartCursorEnabled;
 
         public override bool CanDie => RushTimer <= 0;
@@ -366,5 +418,18 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
         public bool HasMissedDonut { get; set; }
 
         public bool OwnerCtrlUse { get; set; }
+
+        public bool HasQueuedOffensiveTimeSkip { get; set; }
+
+        public int DonutDelay { get; set; }
+
+        public NPC QueuedTarget { get; set; }
+
+        public int DonutImpactDamage => 25 + (int)(BaseDamage * 1.2);
+        public int DonutUnpullDamage => 25 + (int)(BaseDamage * 7.0);
+        public int CutAttackDamage => 30 + (int)(BaseDamage * 4.8);
+        public override int PunchDamage => 12 + (int)(BaseDamage * 1.2);
+
+        public override int BarrageDamage => 24 + (int)(BaseDamage * 0.66);
     }
 }

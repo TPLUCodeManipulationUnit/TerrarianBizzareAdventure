@@ -91,7 +91,7 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.SilverChariot
                     KillStand();
             }
 
-            if(InIdleState)
+            if(IsIdling)
                 XPosOffset = 18;
             if (CurrentState.Contains("SLASH") || CurrentState.Contains("RUSH"))
                 XPosOffset = -32;
@@ -99,7 +99,7 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.SilverChariot
             #region controls
             if (Owner.whoAmI == Main.myPlayer)
             {
-                if (InIdleState)
+                if (IsIdling)
                 {
                     if (TBAInputs.SummonStand.JustPressed)
                     {

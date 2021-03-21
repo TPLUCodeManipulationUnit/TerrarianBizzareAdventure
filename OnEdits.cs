@@ -158,7 +158,16 @@ namespace TerrarianBizzareAdventure
                 }
 
                 if (tbaNPC.IsCombatLocked)
-                    tbaNPC.CombatLockTimer--;
+                {
+                    tbaNPC.CL_ResetTimer = 30;
+                    tbaNPC.CL_TotalTime++;
+                    tbaNPC.CL_LockTimer--;
+                }
+
+                if(tbaNPC.CL_TotalTime >= tbaNPC.CL_HardCap)
+                {
+                    tbaNPC.CL_CoolOffTime = 600;
+                }
             }
 
             bool isStunned = tbaNPC != null && tbaNPC.IsCombatLocked;

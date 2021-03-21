@@ -61,7 +61,7 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.TheEmperor
             projectile.velocity.X = vel.X - (Math.Abs(vel.SafeNormalize(-Vector2.UnitY).Y) < 0.75 ? xOffset : 0);
             projectile.velocity.Y = vel.Y - (Math.Abs(vel.SafeNormalize(-Vector2.UnitY).Y) < 0.6 ? yOffset : 0);
 
-            if (InIdleState)
+            if (IsIdling)
             {
                 if (TBAInputs.SummonStand.JustPressed && Main.LocalPlayer == Owner)
                     CurrentState = ANIMATION_DESPAWN;
@@ -116,6 +116,11 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.TheEmperor
         //public override bool CanAcquire(TBAPlayer tbaPlayer) => false;
 
         public override bool CanDie => BarrageTime < 0;
+
+        public override bool CanAcquire(TBAPlayer tbaPlayer)
+        {
+            return false;
+        }
 
         public float MaxDistance => 11f;
 

@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
+using Terraria.ModLoader;
 using WebmilioCommons.Projectiles;
 
 namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
@@ -30,11 +31,13 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
             {
                 GotTiles = true;
 
-                int startPosX = (int)Main.screenPosition.X / 16;
-                int startPosY = (int)Main.screenPosition.Y / 16;
+                int range = ModContent.GetInstance<TBAConfig>().TileGrabRange;
 
-                int tilesToPickX = Main.screenWidth / 16 + 1;
-                int tilesToPickY = Main.screenHeight / 16 + 1;
+                int startPosX = (int)Main.screenPosition.X / 16 - range;
+                int startPosY = (int)Main.screenPosition.Y / 16 - range;
+
+                int tilesToPickX = Main.screenWidth / 16 + 1 + range;
+                int tilesToPickY = Main.screenHeight / 16 + 1 + (int)(range * 1.5f);
 
                 for (int i = startPosX; i < startPosX + tilesToPickX; i++)
                 {

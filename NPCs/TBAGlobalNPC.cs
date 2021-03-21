@@ -21,6 +21,16 @@ namespace TerrarianBizzareAdventure.NPCs
 
         public override bool PreAI(NPC npc)
         {
+            if (CL_ResetTimer > 0)
+                CL_ResetTimer--;
+            else
+            {
+                CL_TotalTime = 0;
+            }
+
+            if (IsCoolingOff)
+                CL_CoolOffTime--;
+
             if (TimeStopManagement.TimeStopped && TimeStopManagement.IsNPCImmune(npc))
                 return true;
 
@@ -97,9 +107,15 @@ namespace TerrarianBizzareAdventure.NPCs
 
 
         // Time that NPCs is stunned for after getting brain damaged
-        public int CombatLockTimer { get; set; }
+        // CL => Combat Lock
+        public int CL_LockTimer { get; set; }
+        public int CL_TotalTime { get; set; }
+        public int CL_ResetTimer { get; set; }
+        public int CL_HardCap => 300;
+        public int CL_CoolOffTime { get; set; }
+        public bool IsCoolingOff => CL_CoolOffTime > 0;
+        public bool IsCombatLocked => CL_LockTimer > 0;
 
-        public bool IsCombatLocked => CombatLockTimer > 0;
 
         public static TBAGlobalNPC GetFor(NPC npc) => npc.GetGlobalNPC<TBAGlobalNPC>();
 

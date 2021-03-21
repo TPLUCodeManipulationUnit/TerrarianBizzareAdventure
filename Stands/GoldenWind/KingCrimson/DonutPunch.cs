@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using TerrarianBizzareAdventure.NPCs;
+using TerrarianBizzareAdventure.Players;
 using WebmilioCommons.Projectiles;
 
 namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
@@ -11,8 +13,8 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
     {
         public override void SetDefaults()
         {
-            projectile.width = 50;
-            projectile.height = 50;
+            projectile.width = 100;
+            projectile.height = 100;
 
             projectile.friendly = true;
             projectile.penetrate = -1;
@@ -31,7 +33,7 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
 
             var playerDirection = Owner.direction;
 
-            Vector2 offset = new Vector2(36 * playerDirection, AI1 > -1 ? -8 : 0);
+            Vector2 offset = new Vector2(48 * playerDirection, AI1 > -1 ? -8 : 0);
 
             projectile.Center = ParentProjectile.Center + offset;
 
@@ -93,8 +95,11 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
             DonutMissedCheckAndUpdate();
 
 
-            projectile.damage = 600;
+            projectile.damage = UnpullDamage;
 
+            TBAGlobalNPC.GetFor(target).CL_LockTimer = 40;
+
+            target.immune[projectile.owner] = 40;
 
             if (target.life - damage > 0)
             {
@@ -104,7 +109,11 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
                 AI1 = target.whoAmI;
             }
             else
+            {
+                KingCrimson kc = ParentProjectile.modProjectile as KingCrimson;
+                kc.HasMissedDonut = true;
                 projectile.Kill();
+            }
 
 
             Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Punch" + Main.rand.Next(1, 5)).WithVolume(.2f));
@@ -118,7 +127,7 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
             DonutMissedCheckAndUpdate();
 
 
-            Damage = 600;
+            Damage = UnpullDamage;
 
 
             if (target.statLife - damage > 0)
@@ -142,7 +151,7 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
                 return;
 
             if (kc.HasMissedDonut)
-                TimeLeft = 75;
+                TimeLeft = 41;
 
             kc.HasMissedDonut = false;
         }
@@ -193,7 +202,10 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.KingCrimson
         public Entity DonutTarget { get; private set; }
 
         public TargetType DonutType { get; private set; }
+
+        public int UnpullDamage { get; set; }
     }
+
 
     public enum TargetType : byte
     {

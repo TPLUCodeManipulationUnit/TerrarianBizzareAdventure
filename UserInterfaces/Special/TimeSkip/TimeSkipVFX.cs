@@ -13,7 +13,7 @@ namespace TerrarianBizzareAdventure.UserInterfaces
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-            if(TimeSkipManager.TimeSkippedFor > 0 && !TimeSkipManager.FullCycle)
+            if(TimeSkipManager.HasToPlayVFX)
             spriteBatch.Draw(
                 Textures.TimeSkipVFX,
                 new Rectangle(0, 0, Main.screenWidth, Main.screenHeight),

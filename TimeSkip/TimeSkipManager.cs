@@ -16,11 +16,12 @@ namespace TerrarianBizzareAdventure.TimeSkip
             }
 
             if (TimeSkippedFor < 36 && TimeSkippedFor > 1)
-                FullCycle = false;
+                HasToPlayVFX = true;
 
-            if (TimeSkippedFor > 0)
+            if (HasToPlayVFX)
             {
                 if (!FullCycle)
+                {
                     if (++FrameCounter >= 2)
                     {
                         if (++CurrentFrame > 22)
@@ -31,6 +32,9 @@ namespace TerrarianBizzareAdventure.TimeSkip
 
                         FrameCounter = 0;
                     }
+                }
+                else
+                    HasToPlayVFX = false;
             }
             else
             {
@@ -65,5 +69,7 @@ namespace TerrarianBizzareAdventure.TimeSkip
         public static bool FullCycle { get; private set; }
 
         public static int WaveQuality { get; private set; }
+
+        public static bool HasToPlayVFX { get; set; }
     }
 }

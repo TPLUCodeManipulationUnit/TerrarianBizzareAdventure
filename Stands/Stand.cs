@@ -11,6 +11,8 @@ using WebmilioCommons.Managers;
 using System.Linq;
 using TerrarianBizzareAdventure.Drawing;
 using WebmilioCommons.Projectiles;
+using TerrarianBizzareAdventure.Enums;
+using Terraria.ID;
 
 namespace TerrarianBizzareAdventure.Stands
 {
@@ -58,13 +60,18 @@ namespace TerrarianBizzareAdventure.Stands
         {
             projectile.timeLeft = 200;
 
+            if (HasQueuedStates && IsIdling)
+            {
+                CurrentState = StateQueue[0];
+                StateQueue.RemoveAt(0);
+            }
 
-            if(CurrentState != LastState)
+            if (CurrentState != LastState)
             {
                 projectile.netUpdate = true;
             }
 
-            if(!ReverseOffset)
+            if (!ReverseOffset)
             {
                 if (DrawOffset < 5.0f)
                     DrawOffset += 0.1f;
@@ -109,7 +116,7 @@ namespace TerrarianBizzareAdventure.Stands
                 HasSetAnimations = true;
             }
 
-            if(ShouldDie && CanDie && CurrentState != ANIMATION_DESPAWN)
+            if (ShouldDie && CanDie && CurrentState != ANIMATION_DESPAWN)
             {
                 CurrentState = ANIMATION_DESPAWN;
             }
@@ -196,13 +203,53 @@ namespace TerrarianBizzareAdventure.Stands
                 Animations.Clear();
             }
         }
-		
-		public override bool PreKill(int timeLeft)
-		{
+
+        public override bool PreKill(int timeLeft)
+        {
             TBAPlayer.Get(Owner).KillStand();
-			
-			return base.PreKill(timeLeft);
-		}
+
+            return base.PreKill(timeLeft);
+        }
+
+        public void GetBaseDamage(DamageClass type, Player player)
+        {
+            var currentDamage = 5;
+
+            for (int i = 0; i < player.inventory.Length; i++)
+            {
+                Item item = player.inventory[i];
+
+                if (item.damage > currentDamage)
+                {
+                    switch (type)
+                    {
+                        case DamageClass.Melee:
+                            if (item.melee)
+                                currentDamage = item.damage;
+                            break;
+
+                        case DamageClass.Ranged:
+                            if (item.ranged && item.useAmmo > 0)
+                                currentDamage = item.damage;
+                            break;
+
+                        case DamageClass.Magic:
+                            if (item.magic)
+                                currentDamage = item.damage;
+                            break;
+
+                        case DamageClass.Summon:
+                            if (item.summon)
+                                currentDamage = item.damage;
+                            break;
+                    }
+                }
+                else
+                    continue;
+            }
+
+            BaseDamage = currentDamage;
+        }
 
 
 
@@ -268,7 +315,7 @@ namespace TerrarianBizzareAdventure.Stands
 
         public virtual bool StopsItemUse => false;
 
-        public bool InIdleState
+        public bool IsIdling
         {
             get => CurrentState == ANIMATION_IDLE;
             set
@@ -277,6 +324,13 @@ namespace TerrarianBizzareAdventure.Stands
                     CurrentState = ANIMATION_IDLE;
             }
         }
+
+        // Queue up states because **yes**
+        public List<string> StateQueue { get; } = new List<string>();
+
+        public bool HasQueuedStates => StateQueue.Count > 0;
+
+        public int BaseDamage { get; private set; }
 
         public Dictionary<string, StandCombo> Combos { get; } = new Dictionary<string, StandCombo>();
     }

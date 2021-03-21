@@ -32,6 +32,39 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.TheWorld
             RoadRollerXAxis = -1.0f;
         }
 
+        public override void AddCombos()
+        {
+            Combos.Add("Barrage",
+                   new StandCombo("The World: Speed Barrage",
+                       MouseClick.LeftClick.ToString(),
+                       MouseClick.RightClick.ToString(),
+                       TBAInputs.CABind()
+                       )
+                   );
+
+            Combos.Add("Time Stop",
+                    new StandCombo("The World: Time Stop",
+                        TBAInputs.EA1Bind(),
+                        TBAInputs.EA1Bind(),
+                        TBAInputs.Up,
+                        TBAInputs.CABind()
+                        )
+                    );
+
+            Combos.Add("Road",
+                    new StandCombo("The World: Road Roller",
+                        TBAInputs.Up,
+                        TBAInputs.CABind(),
+                        TBAInputs.Up,
+                        TBAInputs.EA1Bind(),
+                        TBAInputs.Up,
+                        TBAInputs.CABind(),
+                        TBAInputs.Down,
+                        TBAInputs.CABind()
+                        )
+                    );
+        }
+
         public override void AddAnimations()
         {
             string path = "Stands/StardustCrusaders/TheWorld/TheWorld";
@@ -41,7 +74,7 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.TheWorld
             Animations.Add(ANIMATION_IDLE, new SpriteAnimation(mod.GetTexture(path + "Idle"), 8, 8, true));
             Animations.Add("FLY_UP", new SpriteAnimation(mod.GetTexture(path + "Idle"), 8, 8, true));
 
-            Animations.Add(ANIMATION_DESPAWN, new SpriteAnimation(mod.GetTexture(path + "Spawn"), 7, 5, false, null, true));
+            Animations.Add(ANIMATION_DESPAWN, new SpriteAnimation(mod.GetTexture(path + "Spawn"), 7, 3, false, null));
             Animations[ANIMATION_DESPAWN].ReversePlayback = true;
 
             Animations.Add("PUNCH_RD", new SpriteAnimation(mod.GetTexture(path + "PunchDown"), 7, 3));
@@ -67,17 +100,17 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.TheWorld
             Animations.Add(TIMESTOP_ANIMATION, new SpriteAnimation(mod.GetTexture(path + "KnifeThrow"), 14, 4));
 
 
-            Animations.Add("RUSH_UP", new SpriteAnimation(mod.GetTexture(path + "RushUp"), 4, 4));
-            Animations.Add("RUSH_DOWN", new SpriteAnimation(mod.GetTexture(path + "RushDown"), 4, 4));
-            Animations.Add("RUSH_MID", new SpriteAnimation(mod.GetTexture(path + "RushMiddle"), 4, 4));
+            Animations.Add("PUNCHRUSH_UP", new SpriteAnimation(mod.GetTexture(path + "RushUp"), 4, 4));
+            Animations.Add("PUNCHRUSH_DOWN", new SpriteAnimation(mod.GetTexture(path + "RushDown"), 4, 4));
+            Animations.Add("PUNCHRUSH_MID", new SpriteAnimation(mod.GetTexture(path + "RushMiddle"), 4, 4));
 
             Animations.Add("SLAM", new SpriteAnimation(mod.GetTexture(path + "SlamDunk"), 1, 5, true));
 
             Animations[ANIMATION_SUMMON].SetNextAnimation(Animations[ANIMATION_IDLE]);
 
-            Animations["RUSH_UP"].SetNextAnimation(Animations[ANIMATION_IDLE]);
-            Animations["RUSH_MID"].SetNextAnimation(Animations[ANIMATION_IDLE]);
-            Animations["RUSH_DOWN"].SetNextAnimation(Animations[ANIMATION_IDLE]);
+            Animations["PUNCHRUSH_UP"].SetNextAnimation(Animations[ANIMATION_IDLE]);
+            Animations["PUNCHRUSH_MID"].SetNextAnimation(Animations[ANIMATION_IDLE]);
+            Animations["PUNCHRUSH_DOWN"].SetNextAnimation(Animations[ANIMATION_IDLE]);
         }
 
         public override void AI()
@@ -90,14 +123,36 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.TheWorld
 
             projectile.timeLeft = 200;
 
-            int xOffset = CurrentState.Contains("PUNCH") || CurrentState.Contains("RUSH") || CurrentState == "THROW_KNIVES" || CurrentState == TIMESTOP_ANIMATION ?  34 : -16;
-
-            PositionOffset = Owner.Center + new Vector2(xOffset * Owner.direction, -24 + Owner.gfxOffY);
-
-            if (CurrentState.Contains("PUNCH") || CurrentState == "SLAM" || CurrentState == "THROW_KNIVES" || CurrentState == TIMESTOP_ANIMATION)
+            bool punch = CurrentState.Contains("PUNCH") || CurrentState == "SLAM" || CurrentState == "THROW_KNIVES" || CurrentState == TIMESTOP_ANIMATION;
+            if (punch && !CurrentState.Contains("RUSH"))
                 Owner.heldProj = projectile.whoAmI;
 
-            projectile.Center = Vector2.Lerp(projectile.Center, PositionOffset, 0.26f);
+            if (IsPunching)
+            {
+                ImmuneTime = 32;
+            }
+
+            if (CurrentState == "THROW_KNIVES")
+                Damage = 0;
+
+            if (CurrentState == ANIMATION_DESPAWN)
+            {
+                Opacity -= 0.2f;
+                if (!ReversedAnimation)
+                {
+                    CurrentAnimation.ResetAnimation(true);
+                    ReversedAnimation = true;
+                }
+                PositionOffset = Owner.Center + new Vector2(XPosOffset * Owner.direction, YPosOffset + Owner.gfxOffY);
+            }
+
+            if (CurrentState == ANIMATION_SUMMON)
+            {
+                XPosOffset = -16;
+                YPosOffset = -24;
+                PositionOffset = Owner.Center + new Vector2(XPosOffset * Owner.direction, YPosOffset + Owner.gfxOffY);
+
+            }
 
             if (CurrentState == "THROW_KNIVES")
             {
@@ -111,7 +166,7 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.TheWorld
                         Owner.direction = -1;
                     for (int i = 0; i < 2; i++)
                     {
-                        Projectile.NewProjectile(projectile.Center + direction * 2.2f + new Vector2(Main.rand.Next(-5, 5), Main.rand.Next(-34, 34)).RotatedBy(direction.ToRotation()), direction, ModContent.ProjectileType<Knife>(), 80, 3.5f, Owner.whoAmI, projectile.whoAmI);
+                        Projectile.NewProjectile(projectile.Center + direction * 2.2f + new Vector2(Main.rand.Next(-5, 5), Main.rand.Next(-34, 34)).RotatedBy(direction.ToRotation()), direction, ModContent.ProjectileType<Knife>(), KnifeDamage, 3.5f, Owner.whoAmI, projectile.whoAmI);
                     }
                 }
             }
@@ -120,25 +175,34 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.TheWorld
             if (CurrentState == ANIMATION_DESPAWN && CurrentAnimation.Finished && TimeStopDelay <= 0)
                 KillStand();
 
-            if (InIdleState)
+            if (IsIdling)
             {
-                if (Owner.whoAmI == Main.myPlayer)
+                XPosOffset = -16;
+                YPosOffset = -24;
+                PositionOffset = Owner.Center + new Vector2(XPosOffset * Owner.direction, YPosOffset + Owner.gfxOffY);
+
+                TBAPlayer tPlayer = TBAPlayer.Get(Owner);
+
+                if (Combos["Barrage"].CheckCombo(tPlayer))
                 {
-                    if (TBAInputs.StandPose.JustPressed)
-                        if (CurrentState == ANIMATION_IDLE)
-                            IsTaunting = true;
-                        else
-                            IsTaunting = false;
+                    Vector2 startPos = Owner.Center - new Vector2(-32 * Owner.direction, 16);
+                    StateQueue.Add("PUNCH_" + (CurrentState == "PUNCH_R" ? "L" : "R"));
 
-                    if (TBAInputs.ExtraAction02.JustPressed && TBAPlayer.Get(Owner).CheckStaminaCost(10))
-                        CurrentState = "THROW_KNIVES";
+                    PunchRushDirection = GetRange(startPos, Main.MouseWorld);
 
-                    if (TBAInputs.SummonStand.JustPressed)
-                        CurrentState = ANIMATION_DESPAWN;
+                    PositionOffset = startPos + PunchRushDirection;
+                    BarrageTime = 180;
+                }
 
-                    int roadRollerCost = TimeStopManagement.TimeStopped ? 10 : 50;
+                if (Combos["Time Stop"].CheckCombo(tPlayer))
+                {
+                    TBAMod.PlayVoiceLine("Sounds/TheWorld/TimeStop");
+                    TimeStop();
+                }
 
-                    if (TBAInputs.ExtraAction01.JustPressed && !BeganAscending && TBAPlayer.Get(Owner).CheckStaminaCost(roadRollerCost))
+                if (Combos["Road"].CheckCombo(TBAPlayer.Get(Owner)))
+                {
+                    if (!BeganAscending)
                     {
                         projectile.netUpdate = true;
                         if (!TimeStopManagement.TimeStopped)
@@ -157,70 +221,26 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.TheWorld
                         TBAPlayer.Get(Owner).PointOfInterest = Main.screenPosition + new Vector2(Main.screenWidth, Main.screenHeight) * 0.5f;
                         BeganAscending = true;
                     }
-
-                    if (TBAInputs.ContextAction.JustPressed)
-                        TimeStop();
                 }
 
-                if (StopsItemUse)
+                if (Owner.whoAmI == Main.myPlayer)
                 {
-                    if (PunchCounter < 2)
-                    {
-                        if (TBAPlayer.Get(Owner).MouseOneTimeReset > 0)
-                        {
-                            projectile.netUpdate = true;
-                            if (TBAPlayer.Get(Owner).MouseOneTime < 15 && !Owner.controlUseItem)
-                            {
-                                TBAPlayer.Get(Owner).CheckStaminaCost(2);
-                                Owner.direction = Main.MouseWorld.X < Owner.Center.X ? -1 : 1;
-
-                                if (Main.MouseWorld.Y > Owner.Center.Y + 60)
-                                    CurrentState = "PUNCH_" + (Main.rand.NextBool() ? "R" : "L") + "D";
-                                else if (Main.MouseWorld.Y < Owner.Center.Y - 60)
-                                    CurrentState = "PUNCH_" + (Main.rand.NextBool() ? "R" : "L") + "U";
-                                else
-                                    CurrentState = "PUNCH_" + (Main.rand.NextBool() ? "R" : "L");
-
-                                PunchCounter++;
-
-                                PunchCounterReset = 32;
-
-                                Projectile.NewProjectile(projectile.Center, VectorHelpers.DirectToMouse(projectile.Center, 22f), ModContent.ProjectileType<Punch>(), 80, 3.5f, Owner.whoAmI, projectile.whoAmI);
-
-                            }
-                        }
-                    }
-                    else if (Owner.controlUseItem)
-                    {
-                        projectile.netUpdate = true;
-                        TBAMod.PlayVoiceLine("Sounds/TheWorld/MudaRush");
-
-                        TBAPlayer.Get(Owner).CheckStaminaCost(16);
-                        if (Main.MouseWorld.Y > Owner.Center.Y + 60)
-                            CurrentState = "RUSH_DOWN";
-
-                        else if (Main.MouseWorld.Y < Owner.Center.Y - 60)
-                            CurrentState = "RUSH_UP";
-
+                    if (TBAInputs.StandPose.JustPressed)
+                        if (CurrentState == ANIMATION_IDLE)
+                            IsTaunting = true;
                         else
-                            CurrentState = "RUSH_MID";
+                            IsTaunting = false;
 
-                        RushTimer = 180;
-
-                        PunchRushDirection = VectorHelpers.DirectToMouse(projectile.Center, 22f);
-
-                        TBAPlayer.Get(Owner).AttackDirectionResetTimer = RushTimer;
-                        TBAPlayer.Get(Owner).AttackDirection = Main.MouseWorld.X < projectile.Center.X ? -1 : 1;
-
-                        int barrage = Projectile.NewProjectile(projectile.Center, PunchRushDirection, ModContent.ProjectileType<WorldBarrage>(), 60, 0, Owner.whoAmI);
-
-                        if (Main.projectile[barrage].modProjectile is WorldBarrage worldBarrage)
-                        {
-                            worldBarrage.RushDirection = PunchRushDirection;
-                            worldBarrage.ParentProjectile = projectile.whoAmI;
-                        }
+                    if (TBAInputs.ExtraAction02.JustPressed && TBAPlayer.Get(Owner).CheckStaminaCost(10))
+                    {
+                        StateQueue.Clear();
+                        CurrentState = "THROW_KNIVES";
                     }
+                    if (TBAInputs.SummonStand.JustPressed)
+                        CurrentState = ANIMATION_DESPAWN;
                 }
+
+
             }
 
             if (TimeStopDelay > 1)
@@ -238,26 +258,22 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.TheWorld
                 TimeStopDelay--;
             }
 
-            if (Animations.Count > 0)
-            {
-                Animations["RUSH_DOWN"].AutoLoop = RushTimer > 0;
-                Animations["RUSH_UP"].AutoLoop = RushTimer > 0;
-                Animations["RUSH_MID"].AutoLoop = RushTimer > 0;
-            }
-
             if (BeganAscending)
             {
                 if (AscensionTimer >= (int)(2 * Constants.TICKS_PER_SECOND))
                 {
+                    XPosOffset = 8;
+                    YPosOffset = -40;
                     if (RoadRollerXAxis == -1.0f)
                         RoadRollerXAxis = Main.MouseWorld.X;
 
                     TBAPlayer.Get(Owner).PointOfInterest = new Vector2(MathHelper.Lerp(TBAPlayer.Get(Owner).PointOfInterest.X, RoadRollerXAxis, 0.1f), TBAPlayer.Get(Owner).PointOfInterest.Y);
                 }
 
-                if(++AscensionTimer >= (int)(2.5 * Constants.TICKS_PER_SECOND))
+                if (++AscensionTimer >= (int)(2.5 * Constants.TICKS_PER_SECOND))
                 {
-                    TBAPlayer.Get(Owner).TirePlayer(30);
+                    XPosOffset = 16;
+                    YPosOffset = -48;
                     projectile.netUpdate = true;
                     TBAMod.PlayVoiceLine("Sounds/TheWorld/RoadRoller");
                     BeganAscending = false;
@@ -268,12 +284,48 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.TheWorld
                     RoadaRollaDa.spriteDirection = Owner.direction * -1;
                     RoadaRollaDa.Center = new Vector2(RoadRollerXAxis, Owner.Center.Y);
                     RoadRollerXAxis = -1.0f;
+                    RoadRoller r = RoadaRollaDa.modProjectile as RoadRoller;
+
+                    r.ExplosionDamage = RoadRollerExplosionDamage;
                 }
                 else
                 {
                     Owner.velocity = Vector2.Zero;
                     Owner.Center -= new Vector2(0f, 10f);
                 }
+
+                PositionOffset = Owner.Center + new Vector2(XPosOffset * Owner.direction, YPosOffset + Owner.gfxOffY);
+            }
+
+            if(Animations.Count > 0)
+            {
+                Animations["PUNCHRUSH_UP"].AutoLoop = BarrageTime > 0;
+                Animations["PUNCHRUSH_DOWN"].AutoLoop = BarrageTime > 0;
+                Animations["PUNCHRUSH_MID"].AutoLoop = BarrageTime > 0;
+            }
+
+            if (IsBarraging)
+            {
+                PunchCounterReset = 0;
+                if (BarrageTime >= 180)
+                {
+                    if (Center.Y > Owner.Center.Y + 16)
+                        CurrentState = "PUNCHRUSH_DOWN";
+                    else if (Center.Y < Owner.Center.Y - 40)
+                        CurrentState = "PUNCHRUSH_UP";
+                    else
+                        CurrentState = "PUNCHRUSH_MID";
+
+                    int barrage = Projectile.NewProjectile(projectile.Center, VectorHelpers.DirectToMouse(projectile.Center, 18f), ModContent.ProjectileType<WorldBarrage>(), BarrageDamage, 0, Owner.whoAmI);
+
+                    if (Main.projectile[barrage].modProjectile is WorldBarrage Barrage)
+                    {
+                        Barrage.RushDirection = VectorHelpers.DirectToMouse(projectile.Center, 26f);
+                        Barrage.ParentProjectile = projectile.whoAmI;
+                    }
+                }
+
+                BarrageTime--;
             }
 
             if (RoadaRollaDa.modProjectile is RoadRoller roller)
@@ -281,8 +333,10 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.TheWorld
                 if (RushTimer > 0 && roller.HasTouchedGround || !roller.HasTouchedGround)
                 {
                     Owner.direction = RoadaRollaDa.spriteDirection * -1;
-                    Owner.Center = projectile.Center + new Vector2(20 * Owner.direction * -1, -20);
-                    projectile.Center = RoadaRollaDa.Center + new Vector2(40 * Owner.direction * -1, -40);
+                    Center = RoadaRollaDa.Center + new Vector2(40 * Owner.direction * -1, -40);
+                    Owner.Center = Center + new Vector2(20 * Owner.direction * -1, -20);
+
+                    PositionOffset = Owner.Center + new Vector2(XPosOffset * Owner.direction, YPosOffset + Owner.gfxOffY);
                 }
 
                 if (roller.HasTouchedGround && !HasResetRoadRollerDrop)
@@ -292,7 +346,7 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.TheWorld
 
                     RushTimer = 180;
 
-                    PunchRushDirection = (RoadaRollaDa.Center - projectile.Center).SafeNormalize(-Vector2.UnitX) * 12f;
+                    PunchRushDirection = (RoadaRollaDa.Center - Owner.Center).SafeNormalize(-Vector2.UnitX) * 12f;
 
                     TBAPlayer.Get(Owner).AttackDirectionResetTimer = RushTimer;
                     TBAPlayer.Get(Owner).AttackDirection = RoadaRollaDa.Center.X < projectile.Center.X ? -1 : 1;
@@ -301,7 +355,7 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.TheWorld
 
                     HasResetRoadRollerDrop = true;
 
-                    int barrage = Projectile.NewProjectile(projectile.Center, PunchRushDirection, ModContent.ProjectileType<WorldBarrage>(), 60, 0, Owner.whoAmI);
+                    int barrage = Projectile.NewProjectile(projectile.Center, PunchRushDirection, ModContent.ProjectileType<WorldBarrage>(), (int)(BarrageDamage * 0.5), 0, Owner.whoAmI);
 
                     if (Main.projectile[barrage].modProjectile is WorldBarrage worldBarrage)
                     {
@@ -310,6 +364,8 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.TheWorld
                     }
                 }
             }
+
+            Center = Vector2.Lerp(projectile.Center, PositionOffset, 0.26f);
         }
 
         public override bool PreKill(int timeLeft)
@@ -358,5 +414,15 @@ namespace TerrarianBizzareAdventure.Stands.StardustCrusaders.TheWorld
         public int AscensionTimer { get; private set; }
 
         public float RoadRollerXAxis { get; private set; }
+
+        public override int PunchDamage => 32 + (int)(BaseDamage * 1.2);
+
+        public int RoadRollerExplosionDamage => 300 + (int)(BaseDamage * 10);
+
+        public int KnifeDamage => 5 + (int)(BaseDamage * 0.2);
+
+        public bool ReversedAnimation { get; private set; }
+
+        public override int BarrageDamage => 48 + (int)(BaseDamage * 0.66);
     }
 }

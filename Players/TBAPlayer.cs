@@ -90,10 +90,16 @@ namespace TerrarianBizzareAdventure.Players
             if (IsCombatLocked)
                 CombatLockTimer--;
 
-            if(IsCombatLocked)
+            if (IsCombatLocked)
             {
                 player.position = player.oldPosition;
                 player.velocity = player.oldVelocity;
+
+                if (CombatLockTimer <= 1)
+                {
+                    player.velocity = StoredVelocity;
+                    StoredVelocity = Vector2.Zero;
+                }
             }
 
             if (AttackDirection != 0)
@@ -206,6 +212,9 @@ namespace TerrarianBizzareAdventure.Players
 
                     if (Stand.CallSoundPath != "")
                        TBAMod.PlayVoiceLine(Stand.CallSoundPath);
+
+                    Stand.Combos.Clear();
+                    Stand.AddCombos();
                 }
             }
 
@@ -263,20 +272,6 @@ namespace TerrarianBizzareAdventure.Players
                 player.controlHook = false;
             }
         }
-
-        public override void Hurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit)
-        {
-            if (StandActive && ActiveStandProjectile is TimeStoppingStand stand)
-            {
-                if (stand.CurrentState == TimeStoppingStand.TIMESTOP_ANIMATION)
-                {
-                    player.AddBuff<TimeStopCDDebuff>(6 * Constants.TICKS_PER_SECOND);
-                    stand.CurrentAnimation.ResetAnimation();
-                    stand.CurrentState = Stand.ANIMATION_IDLE;
-                }
-            }
-        }
-
 
         public void KillStand() => ActiveStandProjectile = null;
 
@@ -341,6 +336,7 @@ namespace TerrarianBizzareAdventure.Players
 
         public bool IsCombatLocked => CombatLockTimer > 0;
         public int CombatLockTimer { get; set; }
+        public Vector2 StoredVelocity { get; set; }
 
         public bool KnifeGangMember => SteamHelper.KnifeGangMembers.Count(x => x.SteamId64 == SteamHelper.SteamId64) > 0;
 

@@ -134,7 +134,7 @@ namespace TerrarianBizzareAdventure.UserInterfaces
                         inputElements.Add(new UIButtonPress(s));
                     }
 
-                    ComboPanel comboPanel = new ComboPanel(combo.Key, inputElements);
+                    ComboPanel comboPanel = new ComboPanel(combo.Value.DisplayName, inputElements);
 
                     StandComboGrid.Add(comboPanel);
 

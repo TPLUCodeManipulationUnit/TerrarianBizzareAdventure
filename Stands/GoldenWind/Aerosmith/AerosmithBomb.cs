@@ -93,16 +93,16 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
                         #endregion
 
 
-                        Damage = 50;
+                        Damage = ExplosionDamage;
 
                         projectile.friendly = true;
                         ExplosionDelay += 2;
                         TimeLeft = 2;
 
-                        Width = 100;
-                        Height = 100;
+                        Width = 300;
+                        Height = 300;
 
-                        Position -= new Vector2(50);
+                        Position -= new Vector2(150);
                     }
 
                     Main.PlaySound(SoundID.Item14, projectile.position);
@@ -179,6 +179,8 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
         public int HitNPC { get; private set; }
 
         public Vector2 Offset { get; private set; }
+
+        public int ExplosionDamage { get; set; }
 
         public override string Texture => "TerrarianBizzareAdventure/Stands/GoldenWind/Aerosmith/Bomb";
     }

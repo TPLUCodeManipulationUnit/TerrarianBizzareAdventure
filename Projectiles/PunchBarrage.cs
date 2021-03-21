@@ -129,7 +129,7 @@ namespace TerrarianBizzareAdventure.Projectiles
                 DrawHelpers.CircleDust(target.Center + randomVector * Owner.direction, Velocity, DustID.AncientLight, 2, 8, 0.85f);
             }
 
-            TBAGlobalNPC.GetFor(target).CombatLockTimer = 8;
+            TBAGlobalNPC.GetFor(target).CL_LockTimer = 8;
 
             TBAPlayer.Get(Owner).CombatLockTimer = 8;
 

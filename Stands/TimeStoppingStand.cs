@@ -1,5 +1,6 @@
 ﻿using Terraria;
 using Terraria.ModLoader;
+using TerrarianBizzareAdventure.Enums;
 using TerrarianBizzareAdventure.Players;
 using TerrarianBizzareAdventure.TimeStop;
 
@@ -13,6 +14,11 @@ namespace TerrarianBizzareAdventure.Stands
         {
         }
 
+        public override void SetDefaults()
+        {
+            base.SetDefaults();
+        }
+
         public void TimeStop()
         {
             if (TimeStopManagement.TimeStopped)
@@ -22,14 +28,23 @@ namespace TerrarianBizzareAdventure.Stands
                 return;
             }
 
-            if (!TBAPlayer.Get(Owner).ShatteredTime && TBAPlayer.Get(Owner).CheckStaminaCost(TimeStopCost))
+            if (TBAPlayer.Get(Owner).CheckStaminaCost(TimeStopCost))
             {
-                TBAPlayer.Get(Owner).TirePlayer(15);
-
                 if (!TimeStopManagement.TimeStopped)
                     TBAMod.PlayVoiceLine(TimeStopVoiceLinePath);
 
                 CurrentState = TIMESTOP_ANIMATION;
+            }
+        }
+
+        public override void AI()
+        {
+            base.AI();
+
+            if(BaseDamage == 0)
+            {
+                GetBaseDamage(DamageClass.Melee, Owner);
+                Main.NewText(BaseDamage);
             }
         }
 

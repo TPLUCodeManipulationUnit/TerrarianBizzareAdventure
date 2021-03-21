@@ -46,14 +46,23 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
         {
             base.AI();
 
+            if (BaseDamage <= 0)
+            {
+                GetBaseDamage(DamageClass.Ranged, Owner);
+                Main.NewText(BaseDamage);
+            }
             if (_previousAngle != Angle)
                 projectile.netUpdate = true;
 
 
             Owner.heldProj = projectile.whoAmI;
 
-            if(Vector2.Distance(Center, Owner.Center) >= 16 * 75)
+            if (Vector2.Distance(Center, Owner.Center) >= 16 * 200)
+            {
+                IsPatroling = false;
+                BarrageTime = 0;
                 CurrentState = "RETURN";
+            }
 
             if (CurrentAnimation != null)
             {
@@ -79,7 +88,7 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
                 if (Opacity < 1f)
                     Opacity += 0.04f;
 
-            
+
 
             if (IsDespawning || IsSpawning)
             {
@@ -104,7 +113,7 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
 
             #region controls
 
-            if(IsReturning)
+            if (IsReturning)
             {
                 Speed = 8.0f;
                 tPlayer.ASHover = false;
@@ -120,7 +129,7 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
 
             if (Owner.whoAmI == Main.myPlayer)
             {
-                if (InIdleState)
+                if (IsIdling)
                 {
 
                     if (TBAInputs.ContextAction.JustPressed)
@@ -134,12 +143,20 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
 
                     if (tPlayer.ASAttack && BarrageTime <= 0)
                     {
-                        tPlayer.CheckStaminaCost(2, true);
                         BarrageTime = 16;
+                    }
+
+                    if (TBAInputs.ExtraAction01.JustPressed)
+                    {
+                        IsPatroling = !IsPatroling;
+
+                        if (IsPatroling)
+                            PatrolDistance = 60;
                     }
 
                     if (TBAInputs.SummonStand.JustPressed)
                     {
+                        IsPatroling = false;
                         if (Vector2.Distance(Owner.Center, projectile.Center) <= 16 * 10)
                             CurrentState = ANIMATION_DESPAWN;
                         else
@@ -148,8 +165,6 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
 
                     if (tPlayer.ASBomb && Owner.ownedProjectileCounts[ModContent.ProjectileType<AerosmithBomb>()] <= 0)
                     {
-                        tPlayer.CheckStaminaCost(15, true);
-
                         Vector2 position = projectile.Center + new Vector2(0, 6);
                         Vector2 velocity = new Vector2(9, 0).RotatedBy(Angle).RotatedByRandom(.12f);
                         int type = ModContent.ProjectileType<AerosmithBomb>();
@@ -157,7 +172,10 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
 
                         Main.PlaySound(SoundID.Item1, projectile.position);
 
-                        Projectile.NewProjectile(position, velocity, type, damage, 0, Owner.whoAmI);
+                        int proj = Projectile.NewProjectile(position, velocity, type, damage, 0, Owner.whoAmI);
+
+                        AerosmithBomb bomb = Main.projectile[proj].modProjectile as AerosmithBomb;
+                        bomb.ExplosionDamage = BombDamage;
                     }
                 }
 
@@ -175,10 +193,10 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
                     Vector2 position = Center;
                     Vector2 velocity = new Vector2(16, 0).RotatedBy(Angle);
                     int type = ModContent.ProjectileType<AerosmithBullet>();
-                    int damage = 5;
+                    int damage = BulletDamage;
 
                     float offX = -24;
-                    float offY = 12;
+                    float offY = 4;
 
                     int multiplier = (IsFlipped ? 1 : -1);
 
@@ -201,37 +219,77 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
                 IsFlipped = projectile.velocity.X > 0;
             }
 
-            if (IsEngineOn)
+            if (CurrentState == "TURN")
             {
-                FlightVector = new Vector2(1, 0).RotatedBy(Angle);
+                if (Speed > 0)
+                    Speed = MathHelper.Clamp(Speed - 0.05f, 0, 3f);
 
-                if (Speed < 4.0f)
-                    Speed += 0.2f;
+                if (CurrentAnimation.Finished)
+                {
+                    Angle = new Vector2(PatrolDirection, 0).ToRotation() + (IsFlipped ? 0.12f : -0.12f);
+                    CurrentAnimation.ResetAnimation();
+                    Speed = 3f;
+                    CurrentState = ANIMATION_IDLE;
+                    Angle = Velocity.ToRotation();
+                    PatrolDirection = -PatrolDirection;
+                    PatrolDistance = 60;
+                }
+            }
 
-                if (YSpeed > 0)
-                    YSpeed -= 0.12f;
+
+
+            if (IsPatroling)
+            {
+                BarrageTime = 0;
+                Angle = new Vector2(PatrolDirection, 0.15f).ToRotation();
+                if (PatrolDistance > 0)
+                {
+                    Speed = 3f;
+                    PatrolDistance -= 1;
+                }
+                else
+                {
+                    CurrentState = "TURN";
+                }
+
+                Velocity = new Vector2(PatrolDirection, 0) * Speed;
             }
             else
             {
-                if (Speed > 0)
-                    Speed -= 0.025f;
 
-                if (YSpeed < 12f)
-                    YSpeed += 0.06f;
 
-                if(CurrentAnimation != null)
-                CurrentAnimation.CurrentFrame = 0;
-            }
+                if (IsEngineOn)
+                {
+                    FlightVector = new Vector2(1, 0).RotatedBy(Angle);
 
-            Velocity = FlightVector * Speed + new Vector2(0, YSpeed);
+                    if (Speed < 8.0f)
+                        Speed += 0.2f;
 
-            if(!IsReturning && !IsDespawning)
-            Velocity = Collision.TileCollision(Center - new Vector2(10, 10), Velocity, 20, 20, false, false, 1);
+                    if (YSpeed > 0)
+                        YSpeed -= 0.12f;
+                }
+                else
+                {
+                    if (Speed > 0)
+                        Speed -= 0.025f;
 
-            if(Velocity.Y == 0 && !IsEngineOn)
-            {
-                if (Speed > 0)
-                    Speed = MathHelper.Clamp(Speed - 0.15f, 0, 8f);
+                    if (YSpeed < 12f)
+                        YSpeed += 0.06f;
+
+                    if (CurrentAnimation != null)
+                        CurrentAnimation.CurrentFrame = 0;
+                }
+
+                Velocity = FlightVector * Speed + new Vector2(0, YSpeed);
+
+                if (!IsReturning && !IsDespawning)
+                    Velocity = Collision.TileCollision(Center - new Vector2(10), Velocity, 20, 20, false, false, 1);
+
+                if (Velocity.Y == 0 && !IsEngineOn)
+                {
+                    if (Speed > 0)
+                        Speed = MathHelper.Clamp(Speed - 0.15f, 0, 8f);
+                }
             }
         }
 
@@ -240,6 +298,7 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
             base.SendExtraAI(writer);
             writer.Write(Angle);
             writer.Write(Speed);
+            writer.Write(IsPatroling);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader)
@@ -247,6 +306,7 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
             base.ReceiveExtraAI(reader);
             Angle = reader.ReadSingle();
             Speed = reader.ReadSingle();
+            IsPatroling = reader.ReadBoolean();
         }
 
         public int BarrageTime { get; set; }
@@ -272,6 +332,15 @@ namespace TerrarianBizzareAdventure.Stands.GoldenWind.Aerosmith
 
         public bool IsEngineOn { get; set; } = true;
 
+        public int BulletDamage => 8 + (int)(BaseDamage * 1.35);
+
+        public int BombDamage => 225 + (int)(BaseDamage * 8.5);
+
+        public bool IsPatroling { get; set; }
+
+        public int PatrolDistance { get; set; }
+
+        public int PatrolDirection { get; set; } = 1;
 
         public float Angle 
         {

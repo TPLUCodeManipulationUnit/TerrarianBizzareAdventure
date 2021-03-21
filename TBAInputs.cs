@@ -1,6 +1,7 @@
 ﻿using Terraria.ModLoader;
 using Microsoft.Xna.Framework.Input;
 using Terraria;
+using TerrarianBizzareAdventure.Enums;
 
 namespace TerrarianBizzareAdventure
 {
@@ -76,10 +77,10 @@ namespace TerrarianBizzareAdventure
 
         public static string Down => Main.cDown;
 
-        public static string Left => Main.cLeft;
+        public static string LeftClick => MouseClick.LeftClick.ToString();
+        public static string RightClick => MouseClick.RightClick.ToString();
 
-        public static string Right => Main.cRight;
-
-        public static string Jump => Main.cJump;
+        public static bool LastUpState { get; set; }
+        public static bool LastDownState { get; set; }
     }
 }

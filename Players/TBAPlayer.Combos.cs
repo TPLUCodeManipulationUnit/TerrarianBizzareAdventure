@@ -10,59 +10,65 @@ namespace TerrarianBizzareAdventure.Players
 {
     public sealed partial class TBAPlayer : ModPlayer
     {
+        public const int COMBO_TIME = 120;
+
+        public const int DELAY = 4;
+
         public void ProcessComboTriggers()
         {
             if (!StandActive)
                 return;
 
-            KeyboardState kState = TBAInputs.CurrentState;
-
-            if(EligibleKeys.Count <= 0)
-            GetEligibleKeys();
-
             if (Inputs.Count > 12)
                 Inputs.RemoveAt(0);
 
-            var keys = kState.GetPressedKeys();
-
-            if (keys.Length > TBAInputs.LastState.GetPressedKeys().Length
-                && EligibleKeys.Contains(keys[keys.GetUpperBound(0)].ToString()))
+            if (player.controlUp && !TBAInputs.LastUpState)
             {
-                ComboResetTimer = 60;
-                Inputs.Add(new ComboInput(keys[keys.GetUpperBound(0)].ToString()));
+                OnInput(TBAInputs.Up);
             }
 
-            if(TBAInputs.ContextAction.JustPressed)
+            if (player.controlDown && !TBAInputs.LastDownState)
             {
-                ComboResetTimer = 60;
-                Inputs.Add(new ComboInput(TBAInputs.CABind()));
+                OnInput(TBAInputs.Down);
+            }
+
+            if (TBAInputs.ContextAction.JustPressed)
+            {
+                OnInput(TBAInputs.CABind());
             }
 
             if (TBAInputs.ExtraAction01.JustPressed)
             {
-                ComboResetTimer = 60;
-                Inputs.Add(new ComboInput(TBAInputs.EA1Bind()));
+                OnInput(TBAInputs.EA1Bind());
             }
 
             if (TBAInputs.ExtraAction02.JustPressed)
             {
-                ComboResetTimer = 60;
-                Inputs.Add(new ComboInput(TBAInputs.EA2Bind()));
+                OnInput(TBAInputs.EA2Bind());
             }
 
             if (MouseOneTimeReset > 2 && !player.controlUseItem)
             {
-                ComboResetTimer = 60;
-                Inputs.Add(new ComboInput(MouseClick.LeftClick.ToString()));
+                OnInput(MouseClick.LeftClick.ToString());
             }
 
             if (MouseTwoTimeReset > 2 && !player.controlUseTile)
             {
-                ComboResetTimer = 60;
-                Inputs.Add(new ComboInput(MouseClick.RightClick.ToString()));
+                OnInput(MouseClick.RightClick.ToString());
             }
 
-            TBAInputs.LastState = Keyboard.GetState();
+            if(ComboDelayTime > 0)
+                ComboDelayTime--;
+
+            TBAInputs.LastDownState = player.controlDown;
+            TBAInputs.LastUpState = player.controlUp;
+        }
+
+        private void OnInput(string key)
+        {
+            ComboDelayTime = DELAY;
+            ComboResetTimer = COMBO_TIME;
+            Inputs.Add(new ComboInput(key));
         }
 
         public void ResetInputs()
@@ -78,20 +84,14 @@ namespace TerrarianBizzareAdventure.Players
 
         public void GetEligibleKeys()
         {
-            EligibleKeys.Clear();
-            EligibleKeys.Add(TBAInputs.Left);
-            EligibleKeys.Add(TBAInputs.Right);
-            EligibleKeys.Add(TBAInputs.Up);
-            EligibleKeys.Add(TBAInputs.Down);
-            EligibleKeys.Add(TBAInputs.Jump);
-
             Stand?.Combos.Clear();
             Stand?.AddCombos();
         }
 
         public int ComboResetTimer { get; set; }
 
-        public List<string> EligibleKeys { get; } = new List<string>();
+        public int ComboDelayTime { get; set; }
+        public bool IsComboCheckDelayed => ComboDelayTime > 0;
         public List<ComboInput> Inputs { get; } = new List<ComboInput>(10);
     }
 }
