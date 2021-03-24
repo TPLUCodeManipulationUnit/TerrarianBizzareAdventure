@@ -7,11 +7,11 @@ using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
 using TerrarianBizzareAdventure.Buffs;
-using TerrarianBizzareAdventure.Enums;
 using TerrarianBizzareAdventure.Helpers;
 using TerrarianBizzareAdventure.Items.Weapons.Rewards;
 using TerrarianBizzareAdventure.Networking;
 using TerrarianBizzareAdventure.Projectiles.Misc;
+using TerrarianBizzareAdventure.ScreenModifiers;
 using TerrarianBizzareAdventure.Stands;
 using TerrarianBizzareAdventure.Stands.Special.Developer.Webmilio;
 using TerrarianBizzareAdventure.Stands.StardustCrusaders.TheWorld;
@@ -197,6 +197,15 @@ namespace TerrarianBizzareAdventure.Players
 
         public override void ProcessTriggers(TriggersSet triggersSet)
         {
+            if (TBAInputs.ContextAction.JustPressed)
+            {
+                Main.NewText("Screen Modifier Test");
+                ShakeScreenModifier screenShake = new ShakeScreenModifier(Main.MouseWorld, new Vector2(30), 300, 4, 0.25f);
+                ScreenModifiers.Add(new SmoothStepScreenModifier(player.Center, Main.MouseWorld, 0.15f));
+                ScreenModifiers.Add(screenShake);
+                ScreenModifiers.Add(new PlayerChaseScreenModifier(Main.MouseWorld, player.Center, 0.1f));
+            }
+
             if (!StandUser) return;
 
             ProcessComboTriggers();
